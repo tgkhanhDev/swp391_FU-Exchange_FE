@@ -4,6 +4,6 @@ const api = apiInstance({
   baseURL: "http://localhost:8080",
 });
 
-export const manageProject = {
+export const manageProduct = {
     getProject : () => api.get("/project"),
 }
