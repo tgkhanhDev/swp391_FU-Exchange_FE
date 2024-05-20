@@ -1,11 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,500;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,600;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,700;1,700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Public Sans', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   /* Variables */
   --color-bg-primary: #E7EEF1; 
-  --color-bg-hightlight: #393e46 ;
+  --color-bg-hightlight: #393e46;
   --color-primary: #FD7014;
+  background-color: #eff2f6;
 }
