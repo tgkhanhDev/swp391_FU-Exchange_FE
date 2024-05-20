@@ -1,4 +1,4 @@
-## Basic Rule
+### Basic Rule
 # Name And Files:
 1. File .jsx / .tsx must be in UpperCamelCase
 2. Every file .jsx/ .tsx folder must have their own export file (index.js)
