@@ -4,8 +4,13 @@
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #eff2f6;
   /* Variables */
   --color-bg-primary: #E7EEF1; 
   --color-bg-hightlight: #393e46 ;
   --color-primary: #FD7014;
+}
+.container {
+  max-width: 1260px;
+  margin: auto;
 }
