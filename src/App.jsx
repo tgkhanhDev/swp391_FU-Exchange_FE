@@ -1,14 +1,8 @@
-import "./App.css";
-import TestAbc from "./components/testAbc";
+import { useRoutes } from "react-router-dom";
+import { router } from "./router";
 
 function App() {
-
-  return (
-    <div>
-      <div className="text-3xl font-bold underline text-red-500">Hello world!</div>
-      <TestAbc />
-    </div>
-  );
+  return <div>{useRoutes(router)}</div>;
 }
 
 export default App;

@@ -4,9 +4,6 @@
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
   /* Variables */
   --color-bg-primary: #E7EEF1; 
   --color-bg-hightlight: #393e46 ;
