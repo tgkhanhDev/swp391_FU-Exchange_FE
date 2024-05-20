@@ -1,5 +1,5 @@
-### Basic Rule
-# Name And Files:
+# Basic Rule
+## Name And Files:
 1. File .jsx / .tsx must be in UpperCamelCase
 2. Every file .jsx/ .tsx folder must have their own export file (index.js)
 ```
@@ -8,7 +8,7 @@
     - index.js
 ```
 
-# Branches:
+## Branches:
 1. Do not push to master
 2. Create new branch before adding new features (gkhanhDev/addToCart) ---merge---> master_cart ---review---> master
 
