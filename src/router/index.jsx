@@ -15,12 +15,20 @@ export const router = [
       },
       {
         element: <ProductDetaill />,
-        path: PATH.productDetail
-      }
+        path: PATH.productDetail,
+      },
     ],
   },
   {
+    element: <ProductList />, //Login
+    path: PATH.login,
+  },
+  {
+    element: <ProductDetaill />, //Register
+    path: PATH.register,
+  },
+  {
     element: <NotFound />,
-    path: '*'
-  }
+    path: "*",
+  },
 ];
