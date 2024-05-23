@@ -28,6 +28,10 @@ export const router = [
     path: PATH.register,
   },
   {
+    element: <ProductDetaill />, //AccountInfo
+    path: PATH.profile,
+  },
+  {
     element: <NotFound />,
     path: "*",
   },
