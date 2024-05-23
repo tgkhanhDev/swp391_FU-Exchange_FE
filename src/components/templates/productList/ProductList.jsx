@@ -58,7 +58,7 @@ export const ProductList = () => {
         </div>
       </div>
 
-      {/*Bám sát với nhu cầu*/}
+      {/*Hoạt động*/}
       <div className='my-20 mb-10'>
         {/*Introduction*/}
         <div className='flex justify-center items-center mb-7'>
