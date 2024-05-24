@@ -10,6 +10,7 @@ export const router = [
     path: "/",
     children: [
       {
+        //element: <ProductList />,
         element: <ProductList />,
         index: true,
       },
