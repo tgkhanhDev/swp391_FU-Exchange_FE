@@ -6,5 +6,5 @@ const api = apiInstance({
 });
 
 export const managePost = {
-  getPost: (payload:string) => api.get<PostLoadMore>(`/post-product/${payload}`),
+  getPost: (payload:number) => api.get<PostLoadMore>(`/post-product/${payload}`),
 };

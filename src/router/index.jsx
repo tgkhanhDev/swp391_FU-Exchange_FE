@@ -1,8 +1,9 @@
-import ProductDetaill from "../components/templates/productDetail/ProductDetaill";
-import ProductList from "../components/templates/productList/ProductList";
+
 import NotFound from "../page/NotFound"
 import { PATH } from "../constants/config";
 import ProductPage from "../page/ProductPage";
+import PostDetail from "../components/templates/productDetail/PostDetail";
+import PostList from "../components/templates/productList/PostList";
 
 export const router = [
   {
@@ -10,25 +11,25 @@ export const router = [
     path: "/",
     children: [
       {
-        element: <ProductList />,
+        element: <PostList />,
         index: true,
       },
       {
-        element: <ProductDetaill />,
+        element: <PostDetail />,
         path: PATH.productDetail,
       },
     ],
   },
   {
-    element: <ProductList />, //Login
+    element: <PostList />, //Login
     path: PATH.login,
   },
   {
-    element: <ProductDetaill />, //Register
+    element: <PostList />, //Register
     path: PATH.register,
   },
   {
-    element: <ProductDetaill />, //AccountInfo
+    element: <PostList />, //AccountInfo
     path: PATH.profile,
   },
   {
