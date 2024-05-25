@@ -1,7 +1,10 @@
 import { Button, Checkbox, Dropdown, MenuProps } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
+import { useAppDispatch } from "../../../store";
+import { getPostThunk } from "../../../store/postManagement/thunk";
 
 export const ProductList = () => {
+  const dispatch = useAppDispatch();
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -40,6 +43,10 @@ export const ProductList = () => {
       ),
     },
   ];
+  useEffect(() => {
+    dispatch(getPostThunk("6"));
+  }, []);
+
   return (
     <div className="container">
       {/* Title  */}

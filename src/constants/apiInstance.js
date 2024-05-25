@@ -2,14 +2,21 @@ import axios from "axios";
 
 export const apiInstance = (config) => {
   const api = axios.create(config);
+
   api.interceptors.request.use((config) => {
+    const username = "k123";  
+    const password = "123";  
+    const auth = btoa(`${username}:${password}`);
     return {
       ...config,
       headers: {
-        //  TokenCybersoft:TOKEN_CYBERSOFT,
-        //  Authorization:"Bearer"+" "+localStorage.getItem("USER"),
+        ...config.headers,
+        "Content-Type": "application/json",
+        Authorization:
+          "Basic " + auth,
       },
     };
   });
+
   return api;
 };

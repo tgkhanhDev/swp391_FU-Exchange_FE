@@ -17,4 +17,4 @@ export const manageProductSlice = createSlice({
     }
 })
 
-export const { reducer: manageProductReducer, actions: manageUserActions } = manageProductSlice;
+export const { reducer: manageProductReducer, actions: manageProductActions } = manageProductSlice;
