@@ -8,7 +8,6 @@ export const ProductList = () => {
       <div className='h-[550px]'>
         <CarouselDefault />
       </div>
-
       {/*Caterogies */}
       <div className='my-20 mb-10'>
         {/*Introduction*/}
