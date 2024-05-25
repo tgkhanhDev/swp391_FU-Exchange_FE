@@ -44,7 +44,8 @@ export const ProductList = () => {
     },
   ];
   useEffect(() => {
-    dispatch(getPostThunk("6"));
+    dispatch(getPostThunk("6")
+);
   }, []);
 
   return (
@@ -58,7 +59,7 @@ export const ProductList = () => {
         </div>
       </div>
       {/* End Title  */}
-      <div>
+      <div className="flex">
         {/* Filter Col  */}
         <div className="flex flex-col" style={{ width: "200px" }}>
           <div className="flex items-end gap-3">
@@ -91,6 +92,9 @@ export const ProductList = () => {
             </Dropdown>
           </div>
           {/* End Sort  */}
+          <div className="grid grid-cols-3">
+            <div className=""></div>
+          </div>
         </div>
       </div>
     </div>
