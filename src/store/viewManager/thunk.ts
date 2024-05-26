@@ -12,3 +12,15 @@ export const getCampusThunk = createAsyncThunk(
     }
   }
 );
+
+export const getPostTypeThunk = createAsyncThunk(
+  "postType",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await manageView.getAllPostType();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

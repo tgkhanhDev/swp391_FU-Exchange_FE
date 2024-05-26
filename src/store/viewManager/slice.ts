@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getCampusThunk } from "./thunk";
-import { Campus } from "../../types/post";
+import { getCampusThunk, getPostTypeThunk } from "./thunk";
+import { Campus, PostType } from "../../types/post";
 
 type stateType = {
   campus: Campus[];
+  postType: PostType[];
 };
 
 const initialState: stateType = {
   campus: [],
+  postType:[],
 };
 
 export const manageViewSlice = createSlice({
@@ -17,7 +19,10 @@ export const manageViewSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getCampusThunk.fulfilled, (state, { payload }) => {
       state.campus = payload;
-    });
+    }),
+    builder.addCase(getPostTypeThunk.fulfilled, (state, { payload }) => {
+      state.postType = payload;
+    })
   },
 });
 

@@ -5,7 +5,7 @@ import Footer from './Footer'
 
 export const ProductLayout = () => {
   return (
-    <div>
+    <div className='flex flex-col min-h-[100vh]'>
         {/* Header  */}
         <Header/>
         <Outlet />

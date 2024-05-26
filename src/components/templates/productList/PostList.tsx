@@ -1,10 +1,22 @@
-import { Button, Checkbox, Dropdown, Input, MenuProps } from "antd";
+import {
+  Button,
+  Checkbox,
+  Dropdown,
+  Input,
+  MenuProps,
+  Radio,
+  RadioChangeEvent,
+  Space,
+} from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../../store";
 import { getPostThunk } from "../../../store/postManagement/thunk";
 import { usePost } from "../../../hooks/usePost";
 import { useView } from "../../../hooks/useView";
-import { getCampusThunk } from "../../../store/viewManager/thunk";
+import {
+  getCampusThunk,
+  getPostTypeThunk,
+} from "../../../store/viewManager/thunk";
 import { useLocation } from "react-router-dom";
 import { Campus, PostFilter_API } from "../../../types/post";
 
@@ -12,21 +24,29 @@ export const PostList = () => {
   const dispatch = useAppDispatch();
 
   //ref
-  const [filterCampus, setFilterCampus] = useState<Campus>();
-  const filterPostRef = useRef<number | "">("");
-  const filterNameRef = useRef<String>("");
+  const [filterCampus, setFilterCampus] = useState<Campus>({
+    campusId: 0,
+    campusName: "Tất cả Campus",
+  });
+  const [filterName, setFilterName] = useState<string>("");
+  const [postTypeFilter, setPostTypeFilter] = useState<number | "">("");
 
   const { posts } = usePost();
-  const { campus } = useView();
+  const { campus, postType } = useView();
   const location = useLocation();
 
   //Get all Campus list
-  const menuItem: MenuProps["items"] = [
+  const campusItem: MenuProps["items"] = [
     {
       key: 0,
       label: (
         <button
-          onClick={() => setFilterCampus({ campusId: 0, campusName: "All" })}
+          onClick={() =>
+            setFilterCampus({
+              campusId: 0,
+              campusName: "Tất cả Campus",
+            })
+          }
         >
           All Campus
         </button>
@@ -54,13 +74,15 @@ export const PostList = () => {
   useEffect(() => {
     const getPostPayload: PostFilter_API = {
       current: itemQuantity,
-      campusId: ( filterCampus?.campusId == 0 )? "" : filterCampus?.campusId ,
-      postTypeId: "",
-      name: "",
+      campusId: filterCampus.campusId == 0 ? "" : filterCampus?.campusId,
+      postTypeId: postTypeFilter,
+      name: filterName,
     };
     dispatch(getPostThunk(getPostPayload));
+    dispatch(getPostTypeThunk());
     dispatch(getCampusThunk());
-  }, [itemQuantity, filterCampus]);
+    console.log("postTypeFilter:::", postTypeFilter);
+  }, [itemQuantity, filterCampus, filterName, postTypeFilter]);
 
   const loadMorePost = () => {
     let newItemQuantity: number;
@@ -70,6 +92,18 @@ export const PostList = () => {
       newItemQuantity = itemQuantity + 6;
     }
     setItemQuantity(newItemQuantity);
+  };
+
+  const handleSearch = (e) => {
+    setFilterName(e.target.value);
+  };
+  const clearFilter = () => {
+    setFilterCampus({
+      campusId: 0,
+      campusName: "Tất cả Campus",
+    });
+    setFilterName("");
+    setPostTypeFilter("");
   };
 
   return (
@@ -88,21 +122,26 @@ export const PostList = () => {
         <div className="flex flex-col" style={{ width: "200px" }}>
           <div className="flex items-end gap-3">
             <div className="font-bold text-xl">Filters</div>
-            <div className="underline text-gray-400">Clear Filter</div>
+            <button onClick={clearFilter} className="underline text-gray-400">
+              Clear Filter
+            </button>
           </div>
           <div className="flex flex-col">
             <div className="font-bold mt-5">Categories</div>
             <div className="flex flex-col gap-3 mt-3">
-              <Input placeholder="Search Products..." />
-              <Checkbox onChange={() => console.log("Hello")}>
-                Checkbox1
-              </Checkbox>
-              <Checkbox onChange={() => console.log("Hello")}>
-                Checkbox2
-              </Checkbox>
-              <Checkbox onChange={() => console.log("Hello")}>
-                Checkbox3
-              </Checkbox>
+              <Input onChange={handleSearch} placeholder="Search Products..." />
+              <Radio.Group
+                onChange={(e: RadioChangeEvent) => {
+                  setPostTypeFilter(e.target.value);
+                }}
+              >
+                <Space direction="vertical">
+                  <Radio checked value="">Tất cả</Radio>
+                  {postType.map((item) => (
+                    <Radio value={item.postTypeId}>{item.postTypeName}</Radio>
+                  ))}
+                </Space>
+              </Radio.Group>
             </div>
           </div>
         </div>
@@ -111,8 +150,8 @@ export const PostList = () => {
         <div className="w-full">
           {/* Sort  */}
           <div className="flex justify-end mr-10">
-            <Dropdown menu={{ items: menuItem }} placement="bottom" arrow>
-              <Button>{filterCampus?.campusName}aaaaaaaa</Button>
+            <Dropdown menu={{ items: campusItem }} placement="bottom" arrow>
+              <Button>Lọc theo: {filterCampus?.campusName}</Button>
             </Dropdown>
           </div>
           {/* End Sort  */}
@@ -139,8 +178,8 @@ export const PostList = () => {
                     }}
                   />
                   <div className="flex flex-col px-2">
-                    <div className="text-2xl font-semibold h-[50px] flex items-center">
-                      Title
+                    <div className="text-2xl font-semibold flex items-center">
+                      {item.product.detail.productName}
                     </div>
                     <div className="flex justify-between">
                       <div className="italic">Còn lại: {item.quantity}</div>
@@ -156,7 +195,7 @@ export const PostList = () => {
           </div>
           <Button
             onClick={loadMorePost}
-            className="flex items-center justify-center m-auto text-[18px] mt-10"
+            className="flex items-center justify-center m-auto text-[18px] my-10"
             style={{ width: "300px", height: "50px" }}
           >
             Load more products -{" "}
