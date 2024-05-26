@@ -72,3 +72,10 @@ export interface PostStatus {
   postStatusId: number;
   postStatusName: string;
 }
+
+export interface PostFilter_API{
+  current: number,
+  campusId?: number | "",
+  postTypeId?: number | "",
+  name?: string,
+}

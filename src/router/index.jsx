@@ -8,7 +8,7 @@ import PostList from "../components/templates/productList/PostList";
 export const router = [
   {
     element: <ProductPage />,
-    path: "/",
+    path: "/detail",
     children: [
       {
         element: <PostList />,

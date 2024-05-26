@@ -1,27 +1,50 @@
 import { Button, Checkbox, Dropdown, Input, MenuProps } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../../store";
 import { getPostThunk } from "../../../store/postManagement/thunk";
 import { usePost } from "../../../hooks/usePost";
 import { useView } from "../../../hooks/useView";
 import { getCampusThunk } from "../../../store/viewManager/thunk";
+import { useLocation } from "react-router-dom";
+import { Campus, PostFilter_API } from "../../../types/post";
 
 export const PostList = () => {
   const dispatch = useAppDispatch();
 
+  //ref
+  const [filterCampus, setFilterCampus] = useState<Campus>();
+  const filterPostRef = useRef<number | "">("");
+  const filterNameRef = useRef<String>("");
+
   const { posts } = usePost();
   const { campus } = useView();
+  const location = useLocation();
 
+  //Get all Campus list
   const menuItem: MenuProps["items"] = [
     {
       key: 0,
-      label: <button>All</button>,
+      label: (
+        <button
+          onClick={() => setFilterCampus({ campusId: 0, campusName: "All" })}
+        >
+          All Campus
+        </button>
+      ),
     },
   ].concat(
     campus?.map((item) => {
       return {
         key: item.campusId,
-        label: <button>{item.campusName}</button>,
+        label: (
+          <button
+            onClick={() => {
+              setFilterCampus(item);
+            }}
+          >
+            {item.campusName}
+          </button>
+        ),
       };
     })
   );
@@ -29,9 +52,15 @@ export const PostList = () => {
   const [itemQuantity, setItemQuantity] = useState(6);
 
   useEffect(() => {
-    dispatch(getPostThunk(itemQuantity));
+    const getPostPayload: PostFilter_API = {
+      current: itemQuantity,
+      campusId: ( filterCampus?.campusId == 0 )? "" : filterCampus?.campusId ,
+      postTypeId: "",
+      name: "",
+    };
+    dispatch(getPostThunk(getPostPayload));
     dispatch(getCampusThunk());
-  }, [itemQuantity]);
+  }, [itemQuantity, filterCampus]);
 
   const loadMorePost = () => {
     let newItemQuantity: number;
@@ -83,7 +112,7 @@ export const PostList = () => {
           {/* Sort  */}
           <div className="flex justify-end mr-10">
             <Dropdown menu={{ items: menuItem }} placement="bottom" arrow>
-              <Button>Sort By: ...</Button>
+              <Button>{filterCampus?.campusName}aaaaaaaa</Button>
             </Dropdown>
           </div>
           {/* End Sort  */}
@@ -92,9 +121,12 @@ export const PostList = () => {
               return (
                 <div
                   key={item.postProductId}
-                  className="flex flex-col m-auto w-[200px]"
+                  className="flex flex-col m-auto w-[200px] hover:cursor-pointer"
                   style={{
                     boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+                  }}
+                  onClick={() => {
+                    console.log("LOC::: ", location);
                   }}
                 >
                   <img
@@ -110,7 +142,7 @@ export const PostList = () => {
                     <div className="text-2xl font-semibold h-[50px] flex items-center">
                       Title
                     </div>
-                    <div className="flex justify-between items-end">
+                    <div className="flex justify-between">
                       <div className="italic">Còn lại: {item.quantity}</div>
                       <div className="font-bold text-xl">
                         {item.product.price}VND
