@@ -1,1 +1,1 @@
-export * from './ProductDetaill'
+export * from './Register'
