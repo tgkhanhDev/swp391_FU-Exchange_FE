@@ -37,9 +37,9 @@ function MyComponent() {
   };
 
   return (
-    <div className='grid grid-cols-3 gap-8'>
+    <div className='grid grid-cols-3 gap-8 mt-8'>
       <div>
-        <label className='text-xl font-semibold'>Tỉnh thành</label>
+        <label className='font-semibold'>Tỉnh thành</label>
         <select className="mt-2 border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md" onChange={handleCityChange}>
           <option defaultValue>Chọn tỉnh thành</option>
           {cities.map(city => (
@@ -49,7 +49,7 @@ function MyComponent() {
       </div>
 
       <div>
-        <label className='text-xl font-semibold'>Quận huyện</label>
+        <label className='font-semibold'>Quận huyện</label>
         <select className="mt-2 border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md" onChange={handleDistrictChange}>
           <option defaultValue>Chọn quận huyện</option>
           {districts.map(district => (
@@ -59,7 +59,7 @@ function MyComponent() {
       </div>
 
       <div>
-        <label className='text-xl font-semibold'>Phường xã</label>
+        <label className='font-semibold'>Phường xã</label>
         <select className="mt-2 border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md">
           <option defaultValue>Chọn phường xã</option>
           {wards.map(ward => (

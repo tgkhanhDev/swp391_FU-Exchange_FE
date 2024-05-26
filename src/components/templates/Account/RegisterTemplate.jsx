@@ -28,19 +28,19 @@ export const RegisterTemplate = () => {
           {/*CCCD xác nhận*/}
           <div className='mb-6'>
             <div className='text-[#9f9f9f] mb-2'>Số CCCD/CMND</div>
-            <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border'></input>
+            <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="text"></input>
           </div>
 
           {/*Input password mới*/}
           <div className='mb-6'>
             <div className='text-[#9f9f9f] mb-2'>Mật khẩu mới</div>
-            <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border'></input>
+            <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="password"></input>
           </div>
 
           {/*confirm password*/}
           <div className='mb-6'>
             <div className='text-[#9f9f9f] mb-2'>Xác nhận mật khẩu</div>
-            <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border'></input>
+            <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="password"></input>
           </div>
 
           {/*Nút đăng kí*/}

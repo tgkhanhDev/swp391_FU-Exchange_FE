@@ -24,7 +24,7 @@ export const LoginTemplate = () => {
             <div className='text-center text-3xl mb-6 text-[var(--color-primary)] font-semibold'>Đăng nhập</div>
             <div className='mb-6 '>
               <div className='text-[#9f9f9f] mb-2'>MSSV (Mã số sinh viên)</div>
-              <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border'></input>
+              <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="text"></input>
             </div>
             <button className='mt-10' >Next</button>
           </div>
