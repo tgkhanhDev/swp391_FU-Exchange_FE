@@ -1,13 +1,15 @@
 import { apiInstance } from "../constants/apiInstance";
-import { PostFilter_API, PostLoadMore } from "../types/post";
+import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 
 const api = apiInstance({
-  baseURL: "http://localhost:8080",
+  baseURL: "http://localhost:8080/post-product",
 });
 
 export const managePost = {
   getPost: (payload: PostFilter_API) =>
     api.get<PostLoadMore>(
-      `/post-product/${payload.current}?campusId=${payload.campusId}&postTypeId=${payload.postTypeId}&name=${payload.name}`
+      `/${payload.current}?campusId=${payload.campusId}&postTypeId=${payload.postTypeId}&name=${payload.name}`
     ),
+  getPostById:(payload: number) => 
+      api.get<Post>(`/detail/${payload}`),
 };
