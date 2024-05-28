@@ -19,21 +19,19 @@ import {
 } from "../../../store/viewManager/thunk";
 import { useLocation } from "react-router-dom";
 import { Campus, PostFilter_API } from "../../../types/post";
+import { useNavigate } from "react-router-dom";
 
 export const PostList = () => {
   const dispatch = useAppDispatch();
-
-  //ref
+  const navigate = useNavigate()
   const [filterCampus, setFilterCampus] = useState<Campus>({
     campusId: 0,
     campusName: "Tất cả Campus",
   });
   const [filterName, setFilterName] = useState<string>("");
   const [postTypeFilter, setPostTypeFilter] = useState<number | "">("");
-
   const { posts } = usePost();
   const { campus, postType } = useView();
-  const location = useLocation();
 
   //Get all Campus list
   const campusItem: MenuProps["items"] = [
@@ -81,7 +79,8 @@ export const PostList = () => {
     dispatch(getPostThunk(getPostPayload));
     dispatch(getPostTypeThunk());
     dispatch(getCampusThunk());
-    console.log("postTypeFilter:::", postTypeFilter);
+
+    
   }, [itemQuantity, filterCampus, filterName, postTypeFilter]);
 
   const loadMorePost = () => {
@@ -158,14 +157,14 @@ export const PostList = () => {
           <div className="grid grid-cols-3 gap-10 mt-10">
             {posts?.data?.map((item) => {
               return (
-                <div
+                <button
                   key={item.postProductId}
-                  className="flex flex-col m-auto w-[200px] hover:cursor-pointer"
+                  className="flex flex-col m-auto w-[250px] hover:cursor-pointer"
                   style={{
                     boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
                   }}
                   onClick={() => {
-                    console.log("LOC::: ", location);
+                    navigate(`/detail/${item.postProductId}`)
                   }}
                 >
                   <img
@@ -178,8 +177,8 @@ export const PostList = () => {
                     }}
                   />
                   <div className="flex flex-col px-2">
-                    <div className="text-2xl font-semibold flex items-center">
-                      {item.product.detail.productName}
+                    <div className="text-xl font-semibold flex items-center">
+                      {item.product.detail.productName.substring(0,70)}
                     </div>
                     <div className="flex justify-between">
                       <div className="italic">Còn lại: {item.quantity}</div>
@@ -189,7 +188,7 @@ export const PostList = () => {
                     </div>
                     <div>{item.campus.campusName}</div>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
