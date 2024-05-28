@@ -11,14 +11,10 @@ type PostType = {
 };
 
 export const PostDetail: React.FC<PostType> = () => {
-
-  //! test===========
   const { productId } = useParams();
   const [imageGrid, setImageGrid] = useState<
     { original: string; thumbnail: string }[]
   >([]);
-
-  //! test===========
   const { postDetail } = usePost();
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -47,15 +43,15 @@ export const PostDetail: React.FC<PostType> = () => {
             </div>
           </div>
           {/* end title  */}
-          <div className="mt-3">{postDetail?.product.price}VND</div>
-          <div className="min-h-[100px] my-5">
+          <div className="my-1">{postDetail?.product.price}VND</div>
+          <div className="min-h-[100px] my-3">
             {postDetail?.product.detail.description}
           </div>
           {/* author  */}
-          <div className="">by Vendor Name</div>
+          <div className="my-1">by Vendor Name</div>
           {/* end Author  */}
           {/* variation  */}
-          <div className="flex items-start">
+          <div className="flex items-start my-3">
             <div className="flex items-center mr-5">
               {postDetail?.product.variation[0].variationName}
             </div>
@@ -70,7 +66,7 @@ export const PostDetail: React.FC<PostType> = () => {
           {/* end variation  */}
           {/* button  */}
 
-          <div className="flex">
+          <div className="flex my-3 gap-3">
             <Button>Add to cart</Button>
             <Button>Buy now</Button>
             <Button>Quantity</Button>

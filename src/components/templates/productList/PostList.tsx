@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 
 export const PostList = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [filterCampus, setFilterCampus] = useState<Campus>({
     campusId: 0,
     campusName: "Tất cả Campus",
@@ -79,8 +79,6 @@ export const PostList = () => {
     dispatch(getPostThunk(getPostPayload));
     dispatch(getPostTypeThunk());
     dispatch(getCampusThunk());
-
-    
   }, [itemQuantity, filterCampus, filterName, postTypeFilter]);
 
   const loadMorePost = () => {
@@ -135,7 +133,9 @@ export const PostList = () => {
                 }}
               >
                 <Space direction="vertical">
-                  <Radio checked value="">Tất cả</Radio>
+                  <Radio checked value="">
+                    Tất cả
+                  </Radio>
                   {postType.map((item) => (
                     <Radio value={item.postTypeId}>{item.postTypeName}</Radio>
                   ))}
@@ -159,12 +159,13 @@ export const PostList = () => {
               return (
                 <button
                   key={item.postProductId}
-                  className="flex flex-col m-auto w-[250px] hover:cursor-pointer"
+                  className="flex flex-col m-auto w-[250px] hover:cursor-pointer border border-[var(--color-primary)] hover:-translate-y-5 transition-all ease-in-out"
                   style={{
                     boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+                    borderRadius: "15px"
                   }}
                   onClick={() => {
-                    navigate(`/detail/${item.postProductId}`)
+                    navigate(`/detail/${item.postProductId}`);
                   }}
                 >
                   <img
@@ -176,11 +177,14 @@ export const PostList = () => {
                       borderRadius: "15px 15px 0 0",
                     }}
                   />
-                  <div className="flex flex-col px-2">
-                    <div className="text-xl font-semibold flex items-center">
-                      {item.product.detail.productName.substring(0,70)}
+                  <div className="flex flex-col items-start px-2 w-full">
+                    <div className="text-xl font-semibold flex items-center h-[100px]">
+                      {item.product.detail.productName.length > 60
+                        ? item.product.detail.productName.substring(0, 60) +
+                          "..."
+                        : item.product.detail.productName}
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex w-full justify-between">
                       <div className="italic">Còn lại: {item.quantity}</div>
                       <div className="font-bold text-xl">
                         {item.product.price}VND
