@@ -1,7 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Animated } from "react-animated-css";
 import { NavLink } from 'react-router-dom'
 
 export const RegisterTemplate = () => {
+  const [isChecked, setIsChecked] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false)
+
+  const checked = () => {
+    setIsChecked(true);
+    setIsRegistered(true);
+  }
+
   return (
     <div><header className='bg-[var(--color-bg-hightlight)] text-[#f6f6f6] w-full min-w-[950px] py-3 px-5'>
       <NavLink to={"/login"}>
@@ -25,30 +34,45 @@ export const RegisterTemplate = () => {
             Chào mừng bạn đến với thế giới rộng lớn của FU-Exchange! Chỉ cần điền các thông tin bên dưới, và bạn sẽ sẵn sàng khám phá ngay thôi! 😉
           </div>
 
-          {/*CCCD xác nhận*/}
-          <div className='mb-6'>
-            <div className='text-[#9f9f9f] mb-2'>Số CCCD/CMND</div>
-            <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="text"></input>
-          </div>
+          {/*MSSV */}
+          <form>
+            <div className='mb-6'>
+              <label className='text-[#9f9f9f] mb-2' htmlFor="MSSV">MSSV</label>
+              <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="text" id="MSSV" name="MSSV"></input>
+            </div>
 
-          {/*Input password mới*/}
-          <div className='mb-6'>
-            <div className='text-[#9f9f9f] mb-2'>Mật khẩu mới</div>
-            <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="password"></input>
-          </div>
+            {/*CCCD xác nhận*/}
+            <div className='mb-6'>
+              <label className='text-[#9f9f9f] mb-2' htmlFor="CCCD">Số CCCD/CMND</label>
+              <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="text" id="CCCD" name="CCCD"></input>
+            </div>
+            {!isRegistered && (
+              <button className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]" onClick={checked}>Kiểm tra</button>
+            )}
+          </form>
 
-          {/*confirm password*/}
-          <div className='mb-6'>
-            <div className='text-[#9f9f9f] mb-2'>Xác nhận mật khẩu</div>
-            <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="password"></input>
-          </div>
+          {isChecked && (
+            <div>
+              {/*Input password mới*/}
+              <div className='mb-6'>
+                <label className='text-[#9f9f9f] mb-2'>Mật khẩu mới</label>
+                <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="password"></input>
+              </div>
 
-          {/*Nút đăng kí*/}
-          <div>
-            <NavLink to={"/profile"}>
-              <button className='bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]'>Đăng kí</button>
-            </NavLink>
-          </div>
+              {/*confirm password*/}
+              <div className='mb-6'>
+                <label className='text-[#9f9f9f] mb-2'>Xác nhận mật khẩu</label>
+                <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="password"></input>
+              </div>
+
+              {/*Nút đăng kí*/}
+              <div>
+                <NavLink to={"/authorize"}>
+                  <button className='bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]'>Đăng kí</button>
+                </NavLink>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

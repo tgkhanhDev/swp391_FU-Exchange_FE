@@ -1,7 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 export const LoginTemplate = () => {
+  const [isChecked, setIsChecked] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false)
+
+  const checked = () => {
+    setIsChecked(true);
+    setIsRegistered(true);
+  }
   return (
     <div>
       <header className='bg-[var(--color-bg-hightlight)] text-[#f6f6f6] w-full min-w-[950px] py-3 px-5 flex justify-between items-center'>
@@ -22,11 +29,27 @@ export const LoginTemplate = () => {
         <div className='grid grid-flow-col grid-cols-2 justify-center items-center gap-20 p-16 bg-white w-[80%] rounded-2xl'>
           <div>
             <div className='text-center text-3xl mb-6 text-[var(--color-primary)] font-semibold'>Đăng nhập</div>
-            <div className='mb-6 '>
-              <div className='text-[#9f9f9f] mb-2'>MSSV (Mã số sinh viên)</div>
-              <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="text"></input>
-            </div>
-            <button className='mt-10' >Next</button>
+            <form>
+              <div className='mb-6 '>
+                <label className='text-[#9f9f9f] mb-2'>MSSV (Mã số sinh viên)</label>
+                <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="text"></input>
+              </div>
+              {!isRegistered && (
+                <button className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]" onClick={checked}>Kiểm tra</button>
+              )}
+            </form>
+
+
+            {/*Mật khẩu */}
+            {isChecked && (
+              <form>
+                <div className='mb-6 '>
+                  <label className='text-[#9f9f9f] mb-2'>Mật khẩu</label>
+                  <input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border' type="password"></input>
+                </div>
+                <button className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]">Kiểm tra</button>
+              </form>
+            )}
           </div>
           {/*<div>
             <div className='mb-6 px-24'>

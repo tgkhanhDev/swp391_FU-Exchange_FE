@@ -1,10 +1,10 @@
 import ProductDetaill from "../components/templates/productDetail/ProductDetaill";
 import ProductList from "../components/templates/productList/ProductList";
-import AuthLayout from "../components/layouts/AuthLayout";
+import ProfileTemplate from "../components/templates/Account/ProfileTemplate"
 import NotFound from "../page/NotFound"
 import { PATH } from "../constants/config";
 import ProductPage from "../page/ProductPage";
-import { Login, Register, Profile } from "../page";
+import { Login, Register, Authorize  } from "../page";
 
 export const router = [
   {
@@ -23,23 +23,22 @@ export const router = [
     ],
   },
   {
-    element: <AuthLayout />,
+    element: <Authorize />,
+    path: PATH.authorize,
     children: [
       {
-        element: <Login />,
-        path: PATH.login,
+        element: <ProfileTemplate />,
         index: true,
       },
-      {
-        element: <Register />,
-        path: PATH.register,
-      },
-      {
-        element: <Profile />,
-        path: PATH.profile,
-      },
-
     ],
+  },
+  {
+    element: <Login />,
+    path: PATH.login,
+  },
+  {
+    element: <Register />,
+    path: PATH.register,
   },
   {
     element: <NotFound />,

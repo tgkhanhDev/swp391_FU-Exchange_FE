@@ -1,0 +1,9 @@
+.sidebar-component {
+  background-color: rgb(203 213 225);
+  width: 240px;
+  transition: background-color 0.5s, width 0.5s
+}
+
+.sidebar-component-normal {
+  width: 208px;
+}
