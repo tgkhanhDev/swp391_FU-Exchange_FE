@@ -3,12 +3,11 @@ import { CarouselDefault } from "./Carousel.jsx"
 
 export const ProductList = () => {
   return (
-    <main className='mt-[120px]'>
+    <main>
       {/*Banner quảng cáo*/}
       <div className='h-[550px]'>
         <CarouselDefault />
       </div>
-
       {/*Caterogies */}
       <div className='my-20 mb-10'>
         {/*Introduction*/}
