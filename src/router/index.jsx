@@ -1,10 +1,11 @@
-import ProductDetaill from "../components/templates/productDetail/ProductDetaill";
-import ProductList from "../components/templates/productList/ProductList";
-import ProfileTemplate from "../components/templates/Account/ProfileTemplate";
-import NotFound from "../page/NotFound";
+import NotFound from "../page/NotFound"
 import { PATH } from "../constants/config";
 import ProductPage from "../page/ProductPage";
-import { Login, Register, Authorize } from "../page";
+import PostDetail from "../components/templates/productDetail/PostDetail";
+import PostList from "../components/templates/productList/PostList";
+import ProfileTemplate from "../components/templates/Account/ProfileTemplate"
+import { Login, Register, Authorize  } from "../page";
+import { LoginTemplate, RegisterTemplate } from "../components/templates/Account";
 
 export const router = [
   {
@@ -22,11 +23,11 @@ export const router = [
     ],
   },
   {
-    element: <PostList />, //Login
+    element: <LoginTemplate />, //Login
     path: PATH.login,
   },
   {
-    element: <PostList />, //Register
+    element: <RegisterTemplate/>, //Register
     path: PATH.register,
   },
   {

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Animated } from "react-animated-css";
 import { NavLink } from 'react-router-dom'
 
 export const RegisterTemplate = () => {

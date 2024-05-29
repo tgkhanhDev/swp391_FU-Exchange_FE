@@ -6,11 +6,7 @@ import "./index.css";
 
 function App() {
   return (
-    <ConfigProvider
-      theme={themeConfig}
-    >
-      {useRoutes(router)}
-    </ConfigProvider>
+    <ConfigProvider theme={themeConfig}>{useRoutes(router)}</ConfigProvider>
   );
 }
 
