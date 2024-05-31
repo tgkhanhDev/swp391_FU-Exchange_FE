@@ -1,0 +1,182 @@
+[
+  {
+    "postProductId": 501,
+    "Product": {
+      "productId": 1,
+      "ProductDetail": [
+        {
+          "productDetailId": 101,
+          "productName": "Laptop X200",
+          "description": "A high-performance laptop for all your needs."
+        }
+      ],
+      "Seller": [
+        {
+          "sellerId": 1001,
+          "RegisteredStudent": {
+            "registeredStudentId": 5001,
+            "Student": {
+              "studentId": 3001,
+              "firstName": "John",
+              "lastName": "Doe",
+              "identityCard": "A123456789",
+              "address": "123 Main St, Springfield",
+              "phoneNumber": "555-1234",
+              "gender": "Male",
+              "dob": "2000-01-01"
+            },
+            "Role": {
+              "roleId": 2001,
+              "roleName": "Seller"
+            },
+            "password": "password123"
+          },
+          "bankingNumber": "1234567890",
+          "bankingName": "Bank of Springfield"
+        }
+      ],
+      "Variation": [
+        {
+          "variationId": 4001,
+          "variationName": "Color",
+          "description": "Available in black and silver."
+        }
+      ]
+    },
+    "PostType": {
+      "postTypeId": 601,
+      "postName": "For Sale"
+    },
+    "Campus": {
+      "campusId": 701,
+      "campusName": "Springfield University"
+    },
+    "PostStatus": {
+      "postStatusId": 801,
+      "postStatusName": "Active"
+    },
+    "quantity": 50,
+    "createDate": "2023-05-20T00:00:00Z",
+    "content": "This is a post for selling high-performance laptops. Limited stock available!"
+  },
+  {
+    "postProductId": 502,
+    "Product": {
+      "productId": 2,
+      "ProductDetail": [
+        {
+          "productDetailId": 102,
+          "productName": "Smartphone Y500",
+          "description": "A latest-generation smartphone with stunning features."
+        }
+      ],
+      "Seller": [
+        {
+          "sellerId": 1002,
+          "RegisteredStudent": {
+            "registeredStudentId": 5002,
+            "Student": {
+              "studentId": 3002,
+              "firstName": "Alice",
+              "lastName": "Smith",
+              "identityCard": "B987654321",
+              "address": "456 Elm St, Metropolis",
+              "phoneNumber": "555-5678",
+              "gender": "Female",
+              "dob": "1999-05-15"
+            },
+            "Role": {
+              "roleId": 2002,
+              "roleName": "Seller"
+            },
+            "password": "securepass456"
+          },
+          "bankingNumber": "0987654321",
+          "bankingName": "Metropolis Bank"
+        }
+      ],
+      "Variation": [
+        {
+          "variationId": 4002,
+          "variationName": "Storage",
+          "description": "Available in 64GB and 128GB."
+        }
+      ]
+    },
+    "PostType": {
+      "postTypeId": 602,
+      "postName": "New Arrival"
+    },
+    "Campus": {
+      "campusId": 702,
+      "campusName": "Metropolis Institute of Technology"
+    },
+    "PostStatus": {
+      "postStatusId": 802,
+      "postStatusName": "Active"
+    },
+    "quantity": 100,
+    "createDate": "2024-01-15T00:00:00Z",
+    "content": "Introducing the new Smartphone Y500 with cutting-edge technology. Get yours now!"
+  },
+  {
+    "postProductId": 504,
+    "Product": {
+      "productId": 4,
+      "ProductDetail": [
+        {
+          "productDetailId": 104,
+          "productName": "Gaming Console Q100",
+          "description": "Immerse yourself in the ultimate gaming experience."
+        }
+      ],
+      "Seller": [
+        {
+          "sellerId": 1004,
+          "RegisteredStudent": {
+            "registeredStudentId": 5004,
+            "Student": {
+              "studentId": 3004,
+              "firstName": "Charlie",
+              "lastName": "Brown",
+              "identityCard": "D345678901",
+              "address": "101 Maple St, Star City",
+              "phoneNumber": "555-4321",
+              "gender": "Male",
+              "dob": "2001-12-05"
+            },
+            "Role": {
+              "roleId": 2004,
+              "roleName": "Seller"
+            },
+            "password": "gameon123"
+          },
+          "bankingNumber": "5544332211",
+          "bankingName": "Star City Bank"
+        }
+      ],
+      "Variation": [
+        {
+          "variationId": 4004,
+          "variationName": "Bundle",
+          "description": "Available with one or two controllers."
+        }
+      ]
+    },
+    "PostType": {
+      "postTypeId": 604,
+      "postName": "Pre-order"
+    },
+    "Campus": {
+      "campusId": 704,
+      "campusName": "Star City College"
+    },
+    "PostStatus": {
+      "postStatusId": 804,
+      "postStatusName": "Active"
+    },
+    "quantity": 150,
+    "createDate": "2024-03-10T00:00:00Z",
+    "content": "Pre-order the Gaming Console Q100 now and get exclusive early access!"
+  }
+]

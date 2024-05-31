@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { ShoppingCartOutlined } from '@ant-design/icons';
 
-const Header = () => {
+export const Header = () => {
   return (
     <header className='top-0 sticky w-full min-w-[950px] z-50'>
       {/*Header trên cùng*/}

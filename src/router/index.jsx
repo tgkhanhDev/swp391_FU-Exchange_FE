@@ -15,6 +15,7 @@ export const router = [
     path: "/",
     children: [
       {
+        //element: <ProductList />,
         element: <ProductList />,
         index: true,
       },
@@ -60,6 +61,6 @@ export const router = [
   },
   {
     element: <NotFound />,
-    path: '*'
-  }
+    path: "*",
+  },
 ];
