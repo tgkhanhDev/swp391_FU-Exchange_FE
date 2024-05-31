@@ -15,7 +15,7 @@ export const RegisterTemplate = () => {
   };
 
   const allowRegisterHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     dispatch(
       isAllowRegisteredThunk({
         studentId: mssvRef.current,
@@ -26,6 +26,10 @@ export const RegisterTemplate = () => {
 
   const { isAllowRegister } = useAccount();
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    console.log("isAllowRegister::: ", isAllowRegister);
+  }, [isAllowRegister]);
 
   return (
     <div>
@@ -73,9 +77,6 @@ export const RegisterTemplate = () => {
                 name="MSSV"
                 onChange={(e) => {
                   mssvRef.current = e.target.value;
-                  // console.log("e.target.value::: ", e.target.value);
-                  // console.log("mssvRef.current::: ", mssvRef.current);
-
                 }}
               ></input>
             </div>

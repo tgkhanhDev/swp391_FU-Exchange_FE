@@ -43,3 +43,8 @@ export type LoginResponse = {
     "accessToken": "string"
   } | null ;
 };
+
+export type IsAllowRegisterType ={
+  studentId: string;
+  identity: string;
+}

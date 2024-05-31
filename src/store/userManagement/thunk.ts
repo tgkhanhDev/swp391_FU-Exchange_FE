@@ -1,7 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { managePost } from "../../services/managePost";
-import { PostFilter_API } from "../../types/post";
-import { LoginType } from "../../types/user";
+import { IsAllowRegisterType, LoginType } from "../../types/user";
 import { manageUsers } from "../../services/manageUser";
 
 export const getLoginThunk = createAsyncThunk(
@@ -21,6 +19,18 @@ export const isRegisteredThunk = createAsyncThunk(
   async (payload: string, { rejectWithValue }) => {
     try {
       const data = await manageUsers.isRegistered(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const isAllowRegisteredThunk = createAsyncThunk(
+  "isAllowRegistered",
+  async (payload: IsAllowRegisterType, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.isAllowRegister(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);
