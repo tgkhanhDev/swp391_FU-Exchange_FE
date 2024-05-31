@@ -1,8 +1,13 @@
-import ProductDetaill from "../components/templates/productDetail/ProductDetaill";
 import ProductList from "../components/templates/productList/ProductList";
 import NotFound from "../page/NotFound"
 import { PATH } from "../constants/config";
 import ProductPage from "../page/ProductPage";
+import PostDetail from "../components/templates/productDetail/PostDetail";
+import PostList from "../components/templates/productList/PostList";
+import Cart from "../components/templates/Account/Cart";
+import ProfileTemplate from "../components/templates/Account/ProfileTemplate"
+import { Login, Register, Authorize  } from "../page";
+import RegisterSeller from "../components/templates/Account/RegisterSeller";
 
 export const router = [
   {
@@ -15,21 +20,43 @@ export const router = [
         index: true,
       },
       {
-        element: <ProductDetaill />,
+        element: <PostList />,
+        path: PATH.postList,
+      },
+      {
+        element: <PostDetail />,
         path: PATH.productDetail,
+      },
+      {
+        element: <Cart />,
+        path: PATH.cart,
       },
     ],
   },
   {
-    element: <ProductList />, //Login
+    element: <Authorize />,
+    path: PATH.authorize,
+    children: [
+      {
+        element: <ProfileTemplate />,
+        index: true,
+      },
+    ],
+  },
+  {
+    element: <Login />,
     path: PATH.login,
   },
   {
-    element: <ProductDetaill />, //Register
+    element: <Register />,
     path: PATH.register,
   },
   {
-    element: <ProductDetaill />, //AccountInfo
+    element: <RegisterSeller />,
+    path: PATH.registerSeller,
+  },
+  {
+    element: <PostList />, //AccountInfo
     path: PATH.profile,
   },
   {

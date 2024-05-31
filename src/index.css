@@ -23,4 +23,8 @@
 .container {
   max-width: 1260px;
   margin: auto;
+  margin-top: 10vh;
+  margin-bottom: 10vh;
+  padding-left: 5vh;
+  padding-right: 5vh;
 }

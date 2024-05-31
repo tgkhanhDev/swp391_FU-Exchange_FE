@@ -16,4 +16,3 @@ export type LoadMoreListDataType<T> = {
     }
     items: T[]
 }
-

@@ -27,3 +27,19 @@ export type Student = {
     gender: string,
     dob: Date,
 }
+
+export type LoginType = {
+  username: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  statusCode: number;
+  message: string;
+  content: string;
+  data: {
+    "username": "string",
+    "role": "string",
+    "accessToken": "string"
+  } | null ;
+};

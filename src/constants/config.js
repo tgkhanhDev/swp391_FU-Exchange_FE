@@ -3,5 +3,8 @@ export const PATH = {
   productDetail: "/detail/:productId",
   login: "/login",
   register: "/register",
-  profile: "/profile"
+  registerSeller: "/registerSeller",
+  authorize: "/authorize",
+  postList: "/detail",
+  cart: "/cart",
 };
