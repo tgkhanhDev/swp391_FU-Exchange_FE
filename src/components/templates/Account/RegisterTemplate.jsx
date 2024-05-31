@@ -30,7 +30,7 @@ export const RegisterTemplate = () => {
   useEffect(() => {
     console.log("isAllowRegister::: ", isAllowRegister);
   }, [isAllowRegister]);
-
+g
   return (
     <div>
       <header className="bg-[var(--color-bg-hightlight)] text-[#f6f6f6] w-full min-w-[950px] py-3 px-5">

@@ -2,6 +2,9 @@ import React from 'react'
 import { CarouselDefault } from "./Carousel.jsx"
 
 export const ProductList = () => {
+  const handleViewAll = () => {
+    
+  }
   return (
     <main>
       {/*Banner quảng cáo*/}
@@ -15,7 +18,7 @@ export const ProductList = () => {
           <div className='w-[610px] text-center'>
             <div className='text-6xl font-semibold mb-7'>Thể loại</div>
             <div className='text-xl mb-7 text-[var(--color-tertiary)]'>Khám phá các danh mục sản phẩm để có những trải nghiệm mua sắm tuyệt vời!</div>
-            <button className='px-14 py-3 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] font-semibold hover:text-white hover:bg-[var(--color-primary)] duration-300 hover:shadow-[0_8px_15px_rgba(253,112,20,0.8)] active:shadow-[0_2px_9px_rgba(253,112,20,0.8)]'>
+            <button onClick={handleViewAll} className='px-14 py-3 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] font-semibold hover:text-white hover:bg-[var(--color-primary)] duration-300 hover:shadow-[0_8px_15px_rgba(253,112,20,0.8)] active:shadow-[0_2px_9px_rgba(253,112,20,0.8)]'>
               XEM TẤT CẢ
             </button>
           </div>
@@ -64,7 +67,7 @@ export const ProductList = () => {
           <div className='w-[610px] text-center'>
             <div className='text-6xl font-semibold mb-7'>Hoạt động</div>
             <div className='text-xl mb-7 text-[var(--color-tertiary)]'>FU-Exchange không chỉ đơn thuần là một trang web mua-bán, nó còn là nơi để mọi người trao đổi và thậm chí là tặng vật phẩm!</div>
-            <button className='px-14 py-3 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] font-semibold hover:text-white hover:bg-[var(--color-primary)] duration-300 hover:shadow-[0_0_20px_rgba(253,112,20,0.8)] active:shadow-[0_0_14px_rgba(253,112,20,0.8)]'>
+            <button onClick={handleViewAll} className='px-14 py-3 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] font-semibold hover:text-white hover:bg-[var(--color-primary)] duration-300 hover:shadow-[0_0_20px_rgba(253,112,20,0.8)] active:shadow-[0_0_14px_rgba(253,112,20,0.8)]'>
               XEM TẤT CẢ
             </button>
           </div>
@@ -101,7 +104,7 @@ export const ProductList = () => {
           <div className='w-[610px] text-center'>
             <div className='text-6xl font-semibold mb-7'>Sản phẩm</div>
             <div className='text-xl mb-7 text-[var(--color-tertiary)]'>FU-Exchange tạo môi trường trao đổi mua bán cho cộng đồng sinh viên FPT University!</div>
-            <button className='px-14 py-3 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] font-semibold hover:text-white hover:bg-[var(--color-primary)] duration-300 hover:shadow-[0_-8px_15px_rgba(253,112,20,0.8)] active:shadow-[0_-2px_9px_rgba(253,112,20,0.8)]'>
+            <button onClick={handleViewAll} className='px-14 py-3 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] font-semibold hover:text-white hover:bg-[var(--color-primary)] duration-300 hover:shadow-[0_-8px_15px_rgba(253,112,20,0.8)] active:shadow-[0_-2px_9px_rgba(253,112,20,0.8)]'>
               KHÁM PHÁ THÊM
             </button>
           </div>

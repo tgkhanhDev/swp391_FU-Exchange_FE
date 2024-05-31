@@ -1,38 +1,36 @@
-import NotFound from "../page/NotFound"
+import ProductList from "../components/templates/productList/ProductList";
+import NotFound from "../page/NotFound";
 import { PATH } from "../constants/config";
 import ProductPage from "../page/ProductPage";
 import PostDetail from "../components/templates/productDetail/PostDetail";
 import PostList from "../components/templates/productList/PostList";
-import ProfileTemplate from "../components/templates/Account/ProfileTemplate"
-import { Login, Register, Authorize  } from "../page";
-import { LoginTemplate, RegisterTemplate } from "../components/templates/Account";
+import Cart from "../components/templates/Account/Cart";
+import ProfileTemplate from "../components/templates/Account/ProfileTemplate";
+import { Login, Register, Authorize } from "../page";
+import RegisterSeller from "../components/templates/Account/RegisterSeller";
 
 export const router = [
   {
     element: <ProductPage />,
-    path: "/detail",
+    path: "/",
     children: [
       {
-        element: <PostList />,
+        element: <ProductList />,
         index: true,
+      },
+      {
+        element: <PostList />,
+        path: PATH.postList,
       },
       {
         element: <PostDetail />,
         path: PATH.productDetail,
       },
+      {
+        element: <Cart />,
+        path: PATH.cart,
+      },
     ],
-  },
-  {
-    element: <LoginTemplate />, //Login
-    path: PATH.login,
-  },
-  {
-    element: <RegisterTemplate/>, //Register
-    path: PATH.register,
-  },
-  {
-    element: <PostList />, //AccountInfo
-    path: PATH.profile,
   },
   {
     element: <Authorize />,
@@ -51,6 +49,10 @@ export const router = [
   {
     element: <Register />,
     path: PATH.register,
+  },
+  {
+    element: <RegisterSeller />,
+    path: PATH.registerSeller,
   },
   {
     element: <PostList />, //AccountInfo

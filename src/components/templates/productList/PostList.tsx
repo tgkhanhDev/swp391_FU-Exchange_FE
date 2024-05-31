@@ -78,7 +78,7 @@ export const PostList = () => {
     };
     dispatch(getPostThunk(getPostPayload));
     dispatch(getPostTypeThunk());
-    dispatch(getCampusThunk());
+    // dispatch(getCampusThunk());
   }, [itemQuantity, filterCampus, filterName, postTypeFilter]);
 
   const loadMorePost = () => {
@@ -162,7 +162,7 @@ export const PostList = () => {
                   className="flex flex-col m-auto w-[250px] hover:cursor-pointer border border-[var(--color-primary)] hover:-translate-y-5 transition-all ease-in-out"
                   style={{
                     boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-                    borderRadius: "15px"
+                    borderRadius: "15px",
                   }}
                   onClick={() => {
                     navigate(`/detail/${item.postProductId}`);
@@ -204,7 +204,7 @@ export const PostList = () => {
             Load more products -{" "}
             <span className="italic text-xs">
               {" "}
-              {posts?.meta.current}/{posts?.meta.total}
+              {posts?.meta?.current}/{posts?.meta?.total}
             </span>
           </Button>
         </div>
