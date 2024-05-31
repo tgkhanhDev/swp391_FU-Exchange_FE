@@ -7,25 +7,26 @@ import {
   isRegisteredThunk,
 } from "../../../store/userManagement/thunk";
 import { useAccount } from "../../../hooks/useAccount";
-import { ToastContainer, toast } from "react-toastify";
+import { useEffect } from "react";
+import { useNavigate, Navigate } from "react-router-dom";
 
 export const LoginTemplate = () => {
   const mssvRef = useRef("");
-  const { isAccountRegistered, loginRes } = useAccount();
-  const [isChecked, setIsChecked] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
+  const pwdRef = useRef("");
+  const { isAccountRegistered, isAuthorize } = useAccount();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const checked = (e) => {
     e.preventDefault();
     dispatch(isRegisteredThunk(mssvRef.current));
-    setIsChecked(false);
-    setIsRegistered(isAccountRegistered);
+  };
 
-    if(loginRes.statusCode == 203){
-      toast.error(`${loginRes.content}`);
-    }else{
-      toast.success(`${loginRes.content}`);
-    }
+  const handleSignIn = (e) => {
+    e.preventDefault();
+    dispatch(
+      getLoginThunk({ username: mssvRef.current, password: pwdRef.current })
+    );
+    if (isAuthorize) window.location.href = "/";
   };
 
   return (
@@ -89,10 +90,14 @@ export const LoginTemplate = () => {
                   <input
                     className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
                     type="password"
+                    onChange={(e) => (pwdRef.current = e.target.value)}
                   ></input>
                 </div>
-                <button className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]">
-                  Kiểm tra
+                <button
+                  className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]"
+                  onClick={handleSignIn}
+                >
+                  Đăng nhập
                 </button>
               </form>
             )}
@@ -126,19 +131,6 @@ export const LoginTemplate = () => {
       >
         aaaaaa
       </Button>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        // transition: Bounce,
-      />
     </div>
   );
 };
