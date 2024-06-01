@@ -1,14 +1,23 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAccount } from "../../../hooks/useAccount";
 import { useAppDispatch } from "../../../store";
 import { isAllowRegisteredThunk } from "../../../store/userManagement/thunk";
+import { setIsAllowRegister } from "../../../store/userManagement/slice";
 
 export const RegisterTemplate = () => {
+  //reset khi navigate lần đầu
+  useEffect(()=> {
+    setIsAllowRegister(false);
+  }, [])
+
+  //!Fix bug navigate
   // ref
   const mssvRef = useRef("");
   const idRef = useRef("");
-
+  const pwdRef = useRef("");
+  const cfPwdRef = useRef("");
+  
   const checked = () => {
     setIsChecked(true);
     setIsRegistered(true);
@@ -30,7 +39,7 @@ export const RegisterTemplate = () => {
   useEffect(() => {
     console.log("isAllowRegister::: ", isAllowRegister);
   }, [isAllowRegister]);
-g
+
   return (
     <div>
       <header className="bg-[var(--color-bg-hightlight)] text-[#f6f6f6] w-full min-w-[950px] py-3 px-5">
@@ -112,6 +121,7 @@ g
                 <input
                   className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
                   type="password"
+                  onChange={(e) => (pwdRef.current = e.target.value)}
                 ></input>
               </div>
 
@@ -121,6 +131,7 @@ g
                 <input
                   className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
                   type="password"
+                  onChange={(e) => (cfPwdRef.current = e.target.value)}
                 ></input>
               </div>
 

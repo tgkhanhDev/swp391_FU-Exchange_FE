@@ -33,18 +33,15 @@ export type LoginType = {
   password: string;
 };
 
-export type LoginResponse = {
-  statusCode: number;
-  message: string;
-  content: string;
-  data: {
-    "username": "string",
-    "role": "string",
-    "accessToken": "string"
-  } | null ;
-};
 
 export type IsAllowRegisterType ={
   studentId: string;
   identity: string;
 }
+
+export type RegisterStudentReq = {
+  studentId: "string";
+  identifyNumber: "string";
+  password: "string";
+  confirmPassword: "string";
+};

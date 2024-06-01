@@ -1,18 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Post, PostLoadMore } from "../../types/post";
-import { getLoginThunk, isAllowRegisteredThunk, isRegisteredThunk } from "./thunk";
-import { LoginResponse } from "../../types/user";
+import {
+  getLoginThunk,
+  isAllowRegisteredThunk,
+  isRegisteredThunk,
+  registerClientThunk,
+} from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import {
-  Navigate,
-} from "react-router-dom";
+import { Navigate } from "react-router-dom";
+
 type stateType = {
   users: any;
   isAccountRegistered: boolean;
   // loginRes: LoginResponse | undefined | unknown;
-  isAllowRegister: boolean
-  isAuthorize: boolean
+  isAllowRegister: boolean;
+  isAuthorize: boolean;
 };
 
 const initialState: stateType = {
@@ -22,29 +25,39 @@ const initialState: stateType = {
   isAuthorize: false,
   isAllowRegister: false,
 };
+
 export const manageUsersSlice = createSlice({
   name: "manageProduct",
   initialState,
-  reducers: {},
+  reducers: {
+    setUsers(state, { payload }) {
+      state.users = payload;
+    },
+    setIsAccountRegistered(state, { payload }) {
+      state.isAccountRegistered = payload;
+    },
+    setIsAuthorize(state, { payload }) {
+      state.isAuthorize = payload;
+    },
+    setIsAllowRegister(state, { payload }) {
+      state.isAllowRegister = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getLoginThunk.fulfilled, (state, { payload }) => {
-      if (payload.statusCode == 200) {
+      if (payload.status == 200) {
         toast.success(`${payload.content}`);
         //!redirect here
         state.isAuthorize = true;
         window.location.href = "/";
-        localStorage.setItem("userInfo", JSON.stringify(payload.data) )
+        localStorage.setItem("userInfo", JSON.stringify(payload.data));
       } else {
         toast.error(`${payload.content}`);
       }
     }),
-      builder.addCase(getLoginThunk.rejected, (state, { payload }) => {
-      }),
+      builder.addCase(getLoginThunk.rejected, (state, { payload }) => {}),
       builder.addCase(isRegisteredThunk.fulfilled, (state, { payload }) => {
-        // console.log("payload.statusCode::: ", payload.statusCode);
-
-        if (payload.statusCode == 200) {
-          // toast.success(`${payload.content}`);
+        if (payload.status == 200) {
           state.isAccountRegistered = true;
         } else {
           toast.error(`${payload.content}`);
@@ -56,17 +69,39 @@ export const manageUsersSlice = createSlice({
         toast.error(`Tài khoản chưa tồn tại`);
         state.isAccountRegistered = false;
       }),
-      builder.addCase(isAllowRegisteredThunk.fulfilled, (state, { payload }) => {
-        if(payload.statusCode == 200){ 
-          toast.success(`${payload.content}`)
+      builder.addCase(
+        isAllowRegisteredThunk.fulfilled,
+        (state, { payload }) => {
+          if (payload.status == 200) {
+            toast.success(`${payload.content}`);
+
+            state.isAllowRegister = true;
+          } else {
+            toast.error(`${payload.content}`);
+            state.isAllowRegister = false;
+          }
+        }
+      ),
+      //! Bug 500
+      builder.addCase(registerClientThunk.fulfilled, (state, { payload }) => {
+        if (payload.status == 200) {
+          toast.success(`${payload.content}`);
+
           state.isAllowRegister = true;
-        }else {
+        } else {
           toast.error(`${payload.content}`);
           state.isAllowRegister = false;
         }
-      })
+      });
   },
 });
+
+export const {
+  setUsers,
+  setIsAccountRegistered,
+  setIsAuthorize,
+  setIsAllowRegister,
+} = manageUsersSlice.actions;
 
 export const { reducer: manageUsersReducer, actions: manageUsersActions } =
   manageUsersSlice;

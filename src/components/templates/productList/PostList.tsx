@@ -78,7 +78,7 @@ export const PostList = () => {
     };
     dispatch(getPostThunk(getPostPayload));
     dispatch(getPostTypeThunk());
-    // dispatch(getCampusThunk());
+    dispatch(getCampusThunk());
   }, [itemQuantity, filterCampus, filterName, postTypeFilter]);
 
   const loadMorePost = () => {
