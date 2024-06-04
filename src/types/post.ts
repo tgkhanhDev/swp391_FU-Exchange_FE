@@ -52,12 +52,6 @@ export interface Category {
   categoryName: string;
 }
 
-export interface Variation {
-  variationId: number;
-  variationName: string;
-  description: string;
-}
-
 export interface PostType {
   postTypeId: number;
   postTypeName: string;

@@ -20,12 +20,15 @@ export interface Category {
 }
 
 export type ProductDetail = {
-  productDetailId: number,
-  productName : string,
-  description: string,
+  productDetailId: number;
+  productName: string;
+  description: string;
 };
 export type Variation = {
-  variationId: number,
-  variationName: string,
-  description: string,
-}; 
+  variationId: number;
+  variationName: string;
+  variationDetail: {
+    variationDetailId: number;
+    description: string;
+  }[];
+};

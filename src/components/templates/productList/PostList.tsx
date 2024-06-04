@@ -50,7 +50,8 @@ export const PostList = () => {
         </button>
       ),
     },
-  ].concat(
+  ]
+  .concat(
     campus?.map((item) => {
       return {
         key: item.campusId,
@@ -136,7 +137,7 @@ export const PostList = () => {
                   <Radio checked value="">
                     Tất cả
                   </Radio>
-                  {postType.map((item) => (
+                  {postType?.map((item) => (
                     <Radio value={item.postTypeId}>{item.postTypeName}</Radio>
                   ))}
                 </Space>

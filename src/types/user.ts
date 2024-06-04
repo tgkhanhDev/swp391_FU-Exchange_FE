@@ -13,31 +13,35 @@ export type RegisteredStudent = {
 };
 
 export type Role = {
-    roleId: number;
-    roleName: string;
-}
+  roleId: number;
+  roleName: string;
+};
 
 export type Student = {
-    studentId: number,
-    firstName: string,
-    lastName: string,
-    identityCard: string,
-    address: string,
-    phoneNumber: string,
-    gender: string,
-    dob: Date,
-}
+  studentId: number;
+  firstName: string;
+  lastName: string;
+  identityCard: string;
+  address: string;
+  phoneNumber: string;
+  gender: string;
+  dob: Date;
+};
 
 export type LoginType = {
   username: string;
   password: string;
 };
+export type LoginResponse = {
+  username: "string";
+  role: "string";
+  accessToken: "string";
+};
 
-
-export type IsAllowRegisterType ={
+export type IsAllowRegisterType = {
   studentId: string;
   identity: string;
-}
+};
 
 export type RegisterStudentReq = {
   studentId: "string";

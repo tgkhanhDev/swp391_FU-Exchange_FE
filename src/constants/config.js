@@ -4,5 +4,6 @@ export const PATH = {
   productDetail: "/detail/:productId",
   login: "/login",
   register: "/register",
-  authorize: "/authorize"
+  authorize: "/authorize",
+  cart: "/my-cart"
 };

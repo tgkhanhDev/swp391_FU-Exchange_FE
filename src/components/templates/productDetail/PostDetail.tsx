@@ -26,7 +26,7 @@ export const PostDetail: React.FC<PostType> = () => {
     postDetail?.product.image.map((img) => {
       images.push({ original: img.imageUrl, thumbnail: img.imageUrl });
     });
-    setImageGrid(images)
+    setImageGrid(images);
   }, [postDetail]);
 
   return (
@@ -51,7 +51,7 @@ export const PostDetail: React.FC<PostType> = () => {
           <div className="my-1">by Vendor Name</div>
           {/* end Author  */}
           {/* variation  */}
-          <div className="flex items-start my-3">
+          {/* <div className="flex items-start my-3">
             <div className="flex items-center mr-5">
               {postDetail?.product.variation[0].variationName}
             </div>
@@ -62,7 +62,23 @@ export const PostDetail: React.FC<PostType> = () => {
                 </Button>
               ))}
             </div>
-          </div>
+          </div> */}
+
+          {postDetail?.product.variation.map((vari) => (
+            <div className="flex items-start my-3" key={vari.variationId}>
+              <div className="flex items-center mr-5">{vari.variationName}</div>
+              <div className="gap-2 w-[60%] flex flex-wrap">
+                {vari.variationDetail.map((variDetail) => (
+                  <Button
+                    key={variDetail.variationDetailId}
+                    className="flex items-center px-2 py-1 border border-black rounded"
+                  >
+                    {variDetail.description}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          ))}
           {/* end variation  */}
           {/* button  */}
 

@@ -2,14 +2,17 @@ import React, { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAccount } from "../../../hooks/useAccount";
 import { useAppDispatch } from "../../../store";
-import { isAllowRegisteredThunk } from "../../../store/userManagement/thunk";
+import {
+  isAllowRegisteredThunk,
+  registerClientThunk,
+} from "../../../store/userManagement/thunk";
 import { setIsAllowRegister } from "../../../store/userManagement/slice";
 
 export const RegisterTemplate = () => {
   //reset khi navigate lần đầu
-  useEffect(()=> {
+  useEffect(() => {
     setIsAllowRegister(false);
-  }, [])
+  }, []);
 
   //!Fix bug navigate
   // ref
@@ -17,7 +20,7 @@ export const RegisterTemplate = () => {
   const idRef = useRef("");
   const pwdRef = useRef("");
   const cfPwdRef = useRef("");
-  
+
   const checked = () => {
     setIsChecked(true);
     setIsRegistered(true);
@@ -137,11 +140,23 @@ export const RegisterTemplate = () => {
 
               {/*Nút đăng kí*/}
               <div>
-                <NavLink to={"/authorize"}>
-                  <button className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]">
-                    Đăng kí
-                  </button>
-                </NavLink>
+                {/* <NavLink to={"/authorize"}> */}
+                <button
+                  className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]"
+                  onClick={() =>
+                    dispatch(
+                      registerClientThunk({
+                        studentId: mssvRef.current,
+                        identifyNumber: idRef.current,
+                        password: pwdRef.current,
+                        confirmPassword: cfPwdRef.current,
+                      })
+                    )
+                  }
+                >
+                  Đăng kí
+                </button>
+                {/* </NavLink> */}
               </div>
             </div>
           )}

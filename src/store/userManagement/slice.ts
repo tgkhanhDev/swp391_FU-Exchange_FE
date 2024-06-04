@@ -82,12 +82,12 @@ export const manageUsersSlice = createSlice({
           }
         }
       ),
-      //! Bug 500
       builder.addCase(registerClientThunk.fulfilled, (state, { payload }) => {
         if (payload.status == 200) {
           toast.success(`${payload.content}`);
 
           state.isAllowRegister = true;
+          window.location.href="/login"
         } else {
           toast.error(`${payload.content}`);
           state.isAllowRegister = false;

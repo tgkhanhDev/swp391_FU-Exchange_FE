@@ -18,10 +18,10 @@ export const manageViewSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getCampusThunk.fulfilled, (state, { payload }) => {
-      state.campus = payload;
+      state.campus = payload.data;
     }),
     builder.addCase(getPostTypeThunk.fulfilled, (state, { payload }) => {
-      state.postType = payload;
+      state.postType = payload.data;
     })
   },
 });

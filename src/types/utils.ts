@@ -17,13 +17,15 @@ export type LoadMoreListDataType<T> = {
     items: T[]
 }
 
-export type utilsResponse = {
+export type utilsResponse<T> = {
   status: number;
   message: string;
   content: string;
-  data: {
-    username: "string";
-    role: "string";
-    accessToken: "string";
-  } | null;
+  data: T
 };
+
+export type LoginRes = {
+    username: string;
+    role: string;
+    accessToken: string;
+ } | null;

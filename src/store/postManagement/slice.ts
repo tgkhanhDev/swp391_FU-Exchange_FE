@@ -11,7 +11,7 @@ type stateType = {
 const initialState: stateType = {
   products: [],
   posts: undefined,
-  postDetail: undefined
+  postDetail: undefined,
 };
 
 export const managePostSlice = createSlice({
@@ -22,9 +22,9 @@ export const managePostSlice = createSlice({
     builder.addCase(getPostThunk.fulfilled, (state, { payload }) => {
       state.posts = payload;
     }),
-    builder.addCase(getPostByIdThunk.fulfilled , (state, { payload }) => {
-      state.postDetail = payload;
-    })
+      builder.addCase(getPostByIdThunk.fulfilled, (state, { payload }) => {
+        state.postDetail = payload.data;
+      });
   },
 });
 
