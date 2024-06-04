@@ -1,5 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IsAllowRegisterType, LoginType, RegisterStudentReq } from "../../types/user";
+import {
+  IsAllowRegisterType,
+  LoginType,
+  RegisterStudentReq,
+} from "../../types/user";
+import { managePost } from "../../services/managePost";
+import { PostFilter_API } from "../../types/post";
 import { manageUsers } from "../../services/manageUser";
 
 export const getLoginThunk = createAsyncThunk(
@@ -49,4 +55,3 @@ export const registerClientThunk = createAsyncThunk(
     }
   }
 );
-

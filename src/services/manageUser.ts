@@ -1,5 +1,10 @@
 import { apiInstance } from "../constants/apiInstance";
-import { IsAllowRegisterType, LoginType, RegisterStudentReq } from "../types/user";
+import {
+  IsAllowRegisterType,
+  LoginResponse,
+  LoginType,
+  RegisterStudentReq,
+} from "../types/user";
 import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({
@@ -7,13 +12,14 @@ const api = apiInstance({
 });
 
 export const manageUsers = {
-  isLogin: (payload: LoginType) => api.post<utilsResponse>(`/login`, payload),
+  isLogin: (payload: LoginType) =>
+    api.post<utilsResponse<LoginResponse>>(`/login`, payload),
   isRegistered: (payload: string) =>
-    api.get<utilsResponse>(`/isRegistered/${payload}`),
+    api.get<utilsResponse<any>>(`/isRegistered/${payload}`),
   isAllowRegister: (payload: IsAllowRegisterType) =>
-    api.get<utilsResponse>(
+    api.get<utilsResponse<any>>(
       `check-information?studentId=${payload.studentId}&identity=${payload.identity}`
     ),
   registerClient: (payload: RegisterStudentReq) =>
-    api.post<utilsResponse>(`register`,payload),
+    api.post<utilsResponse<any>>(`register`, payload),
 };

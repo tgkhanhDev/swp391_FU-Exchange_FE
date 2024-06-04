@@ -11,6 +11,6 @@ export const managePost = {
     api.get<PostLoadMore>(
       `/${payload.current}?campusId=${payload.campusId}&postTypeId=${payload.postTypeId}&name=${payload.name}`
     ),
-  getPostById:(payload: number) => 
-      api.get<utilsResponse<Post>>(`/detail/${payload}`),
+  getPostById: (payload: number) =>
+    api.get<utilsResponse<Post>>(`/detail/${payload}`),
 };

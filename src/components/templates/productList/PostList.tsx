@@ -50,8 +50,7 @@ export const PostList = () => {
         </button>
       ),
     },
-  ]
-  .concat(
+  ].concat(
     campus?.map((item) => {
       return {
         key: item.campusId,

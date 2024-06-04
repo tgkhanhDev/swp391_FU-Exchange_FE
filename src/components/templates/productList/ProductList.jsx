@@ -31,6 +31,7 @@ export const ProductList = () => {
             </button>
           </div>
         </div>
+
         {/*Card*/}
         <div className="flex justify-center items-center">
           <div className="w-[1400px] grid grid-cols-5 grid-flow-col gap-5 h-[400px]">

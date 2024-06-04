@@ -11,12 +11,12 @@ export const Header = () => {
   }, []);
   return (
     <header className="top-0 sticky w-full min-w-[950px] z-50">
+      {/*Header trên cùng*/}
       <div className="flex justify-between items-center py-3 px-5 text-xl text-[var(--color-primary)] bg-[var(--color-bg-hightlight)]">
         <div className="text-center flex-grow font-semibold">
           Chào mừng đến với FU-Exchange, nơi bạn có thể mua, bán và trao đổi bất
           cứ thứ gì!
         </div>
-        <div className="text-right font-normal cursor-pointer">Hỗ trợ</div>
       </div>
       {/*Header tiếp theo có thanh search*/}
       <div className="py-3 pl-5 pr-20 flex justify-between bg-white border-b-2 border-b-slate-300 ">
@@ -50,11 +50,17 @@ export const Header = () => {
               <button className="font-semibold">Đăng nhập</button>
             </NavLink>
           )}
-          {user && <Button onClick={ () => {
-            localStorage.removeItem("userInfo")
-            // window.location.href('/login')
-            Navigate('/login')
-          }}>AVATAR</Button>}
+          {user && (
+            <Button
+              onClick={() => {
+                localStorage.removeItem("userInfo");
+                // window.location.href('/login')
+                Navigate("/login");
+              }}
+            >
+              AVATAR
+            </Button>
+          )}
         </div>
       </div>
     </header>

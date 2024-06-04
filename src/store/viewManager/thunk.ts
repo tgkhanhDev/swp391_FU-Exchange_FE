@@ -24,3 +24,15 @@ export const getPostTypeThunk = createAsyncThunk(
     }
   }
 );
+
+export const getCategoryThunk = createAsyncThunk(
+  "category",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await manageView.getAllCategory();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

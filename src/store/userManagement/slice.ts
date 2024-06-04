@@ -87,7 +87,7 @@ export const manageUsersSlice = createSlice({
           toast.success(`${payload.content}`);
 
           state.isAllowRegister = true;
-          window.location.href="/login"
+          window.location.href = "/login";
         } else {
           toast.error(`${payload.content}`);
           state.isAllowRegister = false;

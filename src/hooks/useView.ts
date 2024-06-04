@@ -2,8 +2,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
 export const useView = () => {
-  const { campus, postType } = useSelector(
+  const { campus, postType, category } = useSelector(
     (state: RootState) => state.manageView
   );
-  return { campus, postType };
+  return { campus, postType, category };
 };

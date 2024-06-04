@@ -10,5 +10,5 @@ export const rootReducer = combineReducers({
   manangePost: managePostReducer,
   manageView: manageViewReducer,
   manageUsers: manageUsersReducer,
-  manageOrders: manageOrderReducer
+  manageOrders: manageOrderReducer,
 });
