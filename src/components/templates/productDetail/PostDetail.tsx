@@ -6,6 +6,7 @@ import { getPostByIdThunk } from "../../../store/postManagement/thunk";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { useParams } from "react-router-dom";
+import { log } from "console";
 type PostType = {
   postId: number;
 };
@@ -28,6 +29,34 @@ export const PostDetail: React.FC<PostType> = () => {
     });
     setImageGrid(images);
   }, [postDetail]);
+
+  type DetailType = {
+  [key: number]: number; // Định nghĩa kiểu cho object detail
+};
+  const [detail, setDetail] = useState<DetailType>({});
+  const updateDetail = (key, value) => {
+    setDetail((prevDetail) => ({
+      ...prevDetail,
+      [key]: value,
+    }));
+
+    console.log("length:::", Object.keys(detail).length);
+  };
+
+  useEffect(() => {
+    console.log("detail:::", detail);
+  }, [detail]);
+
+  const additionalClasses = (vari) =>
+    Object.entries(detail)
+      .map(([key, value]) => {
+        if (vari.variationId == value) {
+          return "border-pink-500";
+        }
+        return ""; // Trả về chuỗi rỗng nếu không khớp
+      })
+      .filter((className) => className !== "") // Loại bỏ các chuỗi rỗng
+      .join(" ");
 
   return (
     <div className="container">
@@ -53,17 +82,42 @@ export const PostDetail: React.FC<PostType> = () => {
           {/* variation  */}
 
           {postDetail?.product.variation.map((vari) => (
-            <div className="flex items-start my-3" key={vari.variationId}>
+            <div className={`flex items-start my-3`} key={vari.variationId}>
               <div className="flex items-center mr-5">{vari.variationName}</div>
               <div className="gap-2 w-[60%] flex flex-wrap">
-                {vari.variationDetail.map((variDetail) => (
+                {vari.variationDetail.map((variDetail) =>{
+                  console.log(
+                    "detail[variDetail.variationDetailId]: ",
+                    detail
+                  );
+                  return (
+                  // <Button
+                  //   key={variDetail.variationDetailId}
+                  //   onClick={() =>
+                  //     updateDetail(
+                  //       vari.variationId,
+                  //       variDetail.variationDetailId
+                  //     )
+                  //   }
+                  //   className={`flex items-center px-2 py-1 border rounded `}
+                  // >
+                  //   <div className="">{variDetail.description}</div>
+                  // </Button>
                   <Button
                     key={variDetail.variationDetailId}
-                    className="flex items-center px-2 py-1 border border-black rounded"
+                    onClick={() =>
+                      updateDetail(
+                        vari.variationId,
+                        variDetail.variationDetailId
+                      )
+                    }
+                    className={`flex items-center px-2 py-1 border rounded `}
                   >
-                    {variDetail.description}
+                    {detail[variDetail.variationDetailId]}--
+                    {variDetail.variationDetailId}-{variDetail.description}
                   </Button>
-                ))}
+                )
+                  })}
               </div>
             </div>
           ))}
@@ -72,11 +126,33 @@ export const PostDetail: React.FC<PostType> = () => {
 
           <div className="flex my-3 gap-3">
             <Button>Add to cart</Button>
-            <Button>Buy now</Button>
+            <Button
+              onClick={() => {
+                if (
+                  postDetail &&
+                  postDetail.product.variation.length >
+                    Object.keys(detail).length
+                ) {
+                  alert("Chọn đủ đi");
+                } else {
+                  alert("OK");
+                }
+              }}
+            >
+              Buy now
+            </Button>
             <Button>Quantity</Button>
           </div>
           {/* end button  */}
-
+          <div>
+            {Object.entries(detail).map(([key, values]) => {
+              return (
+                <div key={key}>
+                  <span>{values}</span>
+                </div>
+              );
+            })}
+          </div>
           {/* //! Review  */}
         </div>
       </div>
