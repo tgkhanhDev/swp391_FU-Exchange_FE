@@ -20,7 +20,9 @@ function App() {
   return (
     <ConfigProvider theme={themeConfig}>
       <ScrollToTop />
-      {useRoutes(router)}
+      <div className="flex-grow">
+        {useRoutes(router)}
+      </div>
     </ConfigProvider>
   );
 }

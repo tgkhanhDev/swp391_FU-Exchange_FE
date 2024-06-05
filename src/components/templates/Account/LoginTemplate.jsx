@@ -9,6 +9,7 @@ import {
 import { useAccount } from "../../../hooks/useAccount";
 import { useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
+import { QuestionCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 
 export const LoginTemplate = () => {
   const mssvRef = useRef("");
@@ -33,23 +34,16 @@ export const LoginTemplate = () => {
     <div>
       <header className="bg-[var(--color-bg-hightlight)] text-[#f6f6f6] w-full min-w-[950px] py-3 px-5 flex justify-between items-center">
         <NavLink to={"/"}>
-          <div className="inline-flex hover:opacity-80">
-            <img
-              src="/images/icons/left_arrow.svg"
-              className="h-6 w-6 mr-2"
-            ></img>
-            <h1 className="justify-center items-center">Trở về</h1>
+          <div className="hover:opacity-80">
+            <div className="text-lg flex justify-center"><ArrowLeftOutlined className="text-xl mr-2" />Trở về</div>
           </div>
         </NavLink>
         <NavLink to={"/register"}>
-          <div className="inline-flex hover:opacity-80">
-            <img
-              src="/images/icons/question_icon.svg"
-              className="h-6 w-6 mr-2"
-            ></img>
-            <h1 className="justify-center items-center">
+          <div className="hover:opacity-80">
+            <div className="text-lg flex justify-center">
+              <QuestionCircleOutlined className="text-xl mr-2" />
               Lần đầu đăng nhập? Ấn vào đây
-            </h1>
+            </div>
           </div>
         </NavLink>
       </header>
@@ -98,13 +92,6 @@ export const LoginTemplate = () => {
                   onClick={handleSignIn}
                 >
                   Đăng nhập
-                  <Input
-                    className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2"
-                    type="password"
-                  ></Input>
-                </button>
-                <button className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]">
-                  Kiểm tra
                 </button>
               </form>
             )}

@@ -4,9 +4,10 @@ import { PATH } from "../constants/config";
 import ProductPage from "../page/ProductPage";
 import PostDetail from "../components/templates/productDetail/PostDetail";
 import PostList from "../components/templates/productList/PostList";
-import Cart from "../components/templates/Account/Cart";
-import ProfileTemplate from "../components/templates/Account/ProfileTemplate";
-import { Login, Register, Authorize } from "../page";
+import Cart from "../components/templates/Cart/Cart";
+import ProfileTemplate from "../components/templates/Account/BuyerAccount/ProfileTemplate";
+import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTemplate";
+import { Login, Register, Authorize } from "../page/account";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 
 export const router = [
@@ -40,6 +41,10 @@ export const router = [
         element: <ProfileTemplate />,
         index: true,
       },
+      {
+        element: <OrderTemplate />,
+        path: PATH.order,
+      },
     ],
   },
   {
@@ -53,10 +58,6 @@ export const router = [
   {
     element: <RegisterSeller />,
     path: PATH.registerSeller,
-  },
-  {
-    element: <PostList />, //AccountInfo
-    path: PATH.profile,
   },
   {
     element: <NotFound />,
