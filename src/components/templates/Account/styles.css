@@ -23,3 +23,13 @@
 .custom-select .ant-select-arrow {
   color: #666666;
 }
+
+.custom-button-re {
+  padding: 20px 48px;
+  display: flex;
+  align-items: center;
+}
+
+.textarea {
+  height: 200px;
+}

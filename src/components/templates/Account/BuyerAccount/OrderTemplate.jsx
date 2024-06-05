@@ -78,13 +78,16 @@ export const OrderTemplate = () => {
               </div>
 
               <div className="flex flex-col justify-between items-end flex-grow text-lg font-medium">
-                <div className="text-[var(--color-primary)] underline">Đánh giá ngay</div> {/*Hoặc xem đánh giá nếu đã đánh giá sản phẩm */}
+
+                <NavLink to={'/review'}>
+                  <div className="text-[var(--color-primary)] underline">Đánh giá ngay</div> {/*Hoặc xem đánh giá nếu đã đánh giá sản phẩm */}
+                </NavLink>
                 <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: 23,000 VNĐ</div>
               </div>
             </div>
 
           </div>
-          
+
         </div>
       </main>
     </div>

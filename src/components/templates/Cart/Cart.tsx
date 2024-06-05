@@ -31,7 +31,7 @@ export const Cart = () => {
         <div className='flex justify-center mb-7'>
           <div className='w-[610px] text-center'>
             <div className='text-6xl font-semibold mb-7'>Giỏ hàng</div>
-            <NavLink to={'/detail'}>
+            <NavLink to={'/payment'}>
               <button className='px-14 py-3 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] font-semibold hover:text-white hover:bg-[var(--color-primary)] duration-300'>
                 Mua tất cả - 23,000VNĐ
               </button>
