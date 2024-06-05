@@ -88,7 +88,7 @@ export const PostDetail: React.FC<PostType> = () => {
                 {vari.variationDetail.map((variDetail) =>{
                   console.log(
                     "detail[variDetail.variationDetailId]: ",
-                    detail
+                    Object
                   );
                   return (
                   // <Button
@@ -113,8 +113,7 @@ export const PostDetail: React.FC<PostType> = () => {
                     }
                     className={`flex items-center px-2 py-1 border rounded `}
                   >
-                    {detail[variDetail.variationDetailId]}--
-                    {variDetail.variationDetailId}-{variDetail.description}
+                    {variDetail.description}
                   </Button>
                 )
                   })}
@@ -144,7 +143,7 @@ export const PostDetail: React.FC<PostType> = () => {
             <Button>Quantity</Button>
           </div>
           {/* end button  */}
-          <div>
+          {/* <div>
             {Object.entries(detail).map(([key, values]) => {
               return (
                 <div key={key}>
@@ -152,7 +151,7 @@ export const PostDetail: React.FC<PostType> = () => {
                 </div>
               );
             })}
-          </div>
+          </div> */}
           {/* //! Review  */}
         </div>
       </div>

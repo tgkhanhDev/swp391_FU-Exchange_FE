@@ -1,4 +1,4 @@
-import { Button, Input } from "antd";
+import { Button } from "antd";
 import React, { useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { useAppDispatch } from "../../../store";
@@ -64,13 +64,13 @@ export const LoginTemplate = () => {
                 <label className="text-[#9f9f9f] mb-2">
                   MSSV (Mã số sinh viên)
                 </label>
-                <Input
-                  className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2"
+                <input
+                  className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
                   type="text"
                   onChange={(e) => {
                     mssvRef.current = e.target.value;
                   }}
-                ></Input>
+                ></input>
               </div>
               {!isAccountRegistered && (
                 <button
@@ -98,13 +98,6 @@ export const LoginTemplate = () => {
                   onClick={handleSignIn}
                 >
                   Đăng nhập
-                  <Input
-                    className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2"
-                    type="password"
-                  ></Input>
-                </button>
-                <button className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]">
-                  Kiểm tra
                 </button>
               </form>
             )}
@@ -138,19 +131,6 @@ export const LoginTemplate = () => {
       >
         aaaaaa
       </Button>
-      {/* <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        // transition: Bounce,
-      /> */}
     </div>
   );
 };

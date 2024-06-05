@@ -55,7 +55,8 @@ export const Header = () => {
               onClick={() => {
                 localStorage.removeItem("userInfo");
                 // window.location.href('/login')
-                Navigate("/login");
+                // Navigate("/login");
+                setUser(null);
               }}
             >
               AVATAR
