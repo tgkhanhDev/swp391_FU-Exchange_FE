@@ -8,4 +8,6 @@ export const PATH = {
   authorize: "/authorize",
   order: "/authorize/order",
   cart: "/cart",
+  review: "/review",
+  payment: "/payment",
 };
