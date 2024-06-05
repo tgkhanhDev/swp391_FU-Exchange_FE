@@ -1,5 +1,5 @@
 import React from 'react'
-import { AuthorizeLayout } from '../components/layouts'
+import { AuthorizeLayout } from '../../components/layouts'
 
 export const Authorize = () => {
   return (

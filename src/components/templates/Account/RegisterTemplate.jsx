@@ -7,6 +7,7 @@ import {
   registerClientThunk,
 } from "../../../store/userManagement/thunk";
 import { setIsAllowRegister } from "../../../store/userManagement/slice";
+import { ArrowLeftOutlined } from '@ant-design/icons';
 
 export const RegisterTemplate = () => {
   //reset khi navigate lần đầu
@@ -47,13 +48,9 @@ export const RegisterTemplate = () => {
     <div>
       <header className="bg-[var(--color-bg-hightlight)] text-[#f6f6f6] w-full min-w-[950px] py-3 px-5">
         <NavLink to={"/login"}>
-          <div className="inline-flex items-center hover:opacity-80">
-            <img
-              src="/images/icons/left_arrow.svg"
-              className="h-6 w-6 mr-2"
-            ></img>
-            <h1 className="justify-center items-center">Trở về</h1>
-          </div>
+        <div className="hover:opacity-80 inline-block">
+          <div className="text-lg flex justify-center"><ArrowLeftOutlined className="text-xl mr-2" />Trở về</div>
+        </div>
         </NavLink>
       </header>
       <main className="flex flex-col justify-center items-center">

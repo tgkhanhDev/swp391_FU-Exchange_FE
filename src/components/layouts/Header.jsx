@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import React, { useEffect, useState } from "react";
 import { NavLink, Navigate } from "react-router-dom";
+import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
 
 export const Header = () => {
   const [user, setUser] = useState();
@@ -36,22 +37,21 @@ export const Header = () => {
             className="h-4 p-5 border border-l-0 rounded-r-[35px] w-[500px] focus:outline-none"
             placeholder="Tìm kiếm"
           ></input>
-          {/*<img src="/images/icons/loading_icon.svg" className='animate-spin h-8 w-8'/>*/}
         </div>
 
         {/*Giỏ hàng + Login*/}
         <div className="flex justify-center items-center">
-          <img
-            className="h-8 mr-10 cursor-pointer"
-            src="/images/icons/cart_icon.svg"
-          />
+          <NavLink to={"/cart"}>
+            <ShoppingCartOutlined className='mr-10 cursor-pointer text-3xl' />
+          </NavLink>
           {!user && (
             <NavLink to={"/login"}>
               <button className="font-semibold">Đăng nhập</button>
             </NavLink>
           )}
           {user && (
-            <Button
+            <button
+            className='flex justify-center items-center pl-5'
               onClick={() => {
                 localStorage.removeItem("userInfo");
                 // window.location.href('/login')
@@ -59,8 +59,8 @@ export const Header = () => {
                 setUser(null);
               }}
             >
-              AVATAR
-            </Button>
+                <div className='ml-2 text-xl'><UserOutlined className="mr-2" />Tài khoản</div>
+            </button>
           )}
         </div>
       </div>

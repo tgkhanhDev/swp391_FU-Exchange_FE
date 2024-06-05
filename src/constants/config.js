@@ -6,6 +6,6 @@ export const PATH = {
   register: "/register",
   registerSeller: "/registerSeller",
   authorize: "/authorize",
-  postList: "/detail",
+  order: "/authorize/order",
   cart: "/cart",
 };

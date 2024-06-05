@@ -50,6 +50,7 @@ export interface Image {
 export interface Category {
   categoryId: number;
   categoryName: string;
+  imageUrl?: string;
 }
 
 export interface PostType {
@@ -60,6 +61,7 @@ export interface PostType {
 export interface Campus {
   campusId: number;
   campusName: string;
+  imageUrl?: string;
 }
 
 export interface PostStatus {
