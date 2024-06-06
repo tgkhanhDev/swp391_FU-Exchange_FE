@@ -2,14 +2,32 @@ import { Button } from "antd";
 import React, { useEffect, useState } from "react";
 import { NavLink, Navigate } from "react-router-dom";
 import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import { useAppDispatch } from "../../store";
+import { getAccountInfoThunk } from "../../store/userManagement/thunk";
 
 export const Header = () => {
+
   const [user, setUser] = useState();
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     console.log("userInfo::: ", userInfo);
     setUser(userInfo);
-  }, []);
+
+    if (userInfo && userInfo.username) {
+      dispatch(getAccountInfoThunk({ studentId: userInfo.username }))
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          setUser({...userInfo, ...data}); // Kết hợp userInfo và data thành một đối tượng mới
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
+    }
+  }, [dispatch]);
+
   return (
     <header className="top-0 sticky w-full min-w-[950px] z-50">
       {/*Header trên cùng*/}
@@ -50,14 +68,14 @@ export const Header = () => {
           )}
           {user && (
             <button
-            className='flex justify-center items-center pl-5'
+              className='flex justify-center items-center pl-5'
               onClick={() => {
                 localStorage.removeItem("userInfo");
                 // window.location.href('/login')
                 Navigate("/login");
               }}
             >
-                <div className='ml-2 text-xl'><UserOutlined className="mr-2" />Tài khoản</div>
+              <div className='ml-2 text-xl'><UserOutlined className="mr-4 text-3xl" />{user.firstName} {user.lastName}</div>
             </button>
           )}
         </div>

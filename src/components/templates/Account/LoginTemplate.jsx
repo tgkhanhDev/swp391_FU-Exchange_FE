@@ -1,5 +1,5 @@
 import { Button, Input } from "antd";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useAppDispatch } from "../../../store";
 import {
@@ -7,7 +7,6 @@ import {
   isRegisteredThunk,
 } from "../../../store/userManagement/thunk";
 import { useAccount } from "../../../hooks/useAccount";
-import { useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { QuestionCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 

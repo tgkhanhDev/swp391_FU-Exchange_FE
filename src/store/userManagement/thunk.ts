@@ -2,7 +2,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   IsAllowRegisterType,
   LoginType,
+  RegisterSellerReq,
   RegisterStudentReq,
+  Student,
 } from "../../types/user";
 import { managePost } from "../../services/managePost";
 import { PostFilter_API } from "../../types/post";
@@ -49,6 +51,30 @@ export const registerClientThunk = createAsyncThunk(
   async (payload: RegisterStudentReq, { rejectWithValue }) => {
     try {
       const data = await manageUsers.registerClient(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const registerSellerThunk = createAsyncThunk(
+  "registerSeller",
+  async (payload: RegisterSellerReq, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.registerSeller(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getAccountInfoThunk = createAsyncThunk(
+  "getAccountInfo",
+  async (payload: Student, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getAccountInfo(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

@@ -49,3 +49,10 @@ export type RegisterStudentReq = {
   password: "string";
   confirmPassword: "string";
 };
+
+export type RegisterSellerReq = {
+  registeredStudentId: number;
+  password: "string";
+  bankingNumber: "string";
+  bankingName: "string";
+};

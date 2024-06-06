@@ -3,12 +3,22 @@ import {
   IsAllowRegisterType,
   LoginResponse,
   LoginType,
+  RegisterSellerReq,
   RegisterStudentReq,
+  Student,
 } from "../types/user";
 import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({
   baseURL: "http://localhost:8080/auth",
+});
+
+const apiB = apiInstance({
+  baseURL: "http://localhost:8080/seller",
+});
+
+const apiC = apiInstance({
+  baseURL: "http://localhost:8080/student",
 });
 
 export const manageUsers = {
@@ -22,4 +32,10 @@ export const manageUsers = {
     ),
   registerClient: (payload: RegisterStudentReq) =>
     api.post<utilsResponse<any>>(`register`, payload),
+
+  registerSeller: (payload: RegisterSellerReq) =>
+    apiB.post<utilsResponse<any>>(`register-to-seller`, payload),
+
+  getAccountInfo: (payload: Student) =>
+    apiC.get<utilsResponse<any>>(`view-student?studentId=${payload.studentId}`),
 };

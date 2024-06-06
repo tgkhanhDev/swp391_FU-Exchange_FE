@@ -5,6 +5,8 @@ import {
   isAllowRegisteredThunk,
   isRegisteredThunk,
   registerClientThunk,
+  registerSellerThunk,
+  getAccountInfoThunk,
 } from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -55,7 +57,7 @@ export const manageUsersSlice = createSlice({
         toast.error(`${payload.content}`);
       }
     }),
-      builder.addCase(getLoginThunk.rejected, (state, { payload }) => {}),
+      builder.addCase(getLoginThunk.rejected, (state, { payload }) => { }),
       builder.addCase(isRegisteredThunk.fulfilled, (state, { payload }) => {
         if (payload.status == 200) {
           state.isAccountRegistered = true;
@@ -92,7 +94,20 @@ export const manageUsersSlice = createSlice({
           toast.error(`${payload.content}`);
           state.isAllowRegister = false;
         }
-      });
+      }
+      );
+    builder.addCase(registerSellerThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`${payload.content}`);
+        window.location.href = "/login";
+      } else {
+        toast.error(`${payload.content}`);
+      }
+    }
+    );
+    builder.addCase(getAccountInfoThunk.fulfilled, (state, { payload }) => {
+      state.users = payload.data;
+    });
   },
 });
 
