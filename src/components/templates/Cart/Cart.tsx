@@ -31,11 +31,23 @@ export const Cart = () => {
         <div className='flex justify-center mb-7'>
           <div className='w-[610px] text-center'>
             <div className='text-6xl font-semibold mb-7'>Giỏ hàng</div>
-            <NavLink to={'/payment'}>
-              <button className='px-14 py-3 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] font-semibold hover:text-white hover:bg-[var(--color-primary)] duration-300'>
-                Mua tất cả - 23,000VNĐ
-              </button>
-            </NavLink>
+
+            <div className='flex justify-center items-center gap-10'>
+
+              <NavLink to={'/detail'}>
+                <button className='px-10 py-2 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] bg-white font-semibold hover:border-white duration-300'>
+                  Tiếp tục mua hàng
+                </button>
+              </NavLink>
+
+              <NavLink to={'/payment'}>
+                <button className='px-14 py-3 text-base hover:text-[var(--color-secondary)] hover:bg-white font-semibold text-white bg-[var(--color-primary)] duration-300 hover:shadow-[inset_0_0_0_2px_var(--color-secondary)]'>
+                  Mua tất cả - 23,000VNĐ
+                </button>
+              </NavLink>
+
+            </div>
+
           </div>
         </div>
 

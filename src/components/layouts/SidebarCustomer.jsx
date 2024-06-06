@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { UserOutlined, HistoryOutlined, SwapOutlined, RightOutlined } from '@ant-design/icons';
+import { UserOutlined, HistoryOutlined, RightOutlined, LogoutOutlined } from '@ant-design/icons';
 
 const SidebarCustomer = () => {
   const location = useLocation(); // Đặt useLocation bên trong thành phần
@@ -31,13 +31,10 @@ const SidebarCustomer = () => {
         </button>
       </NavLink>
 
-      {/* Transaction History */}
-      <button className={`rounded-r-[30px] h-16 grid grid-cols-[1fr_auto] items-center mb-2 w-52 hover:bg-slate-200 ${location.pathname === '' ? 'bg-slate-300 w-64' : ''} duration-500`}>
-        <div className='flex justify-center items-center pl-5'>
-          <div className='ml-2 text-xl'><SwapOutlined className="mr-2" />Giao dịch</div>
-        </div>
-        <div className='flex items-center justify-end pr-5'>
-          <RightOutlined className="text-xl" />
+      {/*Đăng xuất */}
+      <button className={`rounded-r-[30px] h-16 items-center mt-5 w-52 hover:bg-slate-200 duration-500`}>
+        <div className='flex justify-center items-center pr-5'>
+          <div className='ml-2 text-xl'><LogoutOutlined className="mr-2" />Đăng xuất</div>
         </div>
       </button>
     </nav>

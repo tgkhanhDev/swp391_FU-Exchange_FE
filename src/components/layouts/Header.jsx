@@ -15,8 +15,7 @@ export const Header = () => {
       {/*Header trên cùng*/}
       <div className="flex justify-between items-center py-3 px-5 text-xl text-[var(--color-primary)] bg-[var(--color-bg-hightlight)]">
         <div className="text-center flex-grow font-semibold">
-          Chào mừng đến với FU-Exchange, nơi bạn có thể mua, bán và trao đổi bất
-          cứ thứ gì!
+          Chào mừng đến với FU-Exchange, nơi bạn có thể mua, bán và trao đổi dành cho sinh viên FPT!
         </div>
       </div>
       {/*Header tiếp theo có thanh search*/}

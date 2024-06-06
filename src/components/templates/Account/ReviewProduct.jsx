@@ -28,7 +28,7 @@ export const ReviewProduct = () => {
             <Input.TextArea style={{height: '100px', fontSize: '1.125rem'}} placeholder="Tuyệt vời!"></Input.TextArea>
           </div>
           <div className="flex justify-end gap-10">
-            <Button className="custom-button-re text-lg font-semibold">Hủy</Button>
+            <NavLink to={'/authorize/order'}><Button className="custom-button-re text-lg font-semibold">Hủy</Button></NavLink>
             <Button type="primary" className="custom-button-re text-lg font-semibold">Gửi</Button>
           </div>
         </div>
