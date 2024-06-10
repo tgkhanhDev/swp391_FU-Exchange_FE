@@ -6,7 +6,7 @@ import { manageUsersReducer } from "./userManagement/slice";
 import { manageOrderReducer } from "./orderManager/slice";
 
 export const rootReducer = combineReducers({
-  manageProject: manageProductReducer,
+  manageProduct: manageProductReducer,
   manangePost: managePostReducer,
   manageView: manageViewReducer,
   manageUsers: manageUsersReducer,

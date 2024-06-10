@@ -121,6 +121,7 @@ export const LoginTemplate = () => {
         onClick={() => {
           console.log("Hello");
           dispatch(isRegisteredThunk("DE170001"));
+          dispatch(isRegisteredThunk("DE170001"));
         }}
       >
         aaaaaa

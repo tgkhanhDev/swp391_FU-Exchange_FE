@@ -1,13 +1,38 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Checkbox, InputNumber, Button } from "antd"
 import './styles.css'
+import { useAppDispatch } from '../../../store'
+import { manageProductActions } from '../../../store/productManagement/slice'
+import { useProduct } from "../../../hooks/useProduct";
+import { getProductByIdThunk } from '../../../store/productManagement/thunk'
+
+export interface PaymentItem {
+  productId: number;
+  variationList: number[];
+  quantity: number;
+}[]
 
 export const Payment = () => {
+  const dispatch =  useAppDispatch()
+  const {products} = useProduct();
+
+  useEffect(() => {
+    // dispatch(manageProductActions.setProductEmpty());
+    const paymentItem: PaymentItem = JSON.parse(
+      localStorage.getItem("paymentItem") || ""
+    );
+
+  }, []);
+
+  useEffect(() => {
+    console.log("Product: ", products);
+  }, [products]);
+
 
   return (
     <div>
-      {/*Tựa đề */}
+      {/*Tựa đề */} 
       <div className='mb-8 pt-8 pl-32'>
         <div className='text-3xl font-bold'>Xác nhận thanh toán</div>
         <div className='text-lg mt-2'>Chưa sẵn sàng? &nbsp;<NavLink to={'/detail'} className={'underline text-[var(--color-primary)] duration-200 hover:text-black'}>Trở về</NavLink></div>
