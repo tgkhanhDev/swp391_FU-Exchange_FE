@@ -22,3 +22,22 @@
 .custom-select .ant-select-arrow {
   color: #666666;
 }
+
+.boxchat-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.boxchat-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+.boxchat-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.boxchat-exit-active {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 300ms, transform 300ms;
+}

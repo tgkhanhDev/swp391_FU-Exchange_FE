@@ -27,7 +27,8 @@ export const PostList = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
 
-  const [filterName, setFilterName] = useState<string>("");
+  //const [filterName, setFilterName] = useState<string>("");
+  const [filterName, setFilterName] = useState<string>(params.get('search') || "");
   const [postTypeFilter, setPostTypeFilter] = useState<number | "">(params.has('bannerId') ? Number(params.get('bannerId')) : "");
 
   const { posts } = usePost();
@@ -91,6 +92,11 @@ export const PostList = () => {
     dispatch(getCampusThunk());
   }, [itemQuantity, filterCampus, filterName, postTypeFilter]);
 
+  useEffect(() => {
+    const searchName = params.get('search') || "";
+    setFilterName(searchName);
+  }, [location.search]);
+
   const loadMorePost = () => {
     let newItemQuantity: number;
     if (posts?.meta.total && itemQuantity + 6 > posts.meta.total) {
@@ -104,6 +110,7 @@ export const PostList = () => {
   const handleSearch = (e) => {
     setFilterName(e.target.value);
   };
+  
   const clearFilter = () => {
     setFilterCampus({
       campusId: 0,

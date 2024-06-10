@@ -4,6 +4,8 @@ import { Input, Button, Rate } from "antd";
 import './styles.css'
 
 export const ReviewProduct = () => {
+  const desc = ['Tệ', 'Không hài lòng', 'Bình thường', 'Hài lòng', 'Tuyệt vời'];
+  const [value, setValue] = useState(5);
 
   return (
     <div className="py-6 px-28">
@@ -21,7 +23,9 @@ export const ReviewProduct = () => {
         <div className="mt-8">
           <div>
             <div className="font-semibold text-2xl mb-5">Đánh giá của bạn</div>
-            <Rate allowHalf min className="text-2xl" />
+            <Rate allowClear={false} className="text-2xl" onChange={setValue} value={value} />
+            {value >= 4 ? <span className="text-xl ml-10 text-yellow-500 font-medium">{desc[value - 1]}</span> : <span className="text-xl ml-10 font-medium">{desc[value - 1]}</span>}
+            {/*trừ 1 để đồng bộ với chỉ số của mảng*/}
           </div>
           <div className="mt-8 mb-4">
             <div className="font-semibold text-2xl mb-5">Viết đánh giá của bạn tại đây</div>

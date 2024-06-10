@@ -38,4 +38,7 @@ export const manageUsers = {
 
   getAccountInfo: (payload: Student) =>
     apiC.get<utilsResponse<any>>(`view-student?studentId=${payload.studentId}`),
+
+  updatePassword: (payload: Student) =>
+    apiC.get<utilsResponse<any>>(`update-password`),
 };

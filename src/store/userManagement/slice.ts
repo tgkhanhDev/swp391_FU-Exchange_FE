@@ -51,7 +51,8 @@ export const manageUsersSlice = createSlice({
         toast.success(`${payload.content}`);
         //!redirect here
         state.isAuthorize = true;
-        window.location.href = "/";
+        window.location.href = "/authorize";
+
         localStorage.setItem("userInfo", JSON.stringify(payload.data));
       } else {
         toast.error(`${payload.content}`);

@@ -26,7 +26,7 @@ export const LoginTemplate = () => {
     dispatch(
       getLoginThunk({ username: mssvRef.current, password: pwdRef.current })
     );
-    if (isAuthorize) window.location.href = "/";
+    if (isAuthorize) window.location.href = "/authorize";
   };
 
   return (

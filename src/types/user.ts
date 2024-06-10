@@ -56,3 +56,7 @@ export type RegisterSellerReq = {
   bankingNumber: "string";
   bankingName: "string";
 };
+
+export type UpdatePassword = {
+  
+}

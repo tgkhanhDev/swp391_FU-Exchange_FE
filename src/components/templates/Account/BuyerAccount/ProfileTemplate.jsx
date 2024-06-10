@@ -1,31 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { Radio, Button, Modal, Form, Input } from "antd"
 import { useAppDispatch } from "../../../../store";
 import { getAccountInfoThunk } from "../../../../store/userManagement/thunk";
 
 export const ProfileTemplate = () => {
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState('');
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    console.log("userInfo::: ", userInfo);
-    setUser(userInfo);
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  if (!userInfo) {
+    navigate('/login');
+    return; // Thêm return để ngăn việc tiếp tục thực thi đoạn mã
+  }
 
-    if (userInfo && userInfo.username) {
-      dispatch(getAccountInfoThunk({ studentId: userInfo.username }))
-        .then((action) => {
-          const { payload } = action;
-          const { data } = payload;
-          setUser({...userInfo, ...data}); // Kết hợp userInfo và data thành một đối tượng mới
-        })
-        .catch((error) => {
-          console.error("Error fetching account information:", error);
-        });
-    }
-  }, [dispatch]);
+  setUser(userInfo);
+
+  if (userInfo && userInfo.username) {
+    dispatch(getAccountInfoThunk({ studentId: userInfo.username }))
+      .then((action) => {
+        const { payload } = action;
+        const { data } = payload;
+        const info = {...userInfo, ...data};
+        setUser(info); // Kết hợp userInfo và data thành một đối tượng mới
+      })
+      .catch((error) => {
+        console.error("Error fetching account information:", error);
+      });
+  }
+}, [dispatch]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -52,12 +58,12 @@ export const ProfileTemplate = () => {
               {/*First Name */}
               <div>
                 <label className='font-semibold'>Họ</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' disabled value={user?.firstName}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly value={user ? user.firstName: ''}></input>
               </div>
               {/*Last Name*/}
               <div>
                 <label className='font-semibold'>Tên</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' disabled value={user?.lastName}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly value={user ? user.lastName : ''}></input>
               </div>
             </div>
 
@@ -66,12 +72,12 @@ export const ProfileTemplate = () => {
               {/*ID Number */}
               <div>
                 <label className='font-semibold'>Số CCCD/CMND</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' disabled value={user?.identityCard}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly value={user ? user.identityCard: ''}></input>
               </div>
               {/*Phone Number*/}
               <div>
                 <label className='font-semibold'>Số điện thoại</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' disabled value={user?.phoneNumber}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly value={user ? user.phoneNumber : ''}></input>
               </div>
             </div>
 
@@ -80,29 +86,28 @@ export const ProfileTemplate = () => {
               {/*Địa chỉ chi tiết (Tên đường, số nhà) */}
               <div>
                 <label className='font-semibold' htmlFor='name'>Địa chỉ cụ thể (Số nhà, tên đường)</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' disabled value={user?.address}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly value={user ? user.address : ''}></input>
               </div>
             </div>
             <div className='pb-10 border-b-2 border-b-[#d0d0d0] mt-10'>
               <div>
                 <label className='font-semibold mr-40'>Giới tính</label>
-                <Radio.Group value={user?.gender}>
-                  <Radio value={'Nam'} className='mr-20' disabled>Nam</Radio>
-                  <Radio value={'Nữ'} className='mr-20' disabled>Nữ</Radio>
-                  <Radio value={'Khác'} className='mr-20' disabled>Khác</Radio>
+                <Radio.Group value={user ? user.gender : ''}>
+                  <Radio value={'Nam'} className='mr-20' readOnly>Nam</Radio>
+                  <Radio value={'Nữ'} className='mr-20' readOnly>Nữ</Radio>
+                  <Radio value={'Khác'} className='mr-20' readOnly>Khác</Radio>
                 </Radio.Group>
               </div>
               <div className='mt-8'>
                 <label className='font-semibold mr-20'>Ngày tháng năm sinh</label>
-                <input className=" border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white" disabled value={user?.dob}></input>
+                <input className=" border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white" readOnly value={user ? user.dob : ''}></input>
               </div>
             </div>
             <div className='pb-10 border-b-2 border-b-[#d0d0d0] mt-10'>
-              <label className='font-semibold mr-20'>Mật khẩu</label>
-              <input className="mt-2 border-slate-400 px-4 border focus:outline-none h-10 rounded-md bg-white" type="password" value="abcxyz" disabled></input>
+              <label className='font-semibold mr-12'>Mật khẩu</label>
 
               {/*Modal Đổi mật khẩu */}
-              <Button type="primary" className="ml-5 w-32 h-9 px-1 py-1 bg-[var(--color-primary)] text-white rounded-md" onClick={showModal}>Thay đổi</Button>
+              <Button type="primary" className="w-32 h-9 px-1 py-1 bg-[var(--color-primary)] text-white rounded-md" onClick={showModal}>Thay đổi</Button>
 
               <Modal title={<span className="text-2xl">Đổi Mật khẩu</span>} className='text-center ' open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 <Form>
