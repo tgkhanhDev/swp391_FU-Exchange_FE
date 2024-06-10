@@ -52,9 +52,9 @@ const SidebarCustomer = () => {
       </button>
 
       {userInfo.role === 'Seller' &&
-        <NavLink to={''}>
-          <div className="flex justify-center items-center mt-40">
-            <button className='px-8 py-3 border-2 border-[var(--color-secondary)] text-lg font-semibold relative truncate text-[var(--color-secondary)] hover:text-white duration-100 before:absolute before:w-full before:h-full before:left-0 before:top-0 before:bg-[var(--color-primary)] before:-translate-x-full before:duration-300 before:-z-10 before:hover:translate-x-0 '>
+        <NavLink to={'/dashboard'}>
+          <div className="flex justify-center items-center mt-20">
+            <button className='px-8 py-3 border-2 border-[var(--color-secondary)] text-lg font-semibold relative truncate text-[var(--color-secondary)] hover:text-white duration-100 before:absolute before:w-full before:h-full before:left-0 before:top-0 before:bg-[var(--color-primary)] before:-translate-y-full before:duration-300 before:-z-10 before:hover:translate-y-0 '>
               Kênh người bán
             </button>
           </div>

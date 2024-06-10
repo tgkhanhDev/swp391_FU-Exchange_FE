@@ -4,6 +4,8 @@ import { NavLink } from 'react-router-dom'
 
 export const Footer = () => {
 
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
   return (
     <footer className='w-full min-w-[950px]'>
       {/*Footer gần cuối*/}
@@ -15,15 +17,21 @@ export const Footer = () => {
           <div className='grid grid-cols-2 grid-flow-col'>
 
 
-            <div className='shrink'>
-              <div className='text-3xl mb-5 font-semibold'>Bắt đầu trở thành nhà kinh doanh!</div>
-              <div className='text-sm mb-5 font-normal'>Khơi dậy tinh thần khởi nghiệp - Làm chủ năng lực bán hàng!</div>
 
-              <NavLink to={'/registerSeller'}>
-                <button className='px-14 py-3 border-2 border-[var(--color-secondary)] text-base font-semibold relative truncate text-[var(--color-secondary)] hover:text-white duration-100 before:absolute before:w-full before:h-full before:left-0 before:top-0 before:bg-[var(--color-primary)] before:-translate-x-full before:duration-300 before:-z-10 before:hover:translate-x-0 '>
-                  TÌM HIỂU THÊM
-                </button>
-              </NavLink>
+            <div className='shrink'>
+              {userInfo && userInfo.role === 'Seller' ? (
+                <img className="h-[60%]" src="/images/logos/fu_Ex_logo.png" />
+              ) : (
+                <>
+                  <div className='text-3xl mb-5 font-semibold'>Bắt đầu trở thành nhà kinh doanh!</div>
+                  <div className='text-sm mb-5 font-normal'>Khơi dậy tinh thần khởi nghiệp - Làm chủ năng lực bán hàng!</div>
+                  <NavLink to={'/registerSeller'}>
+                    <button className='px-14 py-3 border-2 border-[var(--color-secondary)] text-base font-semibold relative truncate text-[var(--color-secondary)] hover:text-white duration-100 before:absolute before:w-full before:h-full before:left-0 before:top-0 before:bg-[var(--color-primary)] before:-translate-x-full before:duration-300 before:-z-10 before:hover:translate-x-0'>
+                      TÌM HIỂU THÊM
+                    </button>
+                  </NavLink>
+                </>
+              )}
             </div>
 
             <div className='grid grid-cols-3 grid-flow-col mt-2'>

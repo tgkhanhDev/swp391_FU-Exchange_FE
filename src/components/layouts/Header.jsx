@@ -12,6 +12,8 @@ export const Header = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
   const [searchName, setSearchName] = useState("");
 
   const handleSearchName = () => {
@@ -32,6 +34,11 @@ export const Header = () => {
     { value: 'logout', label: 'Đăng xuất' },
   ];
 
+  if (userInfo && userInfo.role === 'Seller') {
+    options.splice(2, 0, { value: '/dashboard', label: 'Quản lý bán hàng' });
+    //chèn vào ở vị trí thứ 2 mà không xóa value nào
+  }
+
   const handleMenuClick = (key) => {
     console.log(key);
     if (key === 'logout') {
@@ -45,11 +52,11 @@ export const Header = () => {
   };
 
   const Menu = () => (
-    <div className="text-lg bg-[var(--color-primary)] shadow-lg rounded-sm overflow-hidden text-white">
+    <div className="text-lg bg-[var(--color-primary)] shadow-lg rounded-sm overflow-hidden text-white w-48">
       {options.map(option => (
         <button
           key={option.value}
-          className="block w-48 px-4 py-2 text-left duration-150 hover:text-[#4db748] hover:bg-white"
+          className="block w-full px-4 py-2 text-left duration-150 hover:text-[#4db748] hover:bg-white"
           onClick={() => handleMenuClick(option.value)} 
         >
           {option.label}
