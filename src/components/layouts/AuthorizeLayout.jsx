@@ -7,7 +7,7 @@ export const AuthorizeLayout = () => {
   return (
     <div className='flex flex-col min-h-[100vh]' >
       <Header />
-      <div className='grid grid-cols-[auto_1fr] '>
+      <div className='flex-grow grid grid-cols-[auto_1fr] '>
         <SidebarCustomer />
         <Outlet />
       </div>

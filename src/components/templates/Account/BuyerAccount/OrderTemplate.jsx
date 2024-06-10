@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Select, Popover } from "antd"
-import { UserOutlined, ShrinkOutlined, EllipsisOutlined, SendOutlined, PhoneOutlined, DeleteOutlined } from '@ant-design/icons';
+import { UserOutlined, ShrinkOutlined, EllipsisOutlined, SendOutlined, PhoneOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import './styles.css'
 import { CSSTransition } from 'react-transition-group'; {/*Làm xong đéo hiểu gì */ }
 
@@ -9,8 +9,6 @@ export const OrderTemplate = () => {
 
   const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-  const [showVideo, setShowVideo] = useState(false);
 
   const [showBoxChat, setShowBoxChat] = useState(false);
 
@@ -286,7 +284,9 @@ export const OrderTemplate = () => {
             <div className="w-full h-full flex flex-col">
               <div className="flex justify-between items-center border-b-2 border-b-slate-300 py-2 px-4 text-lg text-[var(--color-primary)]">
                 <div className="font-semibold">Name</div>
-                <button onClick={() => setShowVideo(!showVideo)}><PhoneOutlined /></button>
+                <Popover placement="bottomRight" content={<div><ExclamationCircleOutlined className="mr-1"/>Chức năng đang trong giai đoạn phát triển</div>}>
+                  <button><PhoneOutlined /></button>
+                </Popover>
               </div>
 
               <div className="flex-grow overflow-y-auto">
@@ -362,21 +362,6 @@ export const OrderTemplate = () => {
           </div>
         </div>
       </CSSTransition>
-      {showVideo && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50">
-          <div className="aspect-w-16 aspect-h-9">
-            <iframe
-              className="absolute top-0 left-0 w-full h-full"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=3Eokh459WGCm67cv&autoplay=1"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
-            ></iframe>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
