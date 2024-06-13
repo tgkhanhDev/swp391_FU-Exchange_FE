@@ -53,19 +53,19 @@ export const Cart = () => {
 
         <div>
           {/*Header */}
-          <div className='rounded-t-md h-16 w-full bg-white mb-5 grid grid-cols-12 gap-2 sticky top-32 z-10 shadow'>
+          <div className='rounded-t-md h-16 w-full bg-white mb-5 grid grid-cols-12 gap-2 sticky top-32 z-10 shadow-lg'>
 
             <div className='col-span-1 flex justify-center items-center'><Checkbox
               className="custom-checkbox"
               checked={allChecked}
               onChange={handleAllCheck}></Checkbox></div>
 
-            <div className='col-span-4 flex justify-center items-center'>Sản phẩm</div>
-            <div className='col-span-2'></div>
-            <div className='col-span-1 flex justify-center items-center'>Đơn giá</div>
-            <div className='col-span-2 flex justify-center items-center'>Số lượng</div>
-            <div className='col-span-1 flex justify-center items-center'>Số tiền</div>
-            <div className='col-span-1 flex justify-center items-center'>Thao tác</div>
+            <div className='col-span-4 flex justify-center items-center font-semibold text-gray-70'>Sản phẩm</div>
+            <div className='col-span-2 flex justify-center items-center font-semibold text-gray-70'>Phân loại</div>
+            <div className='col-span-1 flex justify-center items-center font-semibold text-gray-70'>Đơn giá</div>
+            <div className='col-span-2 flex justify-center items-center font-semibold text-gray-70'>Số lượng</div>
+            <div className='col-span-1 flex justify-center items-center font-semibold text-gray-70'>Số tiền</div>
+            <div className='col-span-1 flex justify-center items-center font-semibold text-gray-70'>Thao tác</div>
           </div>
 
           {/*Card */}
@@ -83,7 +83,7 @@ export const Cart = () => {
                 <div className='flex items-center'>Bút máy trường học chất lượng cao</div>
               </div>
             </div>
-            <div className='col-span-2 flex flex-col justify-center'>
+            <div className='col-span-2 flex flex-col justify-center items-center'>
               <div>Kích thước: </div>
               <div>Cá chà bặc</div>
             </div>
@@ -115,7 +115,7 @@ export const Cart = () => {
                 <div className='flex items-center'>Bút máy trường học chất lượng cao</div>
               </div>
             </div>
-            <div className='col-span-2 flex flex-col justify-center'>
+            <div className='col-span-2 flex flex-col justify-center items-center'>
               <div>Kích thước: </div>
               <div>Cá chà bặc</div>
             </div>

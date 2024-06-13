@@ -58,5 +58,8 @@ export type RegisterSellerReq = {
 };
 
 export type UpdatePassword = {
-  
+  idWantUpdate: number;
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }

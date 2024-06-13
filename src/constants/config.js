@@ -12,4 +12,6 @@ export const PATH = {
   payment: "/payment",
   dashboard: "/dashboard",
   manageProduct: "/dashboard/product",
+  updateProduct: "/dashboard/product/update",
+  createProduct: "/dashboard/product/create",
 };

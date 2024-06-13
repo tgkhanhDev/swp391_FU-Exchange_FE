@@ -5,6 +5,7 @@ import {
   RegisterSellerReq,
   RegisterStudentReq,
   Student,
+  UpdatePassword,
 } from "../../types/user";
 import { managePost } from "../../services/managePost";
 import { PostFilter_API } from "../../types/post";
@@ -75,6 +76,18 @@ export const getAccountInfoThunk = createAsyncThunk(
   async (payload: Student, { rejectWithValue }) => {
     try {
       const data = await manageUsers.getAccountInfo(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const updatePasswordThunk = createAsyncThunk(
+  "updatePassword",
+  async (payload: UpdatePassword, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.updatePassword(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

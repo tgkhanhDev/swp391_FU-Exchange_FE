@@ -11,7 +11,7 @@ export const Footer = () => {
       {/*Footer gần cuối*/}
       <div className='flex justify-center items-center'>
 
-        <div className='border-t-2 border-b-slate-300 h-[280px] w-[1350px] pl-8 pr-5 py-5'>
+        <div className='border-t-4 border-b-slate-300 h-[280px] w-[1350px] pl-8 pr-5 py-5'>
 
           {/*column là cột, row là hàng*/}
           <div className='grid grid-cols-2 grid-flow-col'>
@@ -20,9 +20,11 @@ export const Footer = () => {
 
             <div className='shrink'>
               {userInfo && userInfo.role === 'Seller' ? (
-                <img className="h-[60%]" src="/images/logos/fu_Ex_logo.png" />
+                <div className='flex justify-center items-center h-full'>
+                  <img className="h-32" src="/images/logos/fu_Ex_logo.png" />
+                </div>
               ) : (
-                <>
+                <div>
                   <div className='text-3xl mb-5 font-semibold'>Bắt đầu trở thành nhà kinh doanh!</div>
                   <div className='text-sm mb-5 font-normal'>Khơi dậy tinh thần khởi nghiệp - Làm chủ năng lực bán hàng!</div>
                   <NavLink to={'/registerSeller'}>
@@ -30,7 +32,7 @@ export const Footer = () => {
                       TÌM HIỂU THÊM
                     </button>
                   </NavLink>
-                </>
+                </div>
               )}
             </div>
 

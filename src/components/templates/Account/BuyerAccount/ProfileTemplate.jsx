@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Radio, Button, Modal, Form, Input } from "antd"
 import { useAppDispatch } from "../../../../store";
 import { getAccountInfoThunk } from "../../../../store/userManagement/thunk";
+import { updatePasswordThunk } from "../../../../store/userManagement/thunk";
 
 export const ProfileTemplate = () => {
 
@@ -10,28 +11,46 @@ export const ProfileTemplate = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const idRef = useRef("");
+  const pwdOldRef = useRef("");
+  const pwdNewRef = useRef("");
+  const pwdNewConfirmRef = useRef("");
+
   useEffect(() => {
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  if (!userInfo) {
-    navigate('/login');
-    return; // Thêm return để ngăn việc tiếp tục thực thi đoạn mã
-  }
+    // Lấy chuỗi JSON từ localStorage
+    const userData = localStorage.getItem('userInfo');
+    if (userData) {
+      // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
+      const userObject = JSON.parse(userData);
+      // Gán giá trị registeredStudentId cho mssvRef.current
+      if (userObject.registeredStudentId) {
+        idRef.current = userObject.registeredStudentId;
+      }
+    }
+  }, []);
 
-  setUser(userInfo);
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (!userInfo) {
+      navigate('/login');
+      return; // Thêm return để ngăn việc tiếp tục thực thi đoạn mã
+    }
 
-  if (userInfo && userInfo.username) {
-    dispatch(getAccountInfoThunk({ studentId: userInfo.username }))
-      .then((action) => {
-        const { payload } = action;
-        const { data } = payload;
-        const info = {...userInfo, ...data};
-        setUser(info); // Kết hợp userInfo và data thành một đối tượng mới
-      })
-      .catch((error) => {
-        console.error("Error fetching account information:", error);
-      });
-  }
-}, [dispatch]);
+    setUser(userInfo);
+
+    if (userInfo && userInfo.username) {
+      dispatch(getAccountInfoThunk({ studentId: userInfo.username }))
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          const info = { ...userInfo, ...data };
+          setUser(info); // Kết hợp userInfo và data thành một đối tượng mới
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
+    }
+  }, [dispatch]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -58,12 +77,12 @@ export const ProfileTemplate = () => {
               {/*First Name */}
               <div>
                 <label className='font-semibold'>Họ</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly value={user ? user.firstName: ''}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={user ? user.firstName : ''}></input>
               </div>
               {/*Last Name*/}
               <div>
                 <label className='font-semibold'>Tên</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly value={user ? user.lastName : ''}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={user ? user.lastName : ''}></input>
               </div>
             </div>
 
@@ -72,12 +91,12 @@ export const ProfileTemplate = () => {
               {/*ID Number */}
               <div>
                 <label className='font-semibold'>Số CCCD/CMND</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly value={user ? user.identityCard: ''}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={user ? user.identityCard : ''}></input>
               </div>
               {/*Phone Number*/}
               <div>
                 <label className='font-semibold'>Số điện thoại</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly value={user ? user.phoneNumber : ''}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={user ? user.phoneNumber : ''}></input>
               </div>
             </div>
 
@@ -86,13 +105,13 @@ export const ProfileTemplate = () => {
               {/*Địa chỉ chi tiết (Tên đường, số nhà) */}
               <div>
                 <label className='font-semibold' htmlFor='name'>Địa chỉ cụ thể (Số nhà, tên đường)</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly value={user ? user.address : ''}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={user ? user.address : ''}></input>
               </div>
             </div>
             <div className='pb-10 border-b-2 border-b-[#d0d0d0] mt-10'>
               <div>
                 <label className='font-semibold mr-40'>Giới tính</label>
-                <Radio.Group value={user ? user.gender : ''}>
+                <Radio.Group defaultValue={user ? user.gender : ''}>
                   <Radio value={'Nam'} className='mr-20' readOnly>Nam</Radio>
                   <Radio value={'Nữ'} className='mr-20' readOnly>Nữ</Radio>
                   <Radio value={'Khác'} className='mr-20' readOnly>Khác</Radio>
@@ -100,7 +119,7 @@ export const ProfileTemplate = () => {
               </div>
               <div className='mt-8'>
                 <label className='font-semibold mr-20'>Ngày tháng năm sinh</label>
-                <input className=" border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white" readOnly value={user ? user.dob : ''}></input>
+                <input className=" border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white" readOnly defaultValue={user ? user.dob : ''}></input>
               </div>
             </div>
             <div className='pb-10 border-b-2 border-b-[#d0d0d0] mt-10'>
@@ -109,18 +128,45 @@ export const ProfileTemplate = () => {
               {/*Modal Đổi mật khẩu */}
               <Button type="primary" className="w-32 h-9 px-1 py-1 bg-[var(--color-primary)] text-white rounded-md" onClick={showModal}>Thay đổi</Button>
 
-              <Modal title={<span className="text-2xl">Đổi Mật khẩu</span>} className='text-center ' open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+              <Modal title={<span className="text-2xl">Đổi Mật khẩu</span>} className='text-center ' open={isModalOpen} onOk={() =>
+                dispatch(
+                  updatePasswordThunk({
+                    idWantUpdate: idRef.current,
+                    oldPassword: pwdOldRef.current,
+                    newPassword: pwdNewRef.current,
+                    confirmNewPassword: pwdNewConfirmRef.current,
+                  })
+                )
+              } onCancel={handleCancel}>
                 <Form>
                   <Form.Item label='Nhập mật khẩu hiện tại'>
-                    <Input.Password className="h-8 rounded-md px-4"></Input.Password>
+                    <Input.Password className="h-8 rounded-md px-4"
+                      onChange={(e) => {
+                        pwdOldRef.current = e.target.value;
+                      }}
+                    >
+
+                    </Input.Password>
                   </Form.Item>
 
                   <Form.Item label='Nhập mật khẩu mới'>
-                    <Input.Password className="h-8 rounded-md px-4"></Input.Password>
+                    <Input.Password className="h-8 rounded-md px-4"
+                      onChange={(e) => {
+                        pwdNewRef.current = e.target.value;
+                      }}
+                    >
+
+                    </Input.Password>
                   </Form.Item>
 
                   <Form.Item label='Xác nhận mật khẩu mới'>
-                    <Input.Password className="h-8 rounded-md px-4"></Input.Password>
+                    <Input.Password className="h-8 rounded-md px-4"
+                      onChange={(e) => {
+                        pwdNewConfirmRef.current = e.target.value;
+                      }}
+                    >
+
+                    </Input.Password>
                   </Form.Item>
                 </Form>
               </Modal>

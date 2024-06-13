@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { CarouselDefault } from "./Carousel.jsx"
 import { useView } from '../../../hooks/useView'
 import { getCampusThunk, getCategoryThunk } from "../../../store/viewManager/thunk"
-import { useAppDispatch } from '../../../store/index.ts'
+import { useAppDispatch } from '../../../store/index'
 import { NavLink, useNavigate } from 'react-router-dom'
 
 export const ProductList = () => {

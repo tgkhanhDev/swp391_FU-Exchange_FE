@@ -10,7 +10,7 @@ import ProfileTemplate from "../components/templates/Account/BuyerAccount/Profil
 import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTemplate";
 import { Login, Register, Authorize, SellerAuthorize } from "../page/account";
 import Dashboard from "../components/templates/Account/SellerAccount/Dashboard";
-import { ManageProduct } from "../components/templates/Account/SellerAccount/ManageProduct";
+import { CreateProduct, UpdateProduct, ManageProduct } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 
@@ -71,6 +71,14 @@ export const router = [
       {
         element: <ManageProduct />,
         path: PATH.manageProduct,
+      },
+      {
+        element: <UpdateProduct />,
+        path: PATH.updateProduct,
+      },
+      {
+        element: <CreateProduct />,
+        path: PATH.createProduct,
       },
     ],
   },

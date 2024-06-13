@@ -6,6 +6,7 @@ import {
   RegisterSellerReq,
   RegisterStudentReq,
   Student,
+  UpdatePassword,
 } from "../types/user";
 import { utilsResponse } from "../types/utils";
 
@@ -39,6 +40,6 @@ export const manageUsers = {
   getAccountInfo: (payload: Student) =>
     apiC.get<utilsResponse<any>>(`view-student?studentId=${payload.studentId}`),
 
-  updatePassword: (payload: Student) =>
-    apiC.get<utilsResponse<any>>(`update-password`),
+  updatePassword: (payload: UpdatePassword) =>
+    apiC.put<utilsResponse<any>>(`update-password`, payload),
 };

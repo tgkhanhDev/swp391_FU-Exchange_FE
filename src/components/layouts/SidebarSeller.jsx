@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { LineChartOutlined, SwapOutlined, ProductOutlined, RightOutlined, LogoutOutlined } from '@ant-design/icons';
+import { LineChartOutlined, SwapOutlined, ProductOutlined, EditOutlined, RightOutlined, LogoutOutlined } from '@ant-design/icons';
 
 const SidebarCustomer = () => {
   const location = useLocation(); // Đặt useLocation bên trong thành phần
@@ -25,7 +25,7 @@ const SidebarCustomer = () => {
       <NavLink to={''}>
         <button className={`rounded-r-[30px] h-16 grid grid-cols-[1fr_auto] items-center mb-2 w-52 hover:bg-slate-200 ${location.pathname === '' ? 'bg-slate-300 w-64' : ''} duration-500`}>
           <div className='flex justify-center items-center pl-5'>
-            <div className='ml-2 text-xl'><SwapOutlined className="mr-2" />Giao dịch</div>
+            <div className='ml-1 text-xl'><SwapOutlined className="mr-2" />Giao dịch</div>
           </div>
           <div className='flex items-center justify-end pr-5'>
             <RightOutlined className="text-xl" />
@@ -37,6 +37,17 @@ const SidebarCustomer = () => {
         <button className={`rounded-r-[30px] h-16 grid grid-cols-[1fr_auto] items-center mb-2 w-52 hover:bg-slate-200 ${location.pathname.includes('/dashboard/product') ? 'bg-slate-300 w-64' : ''} duration-500`}>
           <div className='flex justify-center items-center pl-5'>
             <div className='ml-2 text-xl'><ProductOutlined className="mr-2" />Sản phẩm</div>
+          </div>
+          <div className='flex items-center justify-end pr-5'>
+            <RightOutlined className="text-xl" />
+          </div>
+        </button>
+      </NavLink>
+
+      <NavLink to={''}>
+        <button className={`rounded-r-[30px] h-16 grid grid-cols-[1fr_auto] items-center mb-2 w-52 hover:bg-slate-200 ${location.pathname === '' ? 'bg-slate-300 w-64' : ''} duration-500`}>
+          <div className='flex justify-center items-center pl-5'>
+            <div className='text-xl'><EditOutlined className="mr-2" />Bài đăng</div>
           </div>
           <div className='flex items-center justify-end pr-5'>
             <RightOutlined className="text-xl" />

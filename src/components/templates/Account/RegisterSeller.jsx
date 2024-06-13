@@ -85,7 +85,6 @@ export const RegisterSeller = () => {
               options={options}
               onChange={(selectedOption) => {
                 bankNameRef.current = selectedOption;
-                console.log(bankNameRef.current);
               }}
             />
           </div>
@@ -98,7 +97,6 @@ export const RegisterSeller = () => {
             <Input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2' type="text"
               onChange={(e) => {
                 bankNumRef.current = e.target.value;
-                console.log(bankNumRef.current);
               }}
             >
             </Input>
@@ -109,7 +107,6 @@ export const RegisterSeller = () => {
             <Input.Password className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2'
               onChange={(e) => {
                 pwdRef.current = e.target.value;
-                console.log(pwdRef.current);
               }}
             ></Input.Password >
           </div>
