@@ -4,7 +4,7 @@ import { useView } from '../../../../hooks/useView';
 import { getCategoryThunk } from "../../../../store/viewManager/thunk";
 import { useAppDispatch } from '../../../../store/index';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Select, InputNumber, Input } from 'antd';
+import { Select, InputNumber, Input, Button } from 'antd';
 import { toast } from "react-toastify";
 
 export const CreateProduct = () => {
@@ -96,7 +96,7 @@ export const CreateProduct = () => {
     <div>
       <main className='py-10'>
         <div className='pl-14'>
-          <div className='font-bold text-4xl'>Chỉnh sửa sản phẩm</div>
+          <div className='font-bold text-4xl'>Tạo sản phẩm</div>
           <div className="py-10 pr-6">
             <div className="pb-10 pt-2 border-b-2 border-slate-300">
               <div className="text-2xl font-semibold mb-5">Thông tin cơ bản</div>
@@ -131,7 +131,7 @@ export const CreateProduct = () => {
                 {groups.map((group, groupIndex) => (
                   <div key={groupIndex} className="mb-6 py-4 px-8 bg-gray-200">
                     <div className="mb-10">
-                      <label className='font-semibold'>Tên nhóm phân loại sản phẩm</label>
+                      <label className='font-semibold'>Tên nhóm phân loại sản phẩm {groupIndex + 1}</label>
                       <Input
                         type="text"
                         placeholder="Tên nhóm phân loại"
@@ -155,7 +155,7 @@ export const CreateProduct = () => {
                         ))}
                         <div className="grid grid-cols-2 items-center">
                           <button
-                            className="bg-blue-500 text-white px-4 py-2 rounded w-[70%]"
+                            className="bg-[var(--color-primary)] text-white px-4 py-2 rounded w-[70%]"
                             onClick={() => handleAddCategory(groupIndex)}
                           >
                             Thêm &nbsp;<PlusOutlined />
@@ -163,7 +163,7 @@ export const CreateProduct = () => {
 
                           {group.categories.length > 1 && (
                             <button
-                              className="bg-red-500 text-white px-4 py-2 rounded w-[70%]"
+                              className="bg-white text-[var(--color-primary)] px-4 py-2 rounded w-[70%]"
                               onClick={() => handleRemoveCategory(groupIndex)}
                             >
                               Xóa &nbsp;<DeleteOutlined />
@@ -174,7 +174,7 @@ export const CreateProduct = () => {
                     </div>
                     {groups.length > 1 && (
                       <button
-                        className="bg-red-500 text-white py-2 px-4 rounded w-full flex justify-center items-center"
+                        className="bg-white text-[var(--color-primary)] py-2 px-4 rounded w-full flex justify-center items-center"
                         onClick={() => handleRemoveGroup(groupIndex)}
                       >
                         Xóa nhóm phân loại sản phẩm &nbsp;<DeleteOutlined />
@@ -183,7 +183,7 @@ export const CreateProduct = () => {
                   </div>
                 ))}
                 <button
-                  className="bg-green-500 text-white py-2 px-4 rounded w-full flex justify-center items-center"
+                  className="bg-[var(--color-primary)] text-white py-2 px-4 rounded w-full flex justify-center items-center"
                   onClick={handleAddGroup}
                 >
                   Thêm nhóm phân loại sản phẩm &nbsp;<PlusOutlined />
@@ -212,7 +212,7 @@ export const CreateProduct = () => {
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
                 >
-                  <label htmlFor="fileInput" style={{ display: 'block', cursor: 'pointer' }} className="block cursor-pointer px-5 py-2 bg-[#0066b1] rounded-sm text-white">
+                  <label htmlFor="fileInput" style={{ display: 'block', cursor: 'pointer' }} className="block cursor-pointer px-5 py-2 bg-[var(--color-primary)] rounded-sm text-white">
                     Tải ảnh lên
                     <input
                       id="fileInput"
@@ -236,6 +236,10 @@ export const CreateProduct = () => {
               </div>
             </div>
 
+            <div className="flex items-center justify-end mt-5 gap-x-5">
+              <Button className="px-5 py-2 flex justify-center items-center text-lg">Hủy</Button>
+              <Button type="primary" className="px-5 py-2 flex justify-center items-center text-lg">Tạo sản phẩm</Button>
+            </div>
           </div>
         </div>
       </main>

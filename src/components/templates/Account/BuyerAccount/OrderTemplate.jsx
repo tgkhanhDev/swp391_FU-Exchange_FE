@@ -162,7 +162,7 @@ export const OrderTemplate = () => {
             <div className="w-full h-full flex flex-col">
               <div className="flex justify-between items-center border-b-2 border-b-slate-300 py-2 px-4 text-lg text-[var(--color-primary)]">
                 <div className="font-semibold">Name</div>
-                <Popover placement="bottomRight" content={<div><ExclamationCircleOutlined className="mr-1"/>Chức năng đang trong giai đoạn phát triển</div>}>
+                <Popover placement="bottomRight" content={<div><ExclamationCircleOutlined className="mr-1" />Chức năng đang trong giai đoạn phát triển</div>}>
                   <button><PhoneOutlined /></button>
                 </Popover>
               </div>

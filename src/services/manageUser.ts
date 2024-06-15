@@ -5,8 +5,10 @@ import {
   LoginType,
   RegisterSellerReq,
   RegisterStudentReq,
-  Student,
+  RegisteredStudent,
   UpdatePassword,
+  Seller,
+  UpdateBanking,
 } from "../types/user";
 import { utilsResponse } from "../types/utils";
 
@@ -37,9 +39,15 @@ export const manageUsers = {
   registerSeller: (payload: RegisterSellerReq) =>
     apiB.post<utilsResponse<any>>(`register-to-seller`, payload),
 
-  getAccountInfo: (payload: Student) =>
-    apiC.get<utilsResponse<any>>(`view-student?studentId=${payload.studentId}`),
+  getAccountInfo: (payload: RegisteredStudent) =>
+    apiC.get<utilsResponse<any>>(`${payload.registeredStudentId}`),
 
   updatePassword: (payload: UpdatePassword) =>
     apiC.put<utilsResponse<any>>(`update-password`, payload),
+
+  getSellerInfo: (payload: Seller) => 
+    apiB.get<utilsResponse<any>>(`information/${payload.RegisteredStudent.Student.studentId}`),
+
+  updateBanking : (payload: UpdateBanking) =>
+    apiB.put<utilsResponse<any>>(`update-information`, payload),
 };

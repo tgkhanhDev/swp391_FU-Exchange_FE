@@ -4,8 +4,10 @@ import {
   LoginType,
   RegisterSellerReq,
   RegisterStudentReq,
-  Student,
+  RegisteredStudent,
   UpdatePassword,
+  Seller,
+  UpdateBanking,
 } from "../../types/user";
 import { managePost } from "../../services/managePost";
 import { PostFilter_API } from "../../types/post";
@@ -73,7 +75,7 @@ export const registerSellerThunk = createAsyncThunk(
 
 export const getAccountInfoThunk = createAsyncThunk(
   "getAccountInfo",
-  async (payload: Student, { rejectWithValue }) => {
+  async (payload: RegisteredStudent, { rejectWithValue }) => {
     try {
       const data = await manageUsers.getAccountInfo(payload);
       return data.data;
@@ -88,6 +90,30 @@ export const updatePasswordThunk = createAsyncThunk(
   async (payload: UpdatePassword, { rejectWithValue }) => {
     try {
       const data = await manageUsers.updatePassword(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getSellerInfoThunk = createAsyncThunk(
+  "getSellerInfo",
+  async (payload: Seller, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getSellerInfo(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const updateBankingThunk = createAsyncThunk(
+  "updateBanking", //bank chưa kiểm tra null
+  async (payload: UpdateBanking, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.updateBanking(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

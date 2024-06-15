@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
 import { useAppDispatch } from "../../store";
-import { getAccountInfoThunk } from "../../store/userManagement/thunk";
+import { getAccountInfoThunk, getSellerInfoThunk } from "../../store/userManagement/thunk";
 import { Dropdown, Menu } from 'antd';
 import "./styles.css";
 
@@ -55,18 +55,42 @@ export const Header = () => {
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
     setUser(userInfo);
 
     if (userInfo && userInfo.username) {
-      dispatch(getAccountInfoThunk({ studentId: userInfo.username }))
-        .then((action) => {
-          const { payload } = action;
-          const { data } = payload;
-          setUser({ ...userInfo, ...data });
-        })
-        .catch((error) => {
-          console.error("Error fetching account information:", error);
-        });
+      if (userInfo.role === "Buyer") {
+        dispatch(getAccountInfoThunk({
+          registeredStudentId: userInfo.registeredStudentId
+        }))
+          .then((action) => {
+            const { payload } = action;
+            const { data } = payload;
+            const info = { ...userInfo, ...data };
+            setUser(info); // Kết hợp userInfo và data thành một đối tượng mới
+          })
+          .catch((error) => {
+            console.error("Error fetching account information:", error);
+          });
+      }
+      else {
+        dispatch(getSellerInfoThunk({
+          RegisteredStudent: {
+            Student: {
+              studentId: userInfo.username
+            }
+          }
+        }))
+          .then((action) => {
+            const { payload } = action;
+            const { data } = payload;
+            const info = { ...userInfo, ...data };
+            setUser(info); // Kết hợp userInfo và data thành một đối tượng mới
+          })
+          .catch((error) => {
+            console.error("Error fetching account information:", error);
+          });
+      }
     }
   }, [dispatch]);
 
@@ -99,7 +123,7 @@ export const Header = () => {
           ></input>
         </div>
 
-        <div className="flex justify-center items-center"> 
+        <div className="flex justify-center items-center">
           <NavLink to={"/cart"}>
             <ShoppingCartOutlined className='mr-10 cursor-pointer text-3xl' />
           </NavLink>
@@ -113,7 +137,8 @@ export const Header = () => {
               <button className='flex justify-between items-center pl-5'>
                 <div className="flex justify-center items-center text-xl">
                   <UserOutlined className="mr-4 text-3xl" />
-                  {user.firstName} {user.lastName}
+                  
+                  {(user && user.student ? user.student.firstName + ' ' + user.student.lastName : '') || (user ? user.firstName + ' ' + user.lastName : '')}
                 </div>
               </button>
             </Dropdown>

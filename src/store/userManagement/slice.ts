@@ -8,6 +8,8 @@ import {
   registerSellerThunk,
   getAccountInfoThunk,
   updatePasswordThunk,
+  getSellerInfoThunk,
+  updateBankingThunk,
 } from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -110,7 +112,19 @@ export const manageUsersSlice = createSlice({
     builder.addCase(getAccountInfoThunk.fulfilled, (state, { payload }) => {
       state.users = payload.data;
     });
+    builder.addCase(getSellerInfoThunk.fulfilled, (state, { payload }) => {
+      state.users = payload.data;
+    });
     builder.addCase(updatePasswordThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`${payload.content}`);
+        window.location.href = "/authorize";
+      } else {
+        toast.error(`${payload.content}`);
+      }
+    }
+    );
+    builder.addCase(updateBankingThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
         toast.success(`${payload.content}`);
         window.location.href = "/authorize";

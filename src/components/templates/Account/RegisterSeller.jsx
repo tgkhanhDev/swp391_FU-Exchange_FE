@@ -103,7 +103,7 @@ export const RegisterSeller = () => {
           </div>
           {/*Input password mới*/}
           <div className='mb-6'>
-            <label className='text-[#9f9f9f] mb-2'>Mật khẩu mới</label>
+            <label className='text-[#9f9f9f] mb-2'>Mật khẩu</label>
             <Input.Password className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2'
               onChange={(e) => {
                 pwdRef.current = e.target.value;
