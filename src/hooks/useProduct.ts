@@ -2,8 +2,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
 export const useProduct = () => {
-  const { products } = useSelector(
+  const { productView, productQuantity } = useSelector(
     (state: RootState) => state.manageProduct
   );
-  return { products };
+  return { productView, productQuantity};
 };

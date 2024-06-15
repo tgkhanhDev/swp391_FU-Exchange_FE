@@ -3,7 +3,7 @@ import { PostFilter_API } from "../../types/post";
 import { manageOrder } from "../../services/manageOrder";
 import { CodPayment } from "../../types/order";
 
-export const postPayCod = createAsyncThunk(
+export const postPayCodThunk = createAsyncThunk(
   "pay_cod",
   async (payload: CodPayment, { rejectWithValue }) => {
     try {

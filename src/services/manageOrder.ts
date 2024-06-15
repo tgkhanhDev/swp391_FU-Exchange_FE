@@ -3,7 +3,7 @@ import { CodPayment } from "../types/order";
 import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
-const api = apiInstance({
+const api = apiInstance({ 
   baseURL: "http://localhost:8080/order",
 });
 

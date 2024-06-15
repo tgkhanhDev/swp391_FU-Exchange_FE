@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Post, PostLoadMore } from "../../types/post";
-import { postPayCod } from "./thunk";
+import { postPayCodThunk } from "./thunk";
 
 type stateType = {};
 
@@ -11,7 +11,7 @@ export const manageOrderSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(postPayCod.fulfilled, (state, { payload }) => {
+    builder.addCase(postPayCodThunk.fulfilled, (state, { payload }) => {
       console.log("payloadCOD:::",payload);
       
     })

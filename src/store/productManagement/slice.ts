@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getProductByVariationDetailThunk, getProductByIdThunk } from "./thunk";
+import { ProductPaymentType } from "../../types/product";
 
 interface initialType {
-  productView: any;
-  productQuantity: { [prdId: number]: number };
+  productView: ProductPaymentType[];
+  productQuantity: Record<string, number>;
 }
 
-const initialState = {
+const initialState: initialType = {
   productView: [],
   productQuantity: {},
 };
@@ -22,14 +23,20 @@ export const manageProductSlice = createSlice({
       state,
       action: PayloadAction<{ id: number; quantity?: number }>
     ) {
-      state.productQuantity
+      action.payload.quantity
+        ? (state.productQuantity[action.payload.id] = action.payload.quantity)
+        : null;
+    },
+    setTest(state) {
+      console.log("test");
     },
   },
   extraReducers: (builder) => {
     builder.addCase(
       getProductByVariationDetailThunk.fulfilled,
       (state, { payload }) => {
-        state.productView = payload.data;
+        state.productView.push(payload.data);
+        // console.log("payload.data:::", payload.data);
       }
     ),
       builder.addCase(getProductByIdThunk.fulfilled, (state, { payload }) => {
@@ -37,6 +44,9 @@ export const manageProductSlice = createSlice({
       });
   },
 });
+
+export const { setProductEmpty, setProductQuantity, setTest } =
+  manageProductSlice.actions;
 
 export const { reducer: manageProductReducer, actions: manageProductActions } =
   manageProductSlice;
