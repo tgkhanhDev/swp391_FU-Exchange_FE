@@ -2,7 +2,12 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   IsAllowRegisterType,
   LoginType,
+  RegisterSellerReq,
   RegisterStudentReq,
+  RegisteredStudent,
+  UpdatePassword,
+  Seller,
+  UpdateBanking,
 } from "../../types/user";
 import { managePost } from "../../services/managePost";
 import { PostFilter_API } from "../../types/post";
@@ -49,6 +54,66 @@ export const registerClientThunk = createAsyncThunk(
   async (payload: RegisterStudentReq, { rejectWithValue }) => {
     try {
       const data = await manageUsers.registerClient(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const registerSellerThunk = createAsyncThunk(
+  "registerSeller",
+  async (payload: RegisterSellerReq, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.registerSeller(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getAccountInfoThunk = createAsyncThunk(
+  "getAccountInfo",
+  async (payload: RegisteredStudent, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getAccountInfo(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const updatePasswordThunk = createAsyncThunk(
+  "updatePassword",
+  async (payload: UpdatePassword, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.updatePassword(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getSellerInfoThunk = createAsyncThunk(
+  "getSellerInfo",
+  async (payload: Seller, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getSellerInfo(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const updateBankingThunk = createAsyncThunk(
+  "updateBanking", //bank chưa kiểm tra null
+  async (payload: UpdateBanking, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.updateBanking(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

@@ -1,10 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Input, Select } from "antd";
 import { NavLink } from 'react-router-dom'
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import { registerSellerThunk } from '../../../store/userManagement/thunk';
+import { useAppDispatch } from "../../../store";
 import './styles.css'
 
 export const RegisterSeller = () => {
+
+  const mssvRef = useRef("");
+  const pwdRef = useRef("");
+  const bankNumRef = useRef("");
+  const bankNameRef = useRef("");
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    // Lấy chuỗi JSON từ localStorage
+    const userData = localStorage.getItem('userInfo');
+    if (userData) {
+      // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
+      const userObject = JSON.parse(userData);
+      // Gán giá trị registeredStudentId cho mssvRef.current
+      if (userObject.registeredStudentId) {
+        mssvRef.current = userObject.registeredStudentId;
+      }
+    }
+  }, []);
 
   const options = [
     { value: 'VIETCAPITALBANK', label: 'VIETCAPITALBANK' },
@@ -61,6 +83,9 @@ export const RegisterSeller = () => {
               defaultValue="Ngân hàng"
               className="custom-select"
               options={options}
+              onChange={(selectedOption) => {
+                bankNameRef.current = selectedOption;
+              }}
             />
           </div>
 
@@ -69,19 +94,38 @@ export const RegisterSeller = () => {
           {/*CCCD xác nhận*/}
           <div className='mb-6'>
             <label className='text-[#9f9f9f] mb-2' htmlFor="CCCD">Số tài khoản ngân hàng</label>
-            <Input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2' type="text" id="CCCD" name="CCCD"></Input>
+            <Input className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2' type="text"
+              onChange={(e) => {
+                bankNumRef.current = e.target.value;
+              }}
+            >
+            </Input>
           </div>
           {/*Input password mới*/}
           <div className='mb-6'>
-            <label className='text-[#9f9f9f] mb-2'>Mật khẩu mới</label>
-            <Input.Password className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2'></Input.Password >
+            <label className='text-[#9f9f9f] mb-2'>Mật khẩu</label>
+            <Input.Password className='w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2'
+              onChange={(e) => {
+                pwdRef.current = e.target.value;
+              }}
+            ></Input.Password >
           </div>
 
           {/*Nút đăng kí*/}
           <div>
-            <NavLink to={"/authorize"}>
-              <button className='bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]'>Đăng kí</button>
-            </NavLink>
+            <button className='bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]'
+              onClick={() =>
+                dispatch(
+                  registerSellerThunk({
+                    registeredStudentId: mssvRef.current,
+                    password: pwdRef.current,
+                    bankingNumber: bankNumRef.current,
+                    bankingName: bankNameRef.current,
+                  })
+                )
+              }
+            >Đăng kí
+            </button>
           </div>
         </div>
       </main>

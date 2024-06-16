@@ -1,14 +1,14 @@
 import Header from './Header'
 import Footer from './Footer'
 import { Outlet } from 'react-router-dom'
-import SidebarCustomer from './SidebarCustomer'
+import SidebarSeller from './SidebarSeller'
 
-export const AuthorizeLayout = () => {
+export const AuthorizeSellerLayout = () => {
   return (
     <div className='flex flex-col min-h-[100vh]' >
       <Header />
       <div className='flex-grow grid grid-cols-[auto_1fr] '>
-        <SidebarCustomer />
+        <SidebarSeller />
         <Outlet />
       </div>
       <Footer />
@@ -16,4 +16,4 @@ export const AuthorizeLayout = () => {
   )
 }
 
-export default AuthorizeLayout 
+export default AuthorizeSellerLayout 

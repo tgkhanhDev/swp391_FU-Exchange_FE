@@ -6,8 +6,12 @@ import PostDetail from "../components/templates/productDetail/PostDetail";
 import PostList from "../components/templates/productList/PostList";
 import Cart from "../components/templates/Cart/Cart";
 import ProfileTemplate from "../components/templates/Account/BuyerAccount/ProfileTemplate";
+import { LoginStaff } from "../components/templates/Account";
 import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTemplate";
-import { Login, Register, Authorize } from "../page/account";
+import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize } from "../page/account";
+import { AdminDashboard } from "../components/templates/Account/Admin";
+import Dashboard from "../components/templates/Account/SellerAccount/Dashboard";
+import { CreateProduct, UpdateProduct, ManageProduct } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 import { Payment } from "../components/templates/Payment";
@@ -57,6 +61,41 @@ export const router = [
       },
     ],
   },
+
+  {
+    element: <SellerAuthorize />,
+    path: PATH.dashboard,
+    children: [
+      {
+        element: <Dashboard />,
+        index: true,
+      },
+      {
+        element: <ManageProduct />,
+        path: PATH.manageProduct,
+      },
+      {
+        element: <UpdateProduct />,
+        path: PATH.updateProduct,
+      },
+      {
+        element: <CreateProduct />,
+        path: PATH.createProduct,
+      },
+    ],
+  },
+
+  {
+    element: <AdminAuthorize />,
+    path: PATH.admin,
+    children: [
+      {
+        element: <AdminDashboard />,
+        index: true,
+      },
+    ],
+  },
+
   {
     element: <Login />,
     path: PATH.login,
@@ -68,6 +107,10 @@ export const router = [
   {
     element: <RegisterSeller />,
     path: PATH.registerSeller,
+  },
+  {
+    element: <LoginStaff/>,
+    path: PATH.loginStaff,
   },
   {
     element: <NotFound />,

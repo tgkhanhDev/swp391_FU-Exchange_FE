@@ -24,14 +24,25 @@ import { useNavigate } from "react-router-dom";
 export const PostList = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [filterCampus, setFilterCampus] = useState<Campus>({
-    campusId: 0,
-    campusName: "Tất cả Campus",
-  });
-  const [filterName, setFilterName] = useState<string>("");
-  const [postTypeFilter, setPostTypeFilter] = useState<number | "">("");
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+
+  //const [filterName, setFilterName] = useState<string>("");
+  const [filterName, setFilterName] = useState<string>(params.get('search') || "");
+  const [postTypeFilter, setPostTypeFilter] = useState<number | "">(params.has('bannerId') ? Number(params.get('bannerId')) : "");
+
   const { posts } = usePost();
   const { campus, postType } = useView();
+  const [filterCampus, setFilterCampus] = useState<Campus>(() => {
+    const campusId = params.get('campusId');
+    
+    if (campusId) {
+        const foundCampus = campus?.find(item => item.campusId === Number(campusId));
+        return foundCampus ? foundCampus : { campusId: 0, campusName: "Tất cả Campus" };
+    } else {
+        return { campusId: 0, campusName: "Tất cả Campus" };
+    }
+});
 
   //Get all Campus list
   const campusItem: MenuProps["items"] = [
@@ -81,6 +92,11 @@ export const PostList = () => {
     dispatch(getCampusThunk());
   }, [itemQuantity, filterCampus, filterName, postTypeFilter]);
 
+  useEffect(() => {
+    const searchName = params.get('search') || "";
+    setFilterName(searchName);
+  }, [location.search]);
+
   const loadMorePost = () => {
     let newItemQuantity: number;
     if (posts?.meta.total && itemQuantity + 6 > posts.meta.total) {
@@ -94,6 +110,7 @@ export const PostList = () => {
   const handleSearch = (e) => {
     setFilterName(e.target.value);
   };
+  
   const clearFilter = () => {
     setFilterCampus({
       campusId: 0,
@@ -108,9 +125,8 @@ export const PostList = () => {
       {/* Title  */}
       <div style={{ width: "470px" }}>
         <div className="font-bold text-3xl">Shop</div>
-        <div className="mt-3">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        <div className="mt-3 text-gray-600">
+          Chào mừng bạn đến với FU-Exchange! Tìm mọi thứ bạn yêu thích và tận hưởng niềm vui mua sắm!
         </div>
       </div>
       {/* End Title  */}
@@ -131,6 +147,7 @@ export const PostList = () => {
                 onChange={(e: RadioChangeEvent) => {
                   setPostTypeFilter(e.target.value);
                 }}
+                value={postTypeFilter}
               >
                 <Space direction="vertical">
                   <Radio checked value="">
@@ -181,7 +198,7 @@ export const PostList = () => {
                     <div className="text-xl font-semibold flex items-center h-[100px]">
                       {item.product.detail.productName.length > 60
                         ? item.product.detail.productName.substring(0, 60) +
-                          "..."
+                        "..."
                         : item.product.detail.productName}
                     </div>
                     <div className="flex w-full justify-between">

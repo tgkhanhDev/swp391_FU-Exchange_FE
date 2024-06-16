@@ -23,6 +23,7 @@ export const RegisterTemplate = () => {
   const cfPwdRef = useRef("");
 
   const checked = () => {
+    setCheckClicked(true);
     setIsChecked(true);
     setIsRegistered(true);
   };
@@ -48,9 +49,9 @@ export const RegisterTemplate = () => {
     <div>
       <header className="bg-[var(--color-bg-hightlight)] text-[#f6f6f6] w-full min-w-[950px] py-3 px-5">
         <NavLink to={"/login"}>
-        <div className="hover:opacity-80 inline-block">
-          <div className="text-lg flex justify-center"><ArrowLeftOutlined className="text-xl mr-2" />Trở về</div>
-        </div>
+          <div className="hover:opacity-80 inline-block">
+            <div className="text-lg flex justify-center"><ArrowLeftOutlined className="text-xl mr-2" />Trở về</div>
+          </div>
         </NavLink>
       </header>
       <main className="flex flex-col justify-center items-center">
@@ -117,7 +118,7 @@ export const RegisterTemplate = () => {
             <div>
               {/*Input password mới*/}
               <div className="mb-6">
-                <label className="text-[#9f9f9f] mb-2">Mật khẩu mới</label>
+                <label className="text-[#9f9f9f] mb-2">Mật khẩu</label>
                 <input
                   className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
                   type="password"

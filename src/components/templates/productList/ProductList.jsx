@@ -2,8 +2,8 @@ import React, { useEffect } from 'react'
 import { CarouselDefault } from "./Carousel.jsx"
 import { useView } from '../../../hooks/useView'
 import { getCampusThunk, getCategoryThunk } from "../../../store/viewManager/thunk"
-import { useAppDispatch } from '../../../store/index.ts'
-import { NavLink} from 'react-router-dom'
+import { useAppDispatch } from '../../../store/index'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 export const ProductList = () => {
   const { category, campus } = useView()
@@ -15,10 +15,21 @@ export const ProductList = () => {
   }, [dispatch]);
 
   const bannersData = [
-    { bannerId: 1, imageSrc: '/images/banners/website/purchase.png', title: 'Mua bán' },
+    { bannerId: 1, imageSrc: '/images/banners/website/gift.png', title: 'Cho và Tặng' },
     { bannerId: 2, imageSrc: '/images/banners/website/exchange.png', title: 'Trao đổi' },
-    { bannerId: 3, imageSrc: '/images/banners/website/gift.png', title: 'Cho và Tặng' },
+    { bannerId: 3, imageSrc: '/images/banners/website/purchase.png', title: 'Mua bán' },
   ];
+
+  const navigatePostTypeFilter = useNavigate();
+  const navigateCampusFilter = useNavigate();
+
+  const handlePostTypeClick = (bannerId) => {
+    navigatePostTypeFilter(`/detail?bannerId=${bannerId}`);
+  };
+
+  const handleCampusClick = (campusId) => {
+    navigateCampusFilter(`/detail?campusId=${campusId}`);
+  };
 
   return (
     <main>
@@ -74,7 +85,9 @@ export const ProductList = () => {
         <div className='flex justify-center'>
           <div className='w-[1400px] grid grid-cols-3 gap-16 h-[600px] '>
             {bannersData.map(item => (
-              <div className={`relative h-[500px] ${item.bannerId % 2 === 0 ? '' : 'mt-[80px]'} cursor-pointer`} key={item.bannerId}>
+              <div className={`relative h-[500px] ${item.bannerId % 2 === 0 ? '' : 'mt-[80px]'} cursor-pointer`} key={item.bannerId}
+              onClick={() => handlePostTypeClick(item.bannerId)}
+              >
                 <img className='w-full h-full object-cover absolute top-0 left-0' src={item.imageSrc}></img>
                 <div className='duration-300 opacity-0 hover:opacity-100 w-full h-full'>
                   <div className='w-full h-20 bg-[#E7EEF1] bg-opacity-85 absolute bottom-0 left-0 font-bold text-2xl flex justify-center items-center'>{item.title}</div>
@@ -98,8 +111,11 @@ export const ProductList = () => {
         {/*Card*/}
         <div className='flex justify-center items-center'>
           <div className='w-[1400px] grid grid-cols-5 grid-flow-col gap-5 h-[400px]'>
-          {campus.map(item => (
-              <div className='text-center cursor-pointer duration-300 hover:scale-[1.02]' key={item.campusId} >
+            {campus.map(item => (
+              <div className='text-center cursor-pointer duration-300 hover:scale-[1.02]' 
+              key={item.campusId} 
+              onClick={() => handleCampusClick(item.campusId)}
+              >
                 <div className='h-[350px]'>
                   <img src={item.imageUrl} className='w-full h-full object-cover'></img>
                 </div>

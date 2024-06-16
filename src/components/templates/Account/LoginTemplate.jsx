@@ -1,5 +1,7 @@
-import { Button } from "antd";
-import React, { useState, useRef } from "react";
+
+import { Button, Input } from "antd";
+import React, { useState, useRef, useEffect } from "react";
+>>>>>>> dung/myOrder_viewTEMP
 import { NavLink } from "react-router-dom";
 import { useAppDispatch } from "../../../store";
 import {
@@ -7,7 +9,6 @@ import {
   isRegisteredThunk,
 } from "../../../store/userManagement/thunk";
 import { useAccount } from "../../../hooks/useAccount";
-import { useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { QuestionCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 
@@ -15,10 +16,12 @@ export const LoginTemplate = () => {
   const mssvRef = useRef("");
   const pwdRef = useRef("");
   const { isAccountRegistered, isAuthorize } = useAccount();
+  const [checkClicked, setCheckClicked] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const checked = (e) => {
     e.preventDefault();
+    setCheckClicked(true);
     dispatch(isRegisteredThunk(mssvRef.current));
   };
 
@@ -27,7 +30,7 @@ export const LoginTemplate = () => {
     dispatch(
       getLoginThunk({ username: mssvRef.current, password: pwdRef.current })
     );
-    if (isAuthorize) window.location.href = "/";
+    if (isAuthorize) window.location.href = "/authorize";
   };
 
   return (
@@ -67,12 +70,17 @@ export const LoginTemplate = () => {
                 ></input>
               </div>
               {!isAccountRegistered && (
-                <button
-                  className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]"
-                  onClick={checked}
-                >
-                  Kiểm tra
-                </button>
+                <>
+                  <button
+                    className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]"
+                    onClick={checked}
+                  >
+                    Kiểm tra
+                  </button>
+                  {checkClicked && !isAccountRegistered && (
+                    <div className="text-red-500 mt-2 text-center">Bạn mới đăng nhập lần đầu? <NavLink to={"/register"}><span className="underline font-medium">Nhấn vào đây</span></NavLink></div>
+                  )}
+                </>
               )}
             </form>
 

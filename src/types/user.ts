@@ -26,7 +26,7 @@ export type Student = {
   phoneNumber: string;
   gender: string;
   dob: Date;
-};
+}; 
 
 export type LoginType = {
   username: string;
@@ -48,4 +48,24 @@ export type RegisterStudentReq = {
   identifyNumber: "string";
   password: "string";
   confirmPassword: "string";
+};
+
+export type RegisterSellerReq = {
+  registeredStudentId: number;
+  password: "string";
+  bankingNumber: "string";
+  bankingName: "string";
+};
+
+export type UpdatePassword = {
+  idWantUpdate: number;
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+
+export type UpdateBanking = {
+  sellerId: number;
+  bankingNumber: string;
+  bankingName: string;
 };
