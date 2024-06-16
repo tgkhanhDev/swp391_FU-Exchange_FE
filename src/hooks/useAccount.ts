@@ -5,5 +5,7 @@ export const useAccount = () => {
   const { isAccountRegistered, isAuthorize, isAllowRegister } = useSelector(
     (state: RootState) => state.manageUsers
   );
-  return { isAccountRegistered, isAuthorize, isAllowRegister };
+  const userInfo = localStorage.getItem("userInfo");
+  const studentInfo = userInfo ? JSON.parse(userInfo) : null;
+  return { isAccountRegistered, isAuthorize, isAllowRegister, studentInfo };
 };

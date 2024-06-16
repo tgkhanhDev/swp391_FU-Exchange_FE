@@ -1,11 +1,11 @@
 export interface CodPayment {
   registeredStudentId: number;
-  postProductToBuyRequests: PostProductToBuyRequest[];
+  postProductToBuyRequests: PostProductToBuyRequestType[];
   paymentMethodId: number;
   description: string;
 };
 
-export interface PostProductToBuyRequest {
+export interface PostProductToBuyRequestType {
   postProductId: number;
   variationDetailId: number;
   quantity: number;

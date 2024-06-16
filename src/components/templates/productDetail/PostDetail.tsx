@@ -9,7 +9,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { log } from "console";
 import { PATH } from "../../../constants/config";
 import { getProductByIdThunk, getProductByVariationDetailThunk } from "../../../store/productManagement/thunk";
-import FirebaseUpload from "../../../../thirdparty/FirebaseUpload";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import {setProductQuantity, setTest} from "../../../store/productManagement/slice"
 
@@ -21,7 +20,7 @@ export type DetailType = {
 };
 
 export const PostDetail: React.FC<PostType> = () => {
-  const { productId } = useParams();
+  const { postProductId } = useParams();
   const [imageGrid, setImageGrid] = useState<
     { original: string; thumbnail: string }[]
   >([]);
@@ -31,7 +30,9 @@ export const PostDetail: React.FC<PostType> = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getPostByIdThunk(parseInt(productId!)));
+    dispatch(getPostByIdThunk(parseInt(postProductId!)));
+    console.log("postProductId:", postProductId);
+    
   }, []);
 
   useEffect(() => {
@@ -154,7 +155,7 @@ export const PostDetail: React.FC<PostType> = () => {
 
                   dispatch(getProductByVariationDetailThunk(variationList));
                   dispatch(setProductQuantity({ id: prdId , quantity: quantity }));
-                  navigate(PATH.payment);
+                  navigate(PATH.payment, {state: {postProductId: 6}});
                 }
               }}
             >

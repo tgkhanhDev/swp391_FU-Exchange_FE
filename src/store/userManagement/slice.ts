@@ -105,7 +105,7 @@ export const manageUsersSlice = createSlice({
         toast.success(`${payload.content}`);
         window.location.href = "/login";
       } else {
-        toast.error(`${payload.content}`);
+        toast.info(`${payload.content}`);
       }
     }
     );

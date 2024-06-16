@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Checkbox, InputNumber, Button } from "antd";
 import "./styles.css";
 import { useAppDispatch } from "../../../store";
@@ -7,8 +7,11 @@ import { manageProductActions, setProductEmpty } from "../../../store/productMan
 import { useProduct } from "../../../hooks/useProduct";
 import { getProductByIdThunk } from "../../../store/productManagement/thunk";
 import { PATH } from "../../../constants/config";
-import { CodPayment } from "../../../types/order";
+import { CodPayment, PostProductToBuyRequestType } from "../../../types/order";
 import { postPayCodThunk } from "../../../store/orderManager/thunk";
+import TextArea from "antd/es/input/TextArea";
+import { useAccount } from "../../../hooks/useAccount";
+import { toast } from "react-toastify";
 
 export interface PaymentItem {
   productId: number;
@@ -17,16 +20,30 @@ export interface PaymentItem {
 }
 [];
 
+
 export const Payment = () => {
   const dispatch = useAppDispatch();
-  const { productView, productQuantity } = useProduct();
-  const navigate = useNavigate();
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const { productView, productQuantity } = useProduct();
+  const {studentInfo} = useAccount()
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { postProductId } = location.state || {};
+
+  
+
   useEffect(() => {
-    console.log("Product: ", productView);
-    console.log("productQuantity: ", productQuantity[6]);
-    
-  }, [productView]);
+    if (!studentInfo) {
+      navigate(-1)
+      toast.error("Vui lòng đăng nhập để tiếp tục!")
+    }
+
+    window.addEventListener('unload', (e) => {
+      e.preventDefault()
+      navigate("/abc")
+    });
+
+  }, [studentInfo, productView])
 
   useEffect(() => {
     let price = 0;
@@ -37,39 +54,28 @@ export const Payment = () => {
   }, [productView]);
 
   const onPurchase = () => {
-    const userInfo = localStorage.getItem("userInfo");
-    const student = userInfo ? JSON.parse(userInfo) : null;
-
-    const postProductToBuyRequests = []
+    const postProductToBuyRequests: PostProductToBuyRequestType[] = []
 
     productView.map(prd => {
       prd.variation.map(item => {
         postProductToBuyRequests.push(
           {
-            postProdutId: 6,
+            postProductId: postProductId,
             variationDetailId: item.variationId,
-            quantity: productQuantity[6],
-            price: parseFloat(prd.product.price) 
+            quantity: productQuantity[postProductId],
+            price: parseFloat(prd.product.price)
           }
         )
       })
     })
-    //!=================================
-    //!=================================
-    //!=================================
-    //*Coi truyen postId qa
-    //!=================================
-    //!=================================
-    //!=================================
-
 
     const payment: CodPayment = {
-      registeredStudentId: student.registeredStudentId,
+      registeredStudentId: studentInfo.registeredStudentId,
       postProductToBuyRequests: postProductToBuyRequests,
-      paymentMethodId:1,
+      paymentMethodId: 1,
+      description: (document.getElementById("description") as HTMLInputElement).value,
     }
     dispatch(postPayCodThunk(payment))
-    
   }
 
   return (
@@ -84,13 +90,13 @@ export const Payment = () => {
             className={
               "underline text-[var(--color-primary)] duration-200 hover:text-black"
             }
-            onClick={()=>dispatch(setProductEmpty())}
+            onClick={() => dispatch(setProductEmpty())}
           >
             Trở về
           </NavLink>
         </div>
       </div>
-      
+
       {/*Thông tin */}
 
       <div className="grid grid-cols-2 gap-32 px-32 pb-12">
@@ -115,15 +121,15 @@ export const Payment = () => {
                     <div className="font-semibold text-2xl">
                       {product.product.detail?.productName}
                     </div>
-                    {product.variation.map(variation => 
+                    {product.variation.map(variation =>
                       <div><span className="mr-1 font-bold">{variation.variationName}</span>:{variation.variationDetail.description}</div>
-                      )}
+                    )}
                     <div><span className="mr-1 font-bold">Số lượng:</span> {productQuantity[product.product.productId]}</div>
                   </div>
                   <div className="font-medium text-lg"><span className="mr-1 font-bold">Giá: </span>{product?.product.price}</div>
                 </div>
 
-                  {/* <div className='flex flex-grow items-center justify-end w-full'>byVendorName</div> */}
+                {/* <div className='flex flex-grow items-center justify-end w-full'>byVendorName</div> */}
                 {/* <div className="flex flex-col justify-between items-end flex-grow ">
                   <div className="flex justify-end gap-10 text-lg">
                     <button className="underline text-[var(--color-primary)] duration-200 hover:text-black">
@@ -158,6 +164,11 @@ export const Payment = () => {
               <div>Tổng</div>
               <div>{totalPrice * 1.1} VNĐ</div>
             </div>
+          </div>
+          {/* Description  */}
+          <div className="my-5">
+            <div className="text-with-lines">LỜI NHẮN CHO ĐƠN VỊ VẬN CHUYỂN</div>
+            <TextArea id="description" rows={4} showCount maxLength={255} />
           </div>
 
           {/*Các nút */}
