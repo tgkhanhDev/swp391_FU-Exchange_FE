@@ -11,7 +11,7 @@ import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTe
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize } from "../page/account";
 import { AdminDashboard } from "../components/templates/Account/Admin";
 import Dashboard from "../components/templates/Account/SellerAccount/Dashboard";
-import { CreateProduct, UpdateProduct, ManageProduct } from "../components/templates/Account/SellerAccount";
+import { UpdateProduct, ManageProduct, CreateProduct } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 import { Payment } from "../components/templates/Payment";

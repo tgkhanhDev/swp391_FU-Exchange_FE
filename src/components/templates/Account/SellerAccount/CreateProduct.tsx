@@ -4,21 +4,39 @@ import { useView } from '../../../../hooks/useView';
 import { getCategoryThunk } from "../../../../store/viewManager/thunk";
 import { useAppDispatch } from '../../../../store/index';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Select, InputNumber, Input, Button } from 'antd';
+import { Select, InputNumber, Input, Button, Form, FormProps } from 'antd';
 import { toast } from "react-toastify";
+import { useAccount } from "../../../../hooks/useAccount";
+import { Option } from "antd/es/mentions";
+import './index.css'
+
+interface Category {
+  variationDetailName: string;
+}
+
+interface Group {
+  variationName: string;
+  categories: Category[];
+}
 
 export const CreateProduct = () => {
   const navigate = useNavigate();
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const { studentInfo } = useAccount();
   const { category } = useView();
   const dispatch = useAppDispatch();
-  const [groups, setGroups] = useState([{ name: '', categories: [''] }]);
+  const [groups, setGroups] = useState<Group[]>([
+    {
+      variationName: '',
+      categories: [{ variationDetailName: '' }],
+    },
+  ]);
 
   useEffect(() => {
     dispatch(getCategoryThunk());
   }, [dispatch]);
 
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<string[]>([]);
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -34,7 +52,7 @@ export const CreateProduct = () => {
 
   const handleDrop = (e) => {
     e.preventDefault();
-    const files = Array.from(e.dataTransfer.files);
+    const files: any = Array.from(e.dataTransfer.files);
     if (files.length + images.length > 4) {
       toast.warning('Chỉ được phép tải lên tối đa 4 hình ảnh');
       return;
@@ -50,20 +68,20 @@ export const CreateProduct = () => {
   };
 
   useEffect(() => {
-    if (!userInfo) {
+    if (!studentInfo) {
       navigate('/login');
-    } else if (userInfo.role !== "Seller") {
+    } else if (studentInfo.role !== "Seller") {
       navigate('/authorize');
     }
-  }, [navigate, userInfo]);
+  }, [navigate, studentInfo]);
 
   const handleAddGroup = () => {
-    setGroups([...groups, { name: '', categories: [''] }]);
+    setGroups([...groups, { variationName: '', categories: [''] }]);
   };
 
   const handleGroupNameChange = (index, value) => {
     const newGroups = [...groups];
-    newGroups[index].name = value;
+    newGroups[index].variationName = value;
     setGroups(newGroups);
   };
 
@@ -88,12 +106,54 @@ export const CreateProduct = () => {
   // Thêm hàm loại bỏ phân loại sản phẩm
   const handleRemoveCategory = (groupIndex, categoryIndex) => {
     const newGroups = [...groups];
-    newGroups[groupIndex].categories.splice(categoryIndex, 1);
+    newGroups[groupIndex].categories.splice(categoryIndex-1, 1);
     setGroups(newGroups);
+    console.log("cateIDX:", categoryIndex);
+    
   };
 
+  //!============================Submit
+  type FieldType = {
+    productName: string,
+    productDescription: string,
+    sellerId: number,
+    categoryId: number,
+    price: number,
+    productStatus: true,
+    variationList:
+    {
+      variationName: string
+      variationDetail: {
+        variationDetailName: string;
+      }[]
+    }[]
+    ,
+    productImageRequestsList:
+    {
+      imageUrl: string
+    }[]
+
+  };
+
+  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+    console.log('Success:', values);
+  };
+
+  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
+  //!============================
+
   return (
-    <div>
+    <Form
+      name="basic"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      initialValues={{ remember: true }}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      autoComplete="off"
+    >
       <main className='py-10'>
         <div className='pl-14'>
           <div className='font-bold text-4xl'>Tạo sản phẩm</div>
@@ -101,13 +161,27 @@ export const CreateProduct = () => {
             <div className="pb-10 pt-2 border-b-2 border-slate-300">
               <div className="text-2xl font-semibold mb-5">Thông tin cơ bản</div>
               <div className="mb-8">
-                <label className='font-semibold'>Tên sản phẩm</label>
-                <Input className='border-slate-400 focus:outline-none text-gray-500 focus:text-black border px-4 py-2 h-10 w-full rounded-md mt-2 bg-white'></Input>
+                <label className='font-semibold'>Tên sản phẩm*</label>
+                <Form.Item<FieldType>
+                  name="productName"
+                  className="!w-full"
+                  rules={[{ required: true, message: 'Vui lòng nhập sản phẩm!' }]}
+
+                >
+                  <Input className='border-slate-400 focus:outline-none text-gray-500 focus:text-black border px-4 py-2 h-10 w-full rounded-md mt-2 bg-white' />
+                </Form.Item>
               </div>
 
               <div className="mt-8">
                 <label className='font-semibold'>Miêu tả</label>
-                <Input.TextArea className='border-slate-400 text-gray-500 focus:text-black focus:outline-none border px-4 py-2 h-24 w-full rounded-md mt-2 bg-white'></Input.TextArea>
+                <Form.Item<FieldType>
+                  name="productDescription"
+                  className="!w-full"
+                  rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
+
+                >
+                  <Input.TextArea className='border-slate-400 text-gray-500 focus:text-black focus:outline-none border px-4 py-2 h-24 w-full rounded-md mt-2 bg-white' />
+                </Form.Item>
               </div>
             </div>
 
@@ -115,61 +189,100 @@ export const CreateProduct = () => {
               <div className="text-2xl font-semibold mb-5">Phân loại danh mục</div>
               <div className="mb-8">
                 <label className='font-semibold mr-10'>Thể loại sản phẩm</label>
-                <Select
+                <Form.Item<FieldType>
+                  // name={['address', 'province']}
+                  name="categoryId"
+                  noStyle
+                  rules={[{ required: true, message: 'Vui lòng chọn danh mục!' }]}
+                >
+                  <Select
+                    style={{ width: '100vh' }}
+                    placeholder="Chọn danh mục">
+                    {category.map(item => (
+                      <Option key={item.categoryId + ''} value={item.categoryId + ''}>
+                        {item.categoryName}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                {/* <Select
                   style={{ width: '100vh' }}
                 >
                   {category.map(item => (
-                    <Option key={item.categoryId} value={item.categoryId}>
+                    <Option key={item.categoryId + ''} value={item.categoryId + ''}>
                       {item.categoryName}
                     </Option>
                   ))}
-                </Select>
+                </Select> */}
               </div>
 
               <div className="mt-8">
                 <div className='font-semibold text-xl mb-2'>Phân loại sản phẩm</div>
                 {groups.map((group, groupIndex) => (
                   <div key={groupIndex} className="mb-6 py-4 px-8 bg-gray-200">
+
                     <div className="mb-10">
                       <label className='font-semibold'>Tên nhóm phân loại sản phẩm {groupIndex + 1}</label>
-                      <Input
-                        type="text"
-                        placeholder="Tên nhóm phân loại"
-                        value={group.name}
-                        onChange={(e) => handleGroupNameChange(groupIndex, e.target.value)}
-                        className="border p-2 w-full px-4 py-2 border-slate-400 focus:outline-none rounded-md mt-2"
-                      />
+                      {/* <Form.Item<FieldType>
+                        name="productDescription"
+                        className="!w-full"
+                        rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
+
+                      > */}
+                      <Form.Item<FieldType>
+                        name={['variationList', groupIndex, 'variationName']}
+
+                        className="!w-full"
+                        rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
+
+                      >
+                        <Input
+                          type="text"
+                          placeholder="Tên nhóm phân loại"
+                          value={group.variationName}
+                          onChange={(e) => handleGroupNameChange(groupIndex, e.target.value)}
+                          className="border p-2 w-full px-4 py-2 border-slate-400 focus:outline-none rounded-md mt-2"
+                        />
+                      </Form.Item>
                     </div>
                     <div className="mb-5">
                       <label className='font-semibold'>Phân loại sản phẩm</label>
                       <div className="grid grid-cols-3 gap-10 items-center w-full">
                         {group.categories.map((category, categoryIndex) => (
                           <div key={categoryIndex} className="flex items-center">
-                            <Input
-                              type="text"
-                              value={category}
-                              onChange={(e) => handleCategoryChange(groupIndex, categoryIndex, e.target.value)}
-                              className="border p-2 w-full px-4 py-2 border-slate-400 focus:outline-none rounded-md my-2"
-                            />
+                            <Form.Item
+                              name={['variationList', groupIndex, 'variationDetail', categoryIndex, 'variationDetailName']}
+                              className="!w-full"
+                              rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
+                            >
+                              <Input
+                                type="text"
+                                placeholder="Chi tiết phân loại"
+                                value={category.variationDetailName}
+                                onChange={(e) => handleCategoryChange(groupIndex, categoryIndex, e.target.value)}
+                                className="border p-2 w-full px-4 py-2 border-slate-400 focus:outline-none rounded-md my-2"
+                              />
+                            </Form.Item>
+                            <div className="grid grid-cols-2 items-center justify-center">
+                              <button
+                                className="flex bg-[var(--color-primary)] text-white px-4 py-2 rounded "
+                                onClick={() => handleAddCategory(groupIndex)}
+                              >
+                                Thêm &nbsp;<PlusOutlined />
+                              </button>
+
+                              {group.categories.length > 1 && (
+                                <button
+                                  className="flex bg-white text-[var(--color-primary)] px-4 py-2 rounded "
+                                  onClick={() => handleRemoveCategory(groupIndex, categoryIndex)}
+                                >
+                                  Xóa &nbsp;<DeleteOutlined />
+                                </button>
+                              )}
+                            </div>
                           </div>
                         ))}
-                        <div className="grid grid-cols-2 items-center">
-                          <button
-                            className="bg-[var(--color-primary)] text-white px-4 py-2 rounded w-[70%]"
-                            onClick={() => handleAddCategory(groupIndex)}
-                          >
-                            Thêm &nbsp;<PlusOutlined />
-                          </button>
-
-                          {group.categories.length > 1 && (
-                            <button
-                              className="bg-white text-[var(--color-primary)] px-4 py-2 rounded w-[70%]"
-                              onClick={() => handleRemoveCategory(groupIndex)}
-                            >
-                              Xóa &nbsp;<DeleteOutlined />
-                            </button>
-                          )}
-                        </div>
+                        
                       </div>
                     </div>
                     {groups.length > 1 && (
@@ -200,7 +313,7 @@ export const CreateProduct = () => {
                   className='border-slate-400 focus:outline-none text-gray-500 focus:text-black border h-10 w-full rounded-md mt-2 bg-white flex items-center'
                   defaultValue={10000}
                   formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                  parser={value => value.replace(/đ\s?|(\,*)/g, '')}
+                  // parser={value => value.replace(/đ\s?|(\,*)/g, '')}
                   step={1000}
                 />
               </div>
@@ -214,7 +327,7 @@ export const CreateProduct = () => {
                 >
                   <label htmlFor="fileInput" style={{ display: 'block', cursor: 'pointer' }} className="block cursor-pointer px-5 py-2 bg-[var(--color-primary)] rounded-sm text-white">
                     Tải ảnh lên
-                    <input
+                    {/* <input
                       id="fileInput"
                       type="file"
                       accept="image/*"
@@ -222,7 +335,7 @@ export const CreateProduct = () => {
                       required
                       onChange={handleImageChange}
                       style={{ display: 'none' }}
-                    />
+                    /> */}
                   </label>
                   <div className="text-base text-gray-700">Hoặc</div>
 
@@ -238,12 +351,14 @@ export const CreateProduct = () => {
 
             <div className="flex items-center justify-end mt-5 gap-x-5">
               <Button className="px-5 py-2 flex justify-center items-center text-lg">Hủy</Button>
-              <Button type="primary" className="px-5 py-2 flex justify-center items-center text-lg">Tạo sản phẩm</Button>
+              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Button htmlType="submit" type="primary" className="px-5 py-2 flex justify-center items-center text-lg">Tạo sản phẩm</Button>
+              </Form.Item>
             </div>
           </div>
         </div>
       </main>
-    </div>
+    </Form>
   );
 };
 
