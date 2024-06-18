@@ -8,6 +8,7 @@ import {
   UpdatePassword,
   Seller,
   UpdateBanking,
+  LoginStaffType,
 } from "../../types/user";
 import { managePost } from "../../services/managePost";
 import { PostFilter_API } from "../../types/post";
@@ -110,10 +111,22 @@ export const getSellerInfoThunk = createAsyncThunk(
 );
 
 export const updateBankingThunk = createAsyncThunk(
-  "updateBanking", //bank chưa kiểm tra null
+  "updateBanking",
   async (payload: UpdateBanking, { rejectWithValue }) => {
     try {
       const data = await manageUsers.updateBanking(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getLoginStaffThunk = createAsyncThunk(
+  "loginStaff",
+  async (payload: LoginStaffType, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.isLoginStaff(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

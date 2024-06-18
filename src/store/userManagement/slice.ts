@@ -10,6 +10,7 @@ import {
   updatePasswordThunk,
   getSellerInfoThunk,
   updateBankingThunk,
+  getLoginStaffThunk,
 } from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -62,6 +63,21 @@ export const manageUsersSlice = createSlice({
       }
     }),
       builder.addCase(getLoginThunk.rejected, (state, { payload }) => { }),
+
+      builder.addCase(getLoginStaffThunk.fulfilled, (state, { payload }) => {
+        if (payload.status == 200) {
+          toast.success(`${payload.content}`);
+          //!redirect here
+          state.isAuthorize = true;
+          window.location.href = "/admin";
+  
+          localStorage.setItem("staffInfo", JSON.stringify(payload.data));
+        } else {
+          toast.error(`${payload.content}`);
+        }
+      }),
+        builder.addCase(getLoginStaffThunk.rejected, (state, { payload }) => { }),
+        
       builder.addCase(isRegisteredThunk.fulfilled, (state, { payload }) => {
         if (payload.status == 200) {
           state.isAccountRegistered = true;
@@ -105,7 +121,7 @@ export const manageUsersSlice = createSlice({
         toast.success(`${payload.content}`);
         window.location.href = "/login";
       } else {
-        toast.error(`${payload.content}`);
+        toast.info(`${payload.content}`);
       }
     }
     );

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Post, PostLoadMore } from "../../types/post";
-import { getPayVnPay, postPayCod, getOrderThunk } from "./thunk";
+import { postPayCodThunk, getOrderThunk } from "./thunk";
 import { Orders } from "../../types/order"
 
 type stateType = {
@@ -16,11 +16,11 @@ export const manageOrderSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(postPayCod.fulfilled, (state, { payload }) => {
+    builder.addCase(postPayCodThunk.fulfilled, (state, { payload }) => {
       console.log("payloadCOD:::",payload);
       
-    }),
-      builder.addCase(getPayVnPay.fulfilled, (state, { payload }) => {});
+    })
+      // builder.addCase(getPayVnPay.fulfilled, (state, { payload }) => {});
       builder.addCase(getOrderThunk.fulfilled, (state, { payload }) => {
         state.order = payload.data;
       });

@@ -32,10 +32,16 @@ export type LoginType = {
   username: string;
   password: string;
 };
+
+export type LoginStaffType = {
+  numberPhone: string;
+  password: string;
+};
+
 export type LoginResponse = {
-  username: "string";
-  role: "string";
-  accessToken: "string";
+  username: string;
+  role: string;
+  accessToken: string;
 };
 
 export type IsAllowRegisterType = {
@@ -44,17 +50,17 @@ export type IsAllowRegisterType = {
 };
 
 export type RegisterStudentReq = {
-  studentId: "string";
-  identifyNumber: "string";
-  password: "string";
-  confirmPassword: "string";
+  studentId: string;
+  identifyNumber: string;
+  password: string;
+  confirmPassword: string;
 };
 
 export type RegisterSellerReq = {
   registeredStudentId: number;
-  password: "string";
-  bankingNumber: "string";
-  bankingName: "string";
+  password: string;
+  bankingNumber: string;
+  bankingName: string;
 };
 
 export type UpdatePassword = {

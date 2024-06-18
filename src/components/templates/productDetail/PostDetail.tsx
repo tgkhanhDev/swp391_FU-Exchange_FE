@@ -5,21 +5,34 @@ import { useAppDispatch } from "../../../store";
 import { getPostByIdThunk } from "../../../store/postManagement/thunk";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { log } from "console";
+import { PATH } from "../../../constants/config";
+import { getProductByIdThunk, getProductByVariationDetailThunk } from "../../../store/productManagement/thunk";
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import {setProductQuantity, setTest} from "../../../store/productManagement/slice"
+
 type PostType = {
   postId: number;
 };
+export type DetailType = {
+  [key: number]: number; // Định nghĩa kiểu cho object detail
+};
 
 export const PostDetail: React.FC<PostType> = () => {
-  const { productId } = useParams();
+  const { postProductId } = useParams();
   const [imageGrid, setImageGrid] = useState<
     { original: string; thumbnail: string }[]
   >([]);
+  const [quantity, setQuantity] = useState(1)
   const { postDetail } = usePost();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    dispatch(getPostByIdThunk(parseInt(productId!)));
+    dispatch(getPostByIdThunk(parseInt(postProductId!)));
+    console.log("postProductId:", postProductId);
+    
   }, []);
 
   useEffect(() => {
@@ -30,9 +43,6 @@ export const PostDetail: React.FC<PostType> = () => {
     setImageGrid(images);
   }, [postDetail]);
 
-  type DetailType = {
-  [key: number]: number; // Định nghĩa kiểu cho object detail
-};
   const [detail, setDetail] = useState<DetailType>({});
   const updateDetail = (key, value) => {
     setDetail((prevDetail) => ({
@@ -47,19 +57,9 @@ export const PostDetail: React.FC<PostType> = () => {
     console.log("detail:::", detail);
   }, [detail]);
 
-  const additionalClasses = (vari) =>
-    Object.entries(detail)
-      .map(([key, value]) => {
-        if (vari.variationId == value) {
-          return "border-pink-500";
-        }
-        return ""; // Trả về chuỗi rỗng nếu không khớp
-      })
-      .filter((className) => className !== "") // Loại bỏ các chuỗi rỗng
-      .join(" ");
-
   return (
     <div className="container">
+      {/* <FirebaseUpload /> */}
       <div className="flex gap-[5%]">
         <div className="w-[40%]">
           <ImageGallery items={imageGrid} />
@@ -85,39 +85,32 @@ export const PostDetail: React.FC<PostType> = () => {
             <div className={`flex items-start my-3`} key={vari.variationId}>
               <div className="flex items-center mr-5">{vari.variationName}</div>
               <div className="gap-2 w-[60%] flex flex-wrap">
-                {vari.variationDetail.map((variDetail) =>{
-                  console.log(
-                    "detail[variDetail.variationDetailId]: ",
-                    detail
-                  );
+                {vari.variationDetail.map((variDetail) => {
                   return (
-                  // <Button
-                  //   key={variDetail.variationDetailId}
-                  //   onClick={() =>
-                  //     updateDetail(
-                  //       vari.variationId,
-                  //       variDetail.variationDetailId
-                  //     )
-                  //   }
-                  //   className={`flex items-center px-2 py-1 border rounded `}
-                  // >
-                  //   <div className="">{variDetail.description}</div>
-                  // </Button>
-                  <Button
-                    key={variDetail.variationDetailId}
-                    onClick={() =>
-                      updateDetail(
-                        vari.variationId,
-                        variDetail.variationDetailId
+                    <Button
+                      key={variDetail.variationDetailId}
+                      onClick={() =>
+                        updateDetail(
+                          vari.variationId,
+                          variDetail.variationDetailId
+                        )
+                      }
+                      className={`flex items-center px-2 py-1 border rounded ${Object.entries(
+                        detail
                       )
-                    }
-                    className={`flex items-center px-2 py-1 border rounded `}
-                  >
-                    {detail[variDetail.variationDetailId]}--
-                    {variDetail.variationDetailId}-{variDetail.description}
-                  </Button>
-                )
-                  })}
+                        .map(([key, values]) => {
+                          if (values == variDetail.variationDetailId) {
+                            return "border-[var(--color-primary)] text-[var(--color-primary)] -translate-y-2";
+                          }
+                          return null;
+                        })
+                        .filter(Boolean)
+                        .join(" ")}`}
+                    >
+                      {variDetail.description}
+                    </Button>
+                  );
+                })}
               </div>
             </div>
           ))}
@@ -125,7 +118,20 @@ export const PostDetail: React.FC<PostType> = () => {
           {/* button  */}
 
           <div className="flex my-3 gap-3">
-            <Button>Add to cart</Button>
+            <Button onClick={()=> {
+              const userInfo = localStorage.getItem("userInfo");
+              const student = userInfo ? JSON.parse(userInfo) : null;
+              if(!student){
+                alert("Sign in to Continue?")
+              }else{
+                console.log("studentID:", student.username);
+                console.log("postProductId:", postDetail?.postProductId);
+                console.log("variationId:", );
+
+                alert("OK")
+              }
+              
+            }}>Add to cart</Button>
             <Button
               onClick={() => {
                 if (
@@ -134,25 +140,30 @@ export const PostDetail: React.FC<PostType> = () => {
                     Object.keys(detail).length
                 ) {
                   alert("Chọn đủ đi");
-                } else {
-                  alert("OK");
+                } else if(postDetail) {
+                  let prdId = postDetail.product.productId;
+                  const variationList: number[] = [];
+                  Object.entries(detail).map(([key, values]) => {
+                    variationList.push(values);
+                  });
+                  // let paymentItem = [{ productId: prdId, variationList: variationList, quantity: 1 }];
+                  // localStorage.setItem(
+                  //   "paymentItem",
+                  //   JSON.stringify(paymentItem)
+                  // );
+                  // prdId? dispatch(getProductByIdThunk(prdId)): ""
+
+                  dispatch(getProductByVariationDetailThunk(variationList));
+                  dispatch(setProductQuantity({ id: prdId , quantity: quantity }));
+                  navigate(PATH.payment, {state: {postProductId: 6}});
                 }
               }}
             >
               Buy now
             </Button>
-            <Button>Quantity</Button>
+            <div className="flex items-center gap-2"><MinusOutlined onClick={() => quantity > 1? setQuantity(quantity - 1): ""} />{quantity}<PlusOutlined onClick={() => setQuantity(quantity + 1)} /></div>
           </div>
           {/* end button  */}
-          <div>
-            {Object.entries(detail).map(([key, values]) => {
-              return (
-                <div key={key}>
-                  <span>{values}</span>
-                </div>
-              );
-            })}
-          </div>
           {/* //! Review  */}
         </div>
       </div>

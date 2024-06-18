@@ -1,7 +1,7 @@
 export const PATH = {
   admin: "/admin",
   postList: "/detail",
-  productDetail: "/detail/:productId",
+  productDetail: "/detail/:postProductId",
   login: "/login",
   register: "/register",
   registerSeller: "/registerSeller",

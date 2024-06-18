@@ -32,3 +32,22 @@ export type Variation = {
     description: string;
   }[];
 };
+
+export interface ProductPaymentType {
+  product: {
+    productId: number;
+    detail: ProductDetail;
+    image: Image[];
+    category: Category;
+    price: string;
+    productStatus: boolean;
+  };
+  variation: {
+    variationId: number;
+    variationName: string;
+    variationDetail: {
+      variationDetailId: number;
+      description: string;
+    };
+  }[];
+}

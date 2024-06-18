@@ -5,16 +5,16 @@ import ProductPage from "../page/ProductPage";
 import PostDetail from "../components/templates/productDetail/PostDetail";
 import PostList from "../components/templates/productList/PostList";
 import Cart from "../components/templates/Cart/Cart";
-import Payment from "../components/templates/Payment/Payment";
 import ProfileTemplate from "../components/templates/Account/BuyerAccount/ProfileTemplate";
 import { LoginStaff } from "../components/templates/Account";
 import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTemplate";
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize } from "../page/account";
 import { AdminDashboard } from "../components/templates/Account/Admin";
 import Dashboard from "../components/templates/Account/SellerAccount/Dashboard";
-import { CreateProduct, UpdateProduct, ManageProduct } from "../components/templates/Account/SellerAccount";
+import { UpdateProduct, ManageProduct, CreateProduct } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
+import { Payment } from "../components/templates/Payment";
 
 export const router = [
   {

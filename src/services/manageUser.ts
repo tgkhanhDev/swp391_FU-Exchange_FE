@@ -9,6 +9,7 @@ import {
   UpdatePassword,
   Seller,
   UpdateBanking,
+  LoginStaffType,
 } from "../types/user";
 import { utilsResponse } from "../types/utils";
 
@@ -50,4 +51,7 @@ export const manageUsers = {
 
   updateBanking : (payload: UpdateBanking) =>
     apiB.put<utilsResponse<any>>(`update-information`, payload),
+
+  isLoginStaff: (payload: LoginStaffType) =>
+    api.post<utilsResponse<LoginResponse>>(`/staff/login`, payload),
 };

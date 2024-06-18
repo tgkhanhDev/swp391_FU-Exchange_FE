@@ -59,13 +59,13 @@ export const LoginTemplate = () => {
                 <label className="text-[#9f9f9f] mb-2">
                   MSSV (Mã số sinh viên)
                 </label>
-                <Input
-                  className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2"
+                <input
+                  className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
                   type="text"
                   onChange={(e) => {
                     mssvRef.current = e.target.value;
                   }}
-                ></Input>
+                ></input>
               </div>
               {!isAccountRegistered && (
                 <>
@@ -127,23 +127,11 @@ export const LoginTemplate = () => {
         onClick={() => {
           console.log("Hello");
           dispatch(isRegisteredThunk("DE170001"));
+          dispatch(isRegisteredThunk("DE170001"));
         }}
       >
         aaaaaa
       </Button>
-      {/* <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        // transition: Bounce,
-      /> */}
     </div>
   );
 };
