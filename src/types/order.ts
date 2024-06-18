@@ -11,3 +11,18 @@ export interface PostProductToBuyRequest {
   quantity: number;
   price: number;
 }
+
+export interface Orders {
+  orderId: number;
+  registeredStudent: number;
+  orderStatus: OrderStatus;
+  createDate: string;
+  completeDate: string;
+  description: string | null;
+  paymentId: number;
+}
+
+export interface OrderStatus {
+  orderStatusId: number;
+  orderStatusName: string;
+}
