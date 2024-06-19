@@ -10,6 +10,10 @@ import { useAccount } from "../../../../hooks/useAccount";
 import { Option } from "antd/es/mentions";
 import './index.css'
 import FirebaseUpload from "../../../../../thirdparty/FirebaseUpload";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { imgDB, txtDB } from "../../../../../thirdparty/config";
+import { v4 } from "uuid";
+import { collection, getDocs } from "firebase/firestore";
 
 interface Category {
   variationDetailName: string;
@@ -33,6 +37,14 @@ export const CreateProduct = () => {
     },
   ]);
 
+  //!FB============
+  const [txt, setTxt] = useState("");
+  const [img, setImg] = useState<string[]>([]);
+  const [data, setData] = useState([]);
+  const [imgRender, setImgRender] = useState<any>([]);
+  //!===============
+
+
   useEffect(() => {
     dispatch(getCategoryThunk());
   }, [dispatch]);
@@ -47,7 +59,7 @@ export const CreateProduct = () => {
     }
 
     console.log("file: ", files);
-    
+
 
     const newImages = files.slice(0, 4 - images.length); // Giới hạn tối đa 4 hình ảnh
     const imageUrls = newImages.map(file => URL.createObjectURL(file));
@@ -138,8 +150,10 @@ export const CreateProduct = () => {
 
   };
 
-  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+  const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     values.studentId = studentInfo.username;
+    await handleAddImageToFB()
+    console.log("img List:", img);
     console.log('Success:', values);
   };
 
@@ -148,7 +162,42 @@ export const CreateProduct = () => {
   };
   //!============================
 
-  
+  //!FireBASE
+  const handleUpload = async (e) => {
+    const files = Array.from(e.target.files); // Convert FileList to Array
+    setImgRender(files);
+  };
+
+  const handleAddImageToFB = async () => {
+    const uploadPromises = imgRender.map((file) => {
+      console.log("URL NE:", file);
+      
+      const imageRef = ref(imgDB, `products/${v4()}`);
+      return uploadBytes(imageRef, file).then((snapshot) => {
+        return getDownloadURL(snapshot.ref);
+      });
+    });
+
+    const urls = await Promise.all(uploadPromises); // Wait for all uploads to complete
+    setImg((prevImg) => [...prevImg, ...urls]);
+  };
+
+  //*getData from firebase
+  const getData = async () => {
+    const valRef = collection(txtDB, "txtData");
+    const dataDb = await getDocs(valRef);
+    const allData = dataDb.docs.map((val) => ({
+      ...val.data(),
+      id: val.id,
+    }));
+    setData(allData);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  //!====================================
 
   return (
     <Form
@@ -358,7 +407,38 @@ export const CreateProduct = () => {
                     <img key={index} src={image} alt={`Upload Preview ${index}`} className="w-32 h-32 object-cover mr-2 mb-2 rounded-md" />
                   ))}
                 </div> */}
-                <FirebaseUpload />
+                {/* <FirebaseUpload /> */}
+                <br />
+                {/* <button onClick={handleClick}>Add</button> */}
+
+                <label className='font-semibold'>Hình ảnh (tối thiểu 1 hình, tối đa 4 hình)</label>
+                <div
+                  className="border-dashed border-4 border-slate-400 text-black mt-4 px-4 py-8 rounded-md flex items-center justify-center flex-col gap-y-2 text-lg"
+                // onDragOver={handleDragOver}
+                >
+                  <label htmlFor="fileInput" style={{ display: 'block', cursor: 'pointer' }} className="block cursor-pointer px-5 py-2 bg-[var(--color-primary)] rounded-sm text-white">
+                    Tải ảnh lên
+                    <input id="fileInput" multiple type="file" onChange={(e) => handleUpload(e)} style={{ display: 'none' }} />
+                  </label>
+                  <div>
+                    {imgRender &&
+                      imgRender.map(img => {
+                        return (
+                          <div>{img.name}</div>
+                        )
+                      })
+                    }
+                  </div>
+                  <div className="text-base text-gray-700">Hoặc</div>
+                  Kéo và thả ảnh vào đây
+                </div>
+                <div className="mt-4 flex flex-wrap">
+                  {img.map((image, index) => (
+                    <img key={index} src={image} alt={`Upload Preview ${index}`} className="w-32 h-32 object-cover mr-2 mb-2 rounded-md" />
+                  ))}
+                </div>
+
+
               </div>
             </div>
 
