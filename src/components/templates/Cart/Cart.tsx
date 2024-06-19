@@ -85,7 +85,7 @@ export const Cart = () => {
             </div>
             <div className='col-span-2 flex flex-col justify-center items-center'>
               <div>Kích thước: </div>
-              <div>Cá chà bặc</div>
+              <div>12cm</div>
             </div>
             <div className='col-span-1 flex justify-center items-center'>
               <div>23,000 VNĐ</div>
@@ -117,7 +117,7 @@ export const Cart = () => {
             </div>
             <div className='col-span-2 flex flex-col justify-center items-center'>
               <div>Kích thước: </div>
-              <div>Cá chà bặc</div>
+              <div>12cm</div>
             </div>
             <div className='col-span-1 flex justify-center items-center'>
               <div>23,000 VNĐ</div>

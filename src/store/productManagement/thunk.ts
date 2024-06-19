@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { manageProduct } from "../../services/manageProduct";
+import { createProductType } from "../../types/product";
 
 export const getProductByVariationDetailThunk = createAsyncThunk(
   "/productByVariationDetail",
@@ -24,3 +25,15 @@ export const getProductByIdThunk = createAsyncThunk(
     }
   }
 );
+
+export const createProductThunk = createAsyncThunk(
+  "/create-product",
+  async (payload: createProductType ) => {
+    try {
+      const data = await manageProduct.createProduct(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+)

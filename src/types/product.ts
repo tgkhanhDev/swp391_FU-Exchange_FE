@@ -51,3 +51,21 @@ export interface ProductPaymentType {
     };
   }[];
 }
+
+export type createProductType = {
+  productName: string;
+  productDescription: string;
+  studentId: number;
+  categoryId: number;
+  price: number;
+  productStatus: true;
+  variationList: {
+    variationName: string;
+    variationDetailRequestList: {
+      description: string;
+    }[];
+  }[];
+  productImageRequestsList: {
+    imageUrl: string;
+  }[];
+};

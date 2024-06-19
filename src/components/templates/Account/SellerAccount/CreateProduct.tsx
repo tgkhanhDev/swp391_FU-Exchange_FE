@@ -14,6 +14,8 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { imgDB, txtDB } from "../../../../../thirdparty/config";
 import { v4 } from "uuid";
 import { collection, getDocs } from "firebase/firestore";
+import { createProductType } from "../../../../types/product";
+import { createProductThunk } from "../../../../store/productManagement/thunk";
 
 interface Category {
   variationDetailName: string;
@@ -128,38 +130,26 @@ export const CreateProduct = () => {
   };
 
   //!============================Submit
-  type FieldType = {
-    productName: string,
-    productDescription: string,
-    studentId: number,
-    categoryId: number,
-    price: number,
-    productStatus: true,
-    variationList:
-    {
-      variationName: string
-      variationDetailRequestList: {
-        description: string;
-      }[]
-    }[]
-    ,
-    productImageRequestsList:
-    {
-      imageUrl: string
-    }[]
+  
 
-  };
-
-  const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+  const onFinish: FormProps<createProductType>['onFinish'] = async (values) => {
     values.studentId = studentInfo.username;
-    await handleAddImageToFB()
-    console.log("img List:", img);
+
+    const urls = await handleAddImageToFB();
+
+    values.productImageRequestsList = [];
+    urls.map(imgUrl => {
+      values.productImageRequestsList.push({imageUrl: imgUrl})
+    })
+
     console.log('Success:', values);
+    dispatch(createProductThunk(values));
   };
 
-  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+  const onFinishFailed: FormProps<createProductType>['onFinishFailed'] = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
+
   //!============================
 
   //!FireBASE
@@ -170,8 +160,7 @@ export const CreateProduct = () => {
 
   const handleAddImageToFB = async () => {
     const uploadPromises = imgRender.map((file) => {
-      console.log("URL NE:", file);
-      
+
       const imageRef = ref(imgDB, `products/${v4()}`);
       return uploadBytes(imageRef, file).then((snapshot) => {
         return getDownloadURL(snapshot.ref);
@@ -180,6 +169,7 @@ export const CreateProduct = () => {
 
     const urls = await Promise.all(uploadPromises); // Wait for all uploads to complete
     setImg((prevImg) => [...prevImg, ...urls]);
+    return urls;
   };
 
   //*getData from firebase
@@ -217,7 +207,7 @@ export const CreateProduct = () => {
               <div className="text-2xl font-semibold mb-5">Thông tin cơ bản</div>
               <div className="mb-8">
                 <label className='font-semibold'>Tên sản phẩm*</label>
-                <Form.Item<FieldType>
+                <Form.Item<createProductType>
                   name="productName"
                   className="!w-full"
                   rules={[{ required: true, message: 'Vui lòng nhập sản phẩm!' }]}
@@ -229,7 +219,7 @@ export const CreateProduct = () => {
 
               <div className="mt-8">
                 <label className='font-semibold'>Miêu tả</label>
-                <Form.Item<FieldType>
+                <Form.Item<createProductType>
                   name="productDescription"
                   className="!w-full"
                   rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
@@ -244,8 +234,7 @@ export const CreateProduct = () => {
               <div className="text-2xl font-semibold mb-5">Phân loại danh mục</div>
               <div className="mb-8">
                 <label className='font-semibold mr-10'>Thể loại sản phẩm</label>
-                <Form.Item<FieldType>
-                  // name={['address', 'province']}
+                <Form.Item<createProductType>
                   name="categoryId"
                   noStyle
                   rules={[{ required: true, message: 'Vui lòng chọn danh mục!' }]}
@@ -278,13 +267,13 @@ export const CreateProduct = () => {
 
                     <div className="mb-10">
                       <label className='font-semibold'>Tên nhóm phân loại sản phẩm {groupIndex + 1}</label>
-                      {/* <Form.Item<FieldType>
+                      {/* <Form.Item<createProductType>
                         name="productDescription"
                         className="!w-full"
                         rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
 
                       > */}
-                      <Form.Item<FieldType>
+                      <Form.Item<createProductType>
                         name={['variationList', groupIndex, 'variationName']}
                         className="!w-full"
                         rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
