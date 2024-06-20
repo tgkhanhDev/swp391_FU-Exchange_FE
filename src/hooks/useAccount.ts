@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import { useEffect } from "react";
 
 export const useAccount = () => {
   const { isAccountRegistered, isAuthorize, isAllowRegister } = useSelector(
@@ -7,5 +8,6 @@ export const useAccount = () => {
   );
   const userInfo = localStorage.getItem("userInfo");
   const studentInfo = userInfo ? JSON.parse(userInfo) : null;
+
   return { isAccountRegistered, isAuthorize, isAllowRegister, studentInfo };
 };

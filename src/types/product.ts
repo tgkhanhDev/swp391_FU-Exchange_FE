@@ -69,3 +69,20 @@ export type createProductType = {
     imageUrl: string;
   }[];
 };
+
+export type filterGetProductById = {
+  current: number,
+  name ?: string,
+  studentId: string,
+}
+
+export type warehouseType = {
+  productId: number;
+  seller: Seller;
+  detail: ProductDetail;
+  image: Image[];
+  category: Category;
+  variation: Variation[];
+  price: string;
+  productStatus: boolean;
+};

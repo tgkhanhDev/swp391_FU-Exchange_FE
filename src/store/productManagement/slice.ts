@@ -1,18 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getProductByVariationDetailThunk, getProductByIdThunk, createProductThunk } from "./thunk";
-import { ProductPaymentType } from "../../types/product";
+import { getProductByVariationDetailThunk, getProductByIdThunk, createProductThunk, getProductByStudentIdThunk } from "./thunk";
+import { ProductPaymentType, warehouseType } from "../../types/product";
 import { toast } from "react-toastify";
 
 interface initialType {
   productView: ProductPaymentType[];
   productQuantity: Record<string, number>;
-  createProductRes: any
+  createProductRes: any;
+  wareHouse: warehouseType[];
 }
 
 const initialState: initialType = {
   productView: [],
   productQuantity: {},
   createProductRes: undefined,
+  wareHouse: [],
 };
 
 export const manageProductSlice = createSlice({
@@ -48,6 +50,11 @@ export const manageProductSlice = createSlice({
       builder.addCase(createProductThunk.fulfilled, (state, { payload }) => {
         // state.createProductRes = payload.data;
         toast.success(payload.data.content)
+      });
+      builder.addCase(getProductByStudentIdThunk.fulfilled, (state, { payload }) => {
+        state.wareHouse = payload.data
+        console.log("payload.data:", state.wareHouse);
+        
       });
   },
 });

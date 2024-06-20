@@ -66,6 +66,7 @@ export const CreateProduct = () => {
     const newImages = files.slice(0, 4 - images.length); // Giới hạn tối đa 4 hình ảnh
     const imageUrls = newImages.map(file => URL.createObjectURL(file));
     setImages(prevImages => [...prevImages, ...imageUrls]); // Thêm các URL mới vào mảng images
+    
   };
 
   const handleDrop = (e) => {
