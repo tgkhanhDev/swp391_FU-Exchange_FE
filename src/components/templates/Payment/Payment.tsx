@@ -7,8 +7,8 @@ import { manageProductActions, setProductEmpty } from "../../../store/productMan
 import { useProduct } from "../../../hooks/useProduct";
 import { getProductByIdThunk } from "../../../store/productManagement/thunk";
 import { PATH } from "../../../constants/config";
-import { CodPayment, PostProductToBuyRequestType } from "../../../types/order";
-import { postPayCodThunk } from "../../../store/orderManager/thunk";
+import { PaymentType, PostProductToBuyRequestType } from "../../../types/order";
+import { postPayCodThunk, postPayVnPayThunk } from "../../../store/orderManager/thunk";
 import TextArea from "antd/es/input/TextArea";
 import { useAccount } from "../../../hooks/useAccount";
 import { toast } from "react-toastify";
@@ -25,12 +25,10 @@ export const Payment = () => {
   const dispatch = useAppDispatch();
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const { productView, productQuantity } = useProduct();
-  const {studentInfo} = useAccount()
+  const { studentInfo } = useAccount()
   const navigate = useNavigate();
   const location = useLocation();
   const { postProductId } = location.state || {};
-
-  
 
   useEffect(() => {
     if (!studentInfo) {
@@ -48,34 +46,68 @@ export const Payment = () => {
   useEffect(() => {
     let price = 0;
     productView.forEach(product => {
-      price += parseInt(product.product.price);
+      let prdPrice = (parseInt(product.product.price) * productQuantity[product.product.productId]);
+      price += prdPrice
     });
-    setTotalPrice(price);
+    setTotalPrice(price * 1000);//Db need to * 1000 :D
   }, [productView]);
 
   const onPurchase = () => {
     const postProductToBuyRequests: PostProductToBuyRequestType[] = []
 
     productView.map(prd => {
-      prd.variation.map(item => {
+      prd.variation.map((item, index) => {
         postProductToBuyRequests.push(
           {
+            sttOrder: index + 1,
             postProductId: postProductId,
             variationDetailId: item.variationId,
             quantity: productQuantity[postProductId],
-            price: parseFloat(prd.product.price)
+            price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
           }
         )
       })
     })
-
-    const payment: CodPayment = {
+    const payment: PaymentType = {
       registeredStudentId: studentInfo.registeredStudentId,
       postProductToBuyRequests: postProductToBuyRequests,
       paymentMethodId: 1,
       description: (document.getElementById("description") as HTMLInputElement).value,
     }
     dispatch(postPayCodThunk(payment))
+  }
+
+
+  const onPurchaseVnPay = () => {
+    const postProductToBuyRequests: PostProductToBuyRequestType[] = []
+
+    productView.map(prd => {
+      prd.variation.map((item, index) => {
+        postProductToBuyRequests.push(
+          {
+            sttOrder: index + 1,
+            postProductId: postProductId,
+            variationDetailId: item.variationId,
+            quantity: productQuantity[postProductId],
+            price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
+          }
+        )
+      })
+
+    })
+
+
+
+    const payment: PaymentType = {
+      registeredStudentId: studentInfo.registeredStudentId,
+      postProductToBuyRequests: postProductToBuyRequests,
+      paymentMethodId: 2,
+      description: (document.getElementById("description") as HTMLInputElement).value
+    }
+    dispatch(postPayVnPayThunk(payment)).then((response) => {
+      window.location.href = response.payload.paymentUrl;
+    });
+
   }
 
   return (
@@ -151,18 +183,24 @@ export const Payment = () => {
           <div className="text-2xl font-semibold">Tổng đơn hàng</div>
           <div className="text-lg">
             <div className="py-5 border-b-2 border-black">
-              <div className="flex justify-between items-center">
-                <div>Tổng giá trị sản phẩm (1)</div>
-                <div>{totalPrice} VNĐ</div>
-              </div>
-              <div className="flex justify-between items-center">
-                <div>Phụ thu</div>
-                <div>{totalPrice * 0.1} VNĐ</div>
-              </div>
+              {productView.map((product, index) => {
+                return (
+                  <div className="flex justify-between items-center">
+                    <div>Tổng giá trị sản phẩm ({index + 1})</div>
+                    <div>{product.product.price * productQuantity[product.product.productId] * 1000} VNĐ</div>
+                  </div>
+                )
+              })}
+
+              {/* <div className="flex justify-between items-center">
+              //   <div>Phụ thu</div>
+              //   <div>{totalPrice * 0.1} VNĐ</div>
+              // </div> */}
+
             </div>
             <div className="flex justify-between items-center py-5">
               <div>Tổng</div>
-              <div>{totalPrice * 1.1} VNĐ</div>
+              <div>{totalPrice} VNĐ</div>
             </div>
           </div>
           {/* Description  */}
@@ -178,7 +216,7 @@ export const Payment = () => {
               Đặt hàng
             </button>
             <div className="text-with-lines">HOẶC</div>
-            <button className="px-12 py-3 font-medium bg-white flex my-4 gap-5 justify-between items-center hover:bg-slate-50 w-full duration-200">
+            <button onClick={onPurchaseVnPay} className="px-12 py-3 font-medium bg-white flex my-4 gap-5 justify-between items-center hover:bg-slate-50 w-full duration-200">
               Trả bằng QR VNPAY <img src="/images/logos/VNPAY.png" />
             </button>
           </div>

@@ -1,5 +1,5 @@
 import { apiInstance } from "../constants/apiInstance";
-import { CodPayment } from "../types/order";
+import { PaymentType } from "../types/order";
 import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
@@ -8,6 +8,6 @@ const api = apiInstance({
 });
 
 export const manageOrder = {
-  pay_cod: (payload: CodPayment) => api.post(`/payment/pay-order`, payload),
-  // pay_vnpay: (payload: string) => api.get(`/vn-pay?amount=${payload}`),
+  pay_cod: (payload: PaymentType) => api.post(`/payment/pay-order`, payload),
+  pay_vnpay: (payload: PaymentType) => api.post(`/payment/vn-pay`, payload)
 };
