@@ -13,3 +13,18 @@ export interface PostProductToBuyRequestType {
   quantity: number;
   price: number;
 }
+
+export interface VnPayPayment {
+  registeredStudentId: number;
+  postProductToBuyRequests: PostProductToBuyRequest[];
+  paymentMethodId: number;
+  description: string;
+}
+
+export interface PostProductToBuyRequest {
+  postProductId: number;
+  variationDetailId: number;
+  variationId: number;
+  quantity: number;
+  price: number;
+}
