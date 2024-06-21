@@ -2,26 +2,7 @@ import React from "react";
 
 export const AdminDashboard = () => {
   return (
-    <div className="grid grid-cols-12 " >
-      <div className="col-span-3 bg-[#393E46] rounded-tl-lg">
-        navbar
-      </div>
-      <div className="col-span-9 border-2 border-gray-300  rounded-tr-lg  shadow-lg shadow-gray-400/50 ">
-        header
-      </div>
-      <div className="col-span-3 grid grid-cols-2 text-white  bg-gray-700 pt-[20px] ">
-        <div className="pl-[10px]  text-[14px]  ">Dash board</div>
-        <div className="col-span-2  bg-gray-700 text-lg text-white pr-[20px]  pt-[20px] ">
-          <div className="content1 bg-[#FD7014] pt-[18px] pb-[18px] pl-[20px] flex flex-row rounded-r-3xl  gap-4 ">
-            <div>img</div>
-            <div>dash content</div>
-          </div>
-          <div className="content2  pl-[20px]  pt-[18px] pb-[18px] flex flex-row rounded-r-2xl  gap-4">
-            <div>img</div>
-            <div>dash content</div>
-          </div>
-        </div>
-      </div>
+    <div>
       <div className="col-span-9 ">
         <div className="w-full mt-[50px] text-lg ml-[25px] flex flex-row gap-x-3  ">
           <div className=" pt-[12px] ">All(56)</div>
@@ -44,7 +25,7 @@ export const AdminDashboard = () => {
           <div className=" body col-span-12 grid grid-cols-12 gap-4   rounded-tr-lg pl-[20px] pt-[10px] ">
             <div className="col-span-1 mr-[5px]">  <input type="checkbox" class="form-tick appearance-none bg-white bg-check h-6 w-6 border border-gray-300 rounded-md checked:bg-blue-600 checked:border-transparent focus:outline-none" name="option1" value="Option 1"></input></div>
             <div className="col-span-1">Image</div>
-            <div className="col-span-3">Dung uot at..........</div>
+            <div className="col-span-3">Khoa</div>
             <div className="col-span-2">15/06/2024</div>
             <div className="col-span-2">3213</div>
             <div className="col-span-1">$21312</div>

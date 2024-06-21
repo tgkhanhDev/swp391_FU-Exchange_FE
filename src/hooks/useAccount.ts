@@ -7,5 +7,8 @@ export const useAccount = () => {
   );
   const userInfo = localStorage.getItem("userInfo");
   const studentInfo = userInfo ? JSON.parse(userInfo) : null;
-  return { isAccountRegistered, isAuthorize, isAllowRegister, studentInfo };
+
+  const staffInfo = localStorage.getItem("staffInfo");
+  const staffInfor = staffInfo ? JSON.parse(staffInfo) : null;
+  return { isAccountRegistered, isAuthorize, isAllowRegister, studentInfo, staffInfor };
 };

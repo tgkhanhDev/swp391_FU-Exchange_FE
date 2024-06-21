@@ -10,6 +10,7 @@ import {
   Seller,
   UpdateBanking,
   LoginStaffType,
+  Staff,
 } from "../types/user";
 import { utilsResponse } from "../types/utils";
 
@@ -23,6 +24,10 @@ const apiB = apiInstance({
 
 const apiC = apiInstance({
   baseURL: "http://localhost:8080/student",
+});
+
+const apiD = apiInstance({
+  baseURL: "http://localhost:8080/staff",
 });
 
 export const manageUsers = {
@@ -46,12 +51,16 @@ export const manageUsers = {
   updatePassword: (payload: UpdatePassword) =>
     apiC.put<utilsResponse<any>>(`update-password`, payload),
 
-  getSellerInfo: (payload: Seller) => 
-    apiB.get<utilsResponse<any>>(`information/${payload.RegisteredStudent.Student.studentId}`),
+  getSellerInfo: (payload: Seller) => {
+    return apiB.get<utilsResponse<any>>(`information/${payload.RegisteredStudent.Student.studentId}`);
+  },
 
   updateBanking : (payload: UpdateBanking) =>
     apiB.put<utilsResponse<any>>(`update-information`, payload),
 
   isLoginStaff: (payload: LoginStaffType) =>
     api.post<utilsResponse<LoginResponse>>(`/staff/login`, payload),
+
+  getStaffInfo: (payload: number) =>
+    apiD.get<utilsResponse<any>>(`detail/${payload}`),
 };

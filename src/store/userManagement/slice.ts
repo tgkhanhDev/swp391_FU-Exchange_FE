@@ -11,6 +11,7 @@ import {
   getSellerInfoThunk,
   updateBankingThunk,
   getLoginStaffThunk,
+  getStaffInfoThunk,
 } from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -65,19 +66,29 @@ export const manageUsersSlice = createSlice({
       builder.addCase(getLoginThunk.rejected, (state, { payload }) => { }),
 
       builder.addCase(getLoginStaffThunk.fulfilled, (state, { payload }) => {
-        if (payload.status == 200) {
+        if (payload.status === 200) {
           toast.success(`${payload.content}`);
-          //!redirect here
-          state.isAuthorize = true;
-          window.location.href = "/admin";
-  
+
+          // Lưu thông tin staff vào localStorage
           localStorage.setItem("staffInfo", JSON.stringify(payload.data));
+
+          // Lấy role từ payload.data
+          const role = payload.data.role;
+
+          // Kiểm tra role và chuyển hướng dựa trên giá trị của nó
+          if (role === "Administrator") {
+            window.location.href = "/admin";
+          } else if (role === "Moderator") {
+            window.location.href = "/moderator";
+          }
+
+          state.isAuthorize = true;
         } else {
           toast.error(`${payload.content}`);
         }
-      }),
-        builder.addCase(getLoginStaffThunk.rejected, (state, { payload }) => { }),
-        
+      });
+    builder.addCase(getLoginStaffThunk.rejected, (state, { payload }) => { }),
+
       builder.addCase(isRegisteredThunk.fulfilled, (state, { payload }) => {
         if (payload.status == 200) {
           state.isAccountRegistered = true;
@@ -129,6 +140,10 @@ export const manageUsersSlice = createSlice({
       state.users = payload.data;
     });
     builder.addCase(getSellerInfoThunk.fulfilled, (state, { payload }) => {
+      state.users = payload.data;
+    });
+
+    builder.addCase(getStaffInfoThunk.fulfilled, (state, { payload }) => {
       state.users = payload.data;
     });
     builder.addCase(updatePasswordThunk.fulfilled, (state, { payload }) => {

@@ -1,14 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Post, PostLoadMore } from "../../types/post";
-import { postPayCodThunk, getOrderThunk } from "./thunk";
-import { Orders } from "../../types/order"
+import { postPayCodThunk, getOrderThunk, getOrderDetailThunk  } from "./thunk";
+import { Orders, PostProductInOrder } from "../../types/order"
 
 type stateType = {
   order: Orders[];
+  orderDetail: PostProductInOrder[];
 };
 
 const initialState: stateType = {
   order: [],
+  orderDetail: [],
 };
 
 export const manageOrderSlice = createSlice({
@@ -22,7 +24,10 @@ export const manageOrderSlice = createSlice({
     })
       // builder.addCase(getPayVnPay.fulfilled, (state, { payload }) => {});
       builder.addCase(getOrderThunk.fulfilled, (state, { payload }) => {
-        state.order = payload.data;
+        state.order = payload;
+      });
+      builder.addCase(getOrderDetailThunk.fulfilled, (state, { payload }) => {
+        state.orderDetail = payload;
       });
   },
 });

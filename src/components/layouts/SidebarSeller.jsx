@@ -22,8 +22,8 @@ const SidebarCustomer = () => {
       </NavLink>
 
       {/* My order */}
-      <NavLink to={''}>
-        <button className={`rounded-r-[30px] h-16 grid grid-cols-[1fr_auto] items-center mb-2 w-52 hover:bg-slate-200 ${location.pathname === '' ? 'bg-slate-300 w-64' : ''} duration-500`}>
+      <NavLink to={'/dashboard/transaction'}>
+        <button className={`rounded-r-[30px] h-16 grid grid-cols-[1fr_auto] items-center mb-2 w-52 hover:bg-slate-200 ${location.pathname === '/dashboard/transaction' ? 'bg-slate-300 w-64' : ''} duration-500`}>
           <div className='flex justify-center items-center pl-5'>
             <div className='ml-1 text-xl'><SwapOutlined className="mr-2" />Giao dịch</div>
           </div>
@@ -44,8 +44,8 @@ const SidebarCustomer = () => {
         </button>
       </NavLink>
 
-      <NavLink to={''}>
-        <button className={`rounded-r-[30px] h-16 grid grid-cols-[1fr_auto] items-center mb-2 w-52 hover:bg-slate-200 ${location.pathname === '' ? 'bg-slate-300 w-64' : ''} duration-500`}>
+      <NavLink to={'/dashboard/post'}>
+        <button className={`rounded-r-[30px] h-16 grid grid-cols-[1fr_auto] items-center mb-2 w-52 hover:bg-slate-200 ${location.pathname === '/dashboard/post' ? 'bg-slate-300 w-64' : ''} duration-500`}>
           <div className='flex justify-center items-center pl-5'>
             <div className='text-xl'><EditOutlined className="mr-2" />Bài đăng</div>
           </div>

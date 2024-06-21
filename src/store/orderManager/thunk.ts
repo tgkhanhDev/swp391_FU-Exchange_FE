@@ -20,7 +20,19 @@ export const getOrderThunk = createAsyncThunk(
   async (payload: Orders, { rejectWithValue }) => {
       try {
           const data = await manageOrder.orderBuy(payload);
-          return data.data; // Truy cập vào mảng bên trong đối tượng data
+          return data.data.data; // Truy cập vào mảng bên trong đối tượng data
+      } catch (error) {
+          return rejectWithValue(error);
+      }
+  }
+);
+
+export const getOrderDetailThunk = createAsyncThunk(
+  "orderBuyDetail",
+  async (payload: Orders, { rejectWithValue }) => {
+      try {
+          const data = await manageOrder.orderBuyDetail(payload);
+          return data.data.data; 
       } catch (error) {
           return rejectWithValue(error);
       }

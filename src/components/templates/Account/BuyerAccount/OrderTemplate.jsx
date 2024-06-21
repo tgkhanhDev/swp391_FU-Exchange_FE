@@ -1,21 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
-import { NavLink, useNavigate } from 'react-router-dom'
-import { Select, Popover } from "antd"
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Select, Popover } from "antd";
 import { UserOutlined, ShrinkOutlined, EllipsisOutlined, SendOutlined, PhoneOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import './styles.css'
-import { CSSTransition } from 'react-transition-group'; {/*Làm xong đéo hiểu gì */ }
+import './styles.css';
+import { CSSTransition } from 'react-transition-group';
 import { useAppDispatch } from "../../../../store";
-import { getOrderThunk } from "../../../../store/orderManager/thunk";
+import { getOrderThunk, getOrderDetailThunk } from "../../../../store/orderManager/thunk";
+import { getPostByIdThunk } from "../../../../store/postManagement/thunk";
+import { viewChatRoom } from "../../../../store/chatManager/thunk"
+import { usePost } from "../../../../hooks/usePost";
 import { useOrder } from "../../../../hooks/useOrder";
+import { useAccount } from "../../../../hooks/useAccount";
+import { format } from 'date-fns';
+import console from "console";
 
 export const OrderTemplate = () => {
-
   const { order } = useOrder();
+  const { postDetail } = usePost();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  const [orderDetails, setOrderDetails] = useState({});
+  const [postDetails, setPostDetails] = useState({});
+  const [chatRoomData, setChatRoomData] = useState();
+  const { studentInfo } = useAccount();
   const [showBoxChat, setShowBoxChat] = useState(false);
-
   const messageEndRef = useRef(null);
 
   useEffect(() => {
@@ -25,15 +33,20 @@ export const OrderTemplate = () => {
   }, [showBoxChat]);
 
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-    if (!userInfo) {
+    if (!studentInfo) {
       navigate('/login');
       return;
     }
 
-    if (userInfo.registeredStudentId) {
-      dispatch(getOrderThunk({ registeredStudent: userInfo.registeredStudentId }));
+    if (studentInfo.registeredStudentId) {
+      dispatch(getOrderThunk({
+        registeredStudent: studentInfo.registeredStudentId
+      }));
+      dispatch(viewChatRoom(studentInfo.registeredStudentId))
+        .then((data) => {
+          // Sau khi nhận được dữ liệu từ action, gán vào state chatRoomData
+          setChatRoomData(data);
+        })
     }
   }, [dispatch]);
 
@@ -42,6 +55,40 @@ export const OrderTemplate = () => {
     { value: 'Cao đến thấp', label: 'Cao đến thấp' },
     { value: 'Thấp đến cao', label: 'Thấp đến cao' },
   ];
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, 'dd-MM-yyyy HH:mm:ss');
+  };
+
+  useEffect(() => {
+    order.forEach(async (item) => {
+      const response = await dispatch(getOrderDetailThunk({
+        registeredStudent: item.registeredStudent,
+        orderId: item.orderId,
+        orderStatus: { orderStatusId: item.orderStatus.orderStatusId }
+      }));
+
+      const orderDetail = response.payload;
+      // Lưu trữ chi tiết đơn hàng bằng setOrderDetails
+      setOrderDetails(prevDetails => ({
+        ...prevDetails,
+        [item.orderId]: orderDetail
+      }));
+
+      if (Array.isArray(orderDetail.postProductInOrder)) {
+        orderDetail.postProductInOrder.forEach(async (detail) => {
+          const postResponse = await dispatch(getPostByIdThunk(detail.postProduct.postProductId));
+          const postProductDetail = postResponse.payload.data;
+          // Lưu trữ postDetail vào postDetails theo postProductId
+          setPostDetails(prevPostDetails => ({
+            ...prevPostDetails,
+            [detail.postProduct.postProductId]: postProductDetail
+          }));
+        });
+      }
+    });
+  }, [dispatch, order]);
 
   return (
     <div>
@@ -58,43 +105,21 @@ export const OrderTemplate = () => {
             </div>
           </div>
 
-          <div>
-            <h1>Orders</h1>
-            {Array.isArray(order) && order.length > 0 ? (
-              order.map((ord) => (
-                <div key={ord.orderId}>
-                  <p>Order ID: {ord.orderId}</p>
-                  <p>Create Date: {ord.createDate}</p>
-                  <p>Complete Date: {ord.completeDate}</p>
-                  <p>Description: {ord.description}</p>
-                  <p>Payment ID: {ord.paymentId}</p>
-                  <p>Registered Student: {ord.registeredStudent}</p>
-                  <p>Order Status: {ord.orderStatus.orderStatusName}</p>
-                  <hr />
-                </div>
-              ))
-            ) : (
-              <p>No orders found.</p>
-            )}
-          </div>
-
-          {/*Đơn hàng */}
           {order.map(item =>
-            <div key = {item.orderId} className='bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300'>
-              {/*Thông tin cơ bản đơn hàng */}
+            <div key={item.orderId} className='bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300'>
               <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">
                 <div className="">
-                  <div className="text-lg font-bold">Ngày đặt đơn: </div>
-                  <div>{item.createDate}</div>
+                  <div className="text-lg font-bold">Ngày đặt đơn:</div>
+                  <div>{formatDate(item.createDate)}</div>
                 </div>
 
                 <div className="">
                   <div className="text-lg font-bold">Tổng đơn: </div>
-                  <div> VNĐ</div>
+                  <div>{item.totalPrice.toLocaleString('en-US')} VNĐ</div>
                 </div>
 
                 <div className="">
-                  <div className="text-lg font-bold">Trạng thái đơn hàng: </div>
+                  <div className="text-lg font-bold">Trạng thái đơn hàng:</div>
                   <div>{item.orderStatus.orderStatusName}</div>
                 </div>
 
@@ -107,46 +132,49 @@ export const OrderTemplate = () => {
                   <div className="text-lg font-bold">Mã đơn: </div>
                   <div className="text-center">{item.orderId}</div>
                 </div>
-
               </div>
 
-              {/*Chi tiết đơn hàng */}
-              <div className="py-5 px-5 flex flex-row gap-4">
-                {/*Hình ảnh */}
-                <div className='h-36 w-36 border-2'>
-                  <img src="https://firebasestorage.googleapis.com/v0/b/fu-exchange.appspot.com/o/Product1_1.jfif?alt=media&token=b33326cb-35d1-492b-8e58-b402ac8045c2"></img>
-                </div>
-
-                <div className="w-[40%]">
-                  <div className="pb-4">
-                    <div className="font-semibold text-lg"></div>
-                    <div>Màu sắc: Xanh ngọc</div>
-                    <div>Số lượng: 1</div>
+              {orderDetails[item.orderId] && Array.isArray(orderDetails[item.orderId].postProductInOrder) && orderDetails[item.orderId].postProductInOrder.map(detail =>
+                <div key={detail.postProduct.postProductId} className="py-5 px-5 flex flex-row gap-4">
+                  <div className='h-32 w-32'>
+                    {postDetails[detail.postProduct.postProductId]?.product?.image ? (
+                      <img src={postDetails[detail.postProduct.postProductId].product.image[0].imageUrl} alt={postDetails[detail.postProduct.postProductId].product.detail.productName} className="h-32 w-32" />
+                    ) : (
+                      <div>No Image</div>
+                    )}
                   </div>
-
-                  <div className="flex justify-between">
-                    <button className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold">Mua lại</button>
-                    <button className="px-8 py-3 border-2 border-current bg-white text-[var(--color-primary)] font-bold" onClick={() => setShowBoxChat(!showBoxChat)}>Liên hệ người bán</button>
+                  <div className="w-[40%]">
+                    <div className="pb-4">
+                      <div className="font-semibold text-lg">{detail.postProduct.product.detail.productName}</div>
+                      <div className="flex justify-between items-center">
+                        <div>{detail.firstVariation}</div>
+                        {detail.secondVariation && (
+                          <>
+                            <div>&#x2022;</div>
+                            <div>{detail.secondVariation}</div>
+                          </>
+                        )}
+                      </div>
+                      <div className="mt-2">Số lượng: {detail.quantity}</div>
+                    </div>
+                    <div className="flex justify-between">
+                      <button className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold">Mua lại</button>
+                      <button className="px-8 py-3 border-2 border-current bg-white text-[var(--color-primary)] font-bold" onClick={() => setShowBoxChat(!showBoxChat)}>Liên hệ người bán</button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-between items-end flex-grow text-lg font-medium">
+                    <NavLink to={'/review'}>
+                      <div className="text-[var(--color-primary)] underline">Đánh giá ngay</div>
+                    </NavLink>
+                    <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: {detail.postProduct.priceBought.toLocaleString('en-US')}VNĐ</div>
                   </div>
                 </div>
-
-                <div className="flex flex-col justify-between items-end flex-grow text-lg font-medium">
-
-                  <NavLink to={'/review'}>
-                    <div className="text-[var(--color-primary)] underline">Đánh giá ngay</div> {/*Hoặc xem đánh giá nếu đã đánh giá sản phẩm */}
-                  </NavLink>
-                  <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: 23,000 VNĐ</div>
-                </div>
-              </div>
-
+              )}
             </div>
           )}
-
-
         </div>
       </main>
 
-      {/*Chat box */}
       <CSSTransition
         in={showBoxChat}
         timeout={300}
@@ -275,8 +303,7 @@ export const OrderTemplate = () => {
         </div>
       </CSSTransition>
     </div>
-  )
-}
+  );
+};
 
-
-export default OrderTemplate
+export default OrderTemplate;

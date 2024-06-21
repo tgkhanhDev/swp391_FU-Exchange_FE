@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getProductByVariationDetailThunk, getProductByIdThunk } from "./thunk";
-import { ProductPaymentType } from "../../types/product";
+import { getProductByVariationDetailThunk, getProductByIdThunk, getProductBySellerIdThunk } from "./thunk";
+import { ProductView, ProductPaymentType } from "../../types/product";
 
 interface initialType {
   productView: ProductPaymentType[];
   productQuantity: Record<string, number>;
+  product: ProductView[];
 }
 
 const initialState: initialType = {
   productView: [],
   productQuantity: {},
+  product: [],
 };
 
 export const manageProductSlice = createSlice({
@@ -41,6 +43,9 @@ export const manageProductSlice = createSlice({
     ),
       builder.addCase(getProductByIdThunk.fulfilled, (state, { payload }) => {
         state.productView = payload.data;
+      });
+      builder.addCase(getProductBySellerIdThunk.fulfilled, (state, { payload }) => {
+        state.product = payload.data;
       });
   },
 });

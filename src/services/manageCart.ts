@@ -1,7 +1,6 @@
 import { apiInstance } from "../constants/apiInstance";
-import { deleteItemCartType } from "../types/cart";
+import { deleteItemCartType, viewItemCart } from "../types/cart";
 import { CodPayment } from "../types/order";
-import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({
@@ -9,10 +8,11 @@ const api = apiInstance({
 });
 
 export const manageCart = {
-  viewCart: (payload: string) => api.get(`/${payload}`),
+  viewCart: (payload: viewItemCart) => 
+    api.get<utilsResponse<viewItemCart[]>>(`/${payload}`),
   addToCart: (payload) => api.post(``, payload),
   updateQuantity: (payload) => api.put(`/cart-update`, payload),
-  deleteItemCart: (payload:deleteItemCartType) => api.delete(`/cart-delete`,payload),
+  //deleteItemCart: (payload:deleteItemCartType) => api.delete(`/cart-delete`,payload),
 
   // pay_vnpay: (payload: string) => api.get(`/vn-pay?amount=${payload}`),
 };

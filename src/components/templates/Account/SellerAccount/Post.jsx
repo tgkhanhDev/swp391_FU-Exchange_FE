@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
+import { useAccount } from "../../../../hooks/useAccount";
 
-export const Dashboard = () => {
+export const Post = () => {
   const navigate = useNavigate();
-
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const { studentInfo } = useAccount();
 
   useEffect(() => {
-    if (!userInfo) {
+    if (!studentInfo) {
       navigate('/login');
     }
-    else if (userInfo.role !== "Seller") {
+    else if (studentInfo.role !== "Seller") {
       navigate('/authorize');
     }
   })
@@ -19,7 +19,7 @@ export const Dashboard = () => {
     <div>
       <main className='py-10'>
         <div className='pl-14'>
-          <div className='font-bold text-4xl'>Thống kê</div>
+          <div className='font-bold text-4xl'>Bài đăng</div>
           
           <div className="py-10 pr-6">
 
@@ -31,4 +31,4 @@ export const Dashboard = () => {
 }
 
 
-export default Dashboard
+export default Post

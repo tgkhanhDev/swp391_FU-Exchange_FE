@@ -3,8 +3,15 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { Radio, Button, Modal, Form, Input, Select } from "antd"
 import { useAppDispatch } from "../../../../store";
 import { getAccountInfoThunk, updatePasswordThunk, getSellerInfoThunk, updateBankingThunk } from "../../../../store/userManagement/thunk";
+import { format } from 'date-fns';
 
 export const ProfileTemplate = () => {
+
+  const formatDay = (dayString) => {
+    if (!dayString) return '';
+    const day = new Date(dayString);
+    return format(day, 'dd-MM-yyyy'); // Định dạng theo yêu cầu 'dd-MM-yyyy HH:mm:ss'
+  };
 
   const [user, setUser] = useState('');
   const dispatch = useAppDispatch();
@@ -60,7 +67,8 @@ export const ProfileTemplate = () => {
 
     if (userInfo && userInfo.username) {
       if (userInfo.role === "Buyer") {
-        dispatch(getAccountInfoThunk({ registeredStudentId: userInfo.registeredStudentId
+        dispatch(getAccountInfoThunk({
+          registeredStudentId: userInfo.registeredStudentId
         }))
           .then((action) => {
             const { payload } = action;
@@ -73,12 +81,12 @@ export const ProfileTemplate = () => {
           });
       }
       else {
-        dispatch(getSellerInfoThunk({ 
-          RegisteredStudent: { 
-            Student: { 
-              studentId: userInfo.username 
-            } 
-          } 
+        dispatch(getSellerInfoThunk({
+          RegisteredStudent: {
+            Student: {
+              studentId: userInfo.username
+            }
+          }
         }))
           .then((action) => {
             const { payload } = action;
@@ -169,7 +177,7 @@ export const ProfileTemplate = () => {
               </div>
               <div className='mt-8'>
                 <label className='font-semibold mr-20'>Ngày tháng năm sinh</label>
-                <input className=" border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white" readOnly defaultValue={(user && user.student ? user.student.dob : '') || (user ? user.dob : '')}></input>
+                <input className=" border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white" readOnly defaultValue={(user && user.student ? formatDay(user.student.dob) : '') || (user ? formatDay(user.dob) : '')}></input>
               </div>
             </div>
 

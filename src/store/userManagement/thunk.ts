@@ -9,6 +9,7 @@ import {
   Seller,
   UpdateBanking,
   LoginStaffType,
+  Staff,
 } from "../../types/user";
 import { managePost } from "../../services/managePost";
 import { PostFilter_API } from "../../types/post";
@@ -128,6 +129,18 @@ export const getLoginStaffThunk = createAsyncThunk(
     try {
       const data = await manageUsers.isLoginStaff(payload);
       return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getStaffInfoThunk = createAsyncThunk(
+  "getStaffInfo",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getStaffInfo(payload);
+      return data.data.data;
     } catch (error) {
       return rejectWithValue(error);
     }

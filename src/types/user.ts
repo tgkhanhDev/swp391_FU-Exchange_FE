@@ -75,3 +75,13 @@ export type UpdateBanking = {
   bankingNumber: string;
   bankingName: string;
 };
+
+export interface Staff {
+  roleId: Role;
+  staffName: string;
+  gender: string;
+  identityCard: string;
+  address: string;
+  phoneNumber: string;
+  dob: string;
+}

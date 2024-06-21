@@ -153,8 +153,8 @@ export const CreateProduct = () => {
   return (
     <Form
       name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
+      //labelCol={{ span: 8 }}
+      //wrapperCol={{ span: 16 }}
       initialValues={{ remember: true }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
@@ -170,7 +170,7 @@ export const CreateProduct = () => {
                 <label className='font-semibold'>Tên sản phẩm*</label>
                 <Form.Item<FieldType>
                   name="productName"
-                  className="!w-full"
+                  className="w-full"
                   rules={[{ required: true, message: 'Vui lòng nhập sản phẩm!' }]}
 
                 >

@@ -1,5 +1,3 @@
-import { Seller } from "./user";
-
 export interface Product {
   productId: number;
   detail: ProductDetail;
@@ -50,4 +48,51 @@ export interface ProductPaymentType {
       description: string;
     };
   }[];
+}
+
+export interface ProductView {
+  productId: number
+  seller: Seller
+  detail: Detail
+  image: Image[]
+  category: Category
+  variation: Variation[]
+  price: string
+  productStatus: boolean
+}
+
+export interface Seller {
+  sellerId: number
+  student: Student
+  bankingName: string
+  bankingNumber: string
+  active: number
+}
+
+export interface Student {
+  studentId: string
+  firstName: string
+  lastName: string
+  identityCard: string
+  address: string
+  phoneNumber: string
+  gender: string
+  dob: string
+}
+
+export interface Detail {
+  productDetailId: number
+  productName: string
+  description: string
+}
+
+export interface Image {
+  productImageId: number
+  imageUrl: string
+}
+
+export interface Category {
+  categoryId: number
+  categoryName: string
+  imageUrl: string
 }
