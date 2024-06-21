@@ -81,7 +81,7 @@ export const RegisterSeller = () => {
             <label className='text-[#9f9f9f] mb-2'>Tên ngân hàng</label>
             <Select
               defaultValue="Ngân hàng"
-              className="custom-select"
+              className="custom-select w-full"
               options={options}
               onChange={(selectedOption) => {
                 bankNameRef.current = selectedOption;

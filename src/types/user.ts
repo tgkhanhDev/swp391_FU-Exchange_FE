@@ -32,6 +32,12 @@ export type LoginType = {
   username: string;
   password: string;
 };
+
+export type LoginStaffType = {
+  numberPhone: string;
+  password: string;
+};
+
 export type LoginResponse = {
   username: string;
   role: string;
@@ -69,3 +75,13 @@ export type UpdateBanking = {
   bankingNumber: string;
   bankingName: string;
 };
+
+export interface Staff {
+  roleId: Role;
+  staffName: string;
+  gender: string;
+  identityCard: string;
+  address: string;
+  phoneNumber: string;
+  dob: string;
+}

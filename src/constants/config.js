@@ -14,7 +14,18 @@ export const PATH = {
   manageProduct: "/dashboard/product",
   updateProduct: "/dashboard/product/update",
   createProduct: "/dashboard/product/create",
+  transaction: "/dashboard/transaction",
+  post: "/dashboard/post",
 
   loginStaff: "/loginStaff",
   admin: "/admin",
+  manageStaffAcc: "/admin/staffManage",
+  manageReportAcc: "/admin/reportAccManage",
+  profileAdmin: "/admin/profile",
+  profileAdminUpdate: "/admin/profile/update",
+
+  moderator: "/moderator",
+  managePost: "/moderator/post",
+  manageReportPost: "/moderator/reportPost",
+  profileModerator: "/moderator/profile",
 };

@@ -87,11 +87,11 @@ export const LoginTemplate = () => {
               <form>
                 <div className="mb-6 ">
                   <label className="text-[#9f9f9f] mb-2">Mật khẩu</label>
-                  <input
+                  <Input.Password
                     className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
-                    type="password"
+                    
                     onChange={(e) => (pwdRef.current = e.target.value)}
-                  ></input>
+                  ></Input.Password>
                 </div>
                 <button
                   className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]"

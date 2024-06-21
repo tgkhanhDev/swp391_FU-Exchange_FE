@@ -1,13 +1,13 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { HeaderStaff } from "./HeaderStaff";
-import SidebarAdmin from "./SidebarAdmin";
+import SidebarModerator from "./SidebarModerator";
 
-export const AuthorizeAdminLayout = () => {
+export const AuthorizeModeratorLayout = () => {
   return (
     <div className="grid grid-cols-12 h-screen">
       <div className="col-span-3 h-full">
-        <SidebarAdmin />
+        <SidebarModerator />
       </div>
       <div className="col-span-9 flex flex-col">
         <HeaderStaff />
@@ -19,4 +19,4 @@ export const AuthorizeAdminLayout = () => {
   );
 };
 
-export default AuthorizeAdminLayout;
+export default AuthorizeModeratorLayout;

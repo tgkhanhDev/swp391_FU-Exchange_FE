@@ -8,10 +8,10 @@ import Cart from "../components/templates/Cart/Cart";
 import ProfileTemplate from "../components/templates/Account/BuyerAccount/ProfileTemplate";
 import { LoginStaff } from "../components/templates/Account";
 import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTemplate";
-import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize } from "../page/account";
-import { AdminDashboard } from "../components/templates/Account/Admin";
-import Dashboard from "../components/templates/Account/SellerAccount/Dashboard";
-import { UpdateProduct, ManageProduct, CreateProduct } from "../components/templates/Account/SellerAccount";
+import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize, ModeratorAuthorize } from "../page/account";
+import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate } from "../components/templates/Account/Admin";
+import { ManageOrder, ManagePostProduct, ManageReportPost, ProfileTemplateModerator } from "../components/templates/Account/Moderator";
+import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 import { Payment } from "../components/templates/Payment";
@@ -82,16 +82,63 @@ export const router = [
         element: <CreateProduct />,
         path: PATH.createProduct,
       },
+      {
+        element: <Transaction />,
+        path: PATH.transaction,
+      },
+      {
+        element: <Post />,
+        path: PATH.post,
+      }
     ],
   },
 
   {
     element: <AdminAuthorize />,
-    path: PATH.admin,
+    path: PATH.admin, 
     children: [
       {
-        element: <AdminDashboard />,
+        element: <ManageCustomerAccount/>,
         index: true,
+      },
+      {
+        element: <ManageReportAccount />,
+        path: PATH.manageReportAcc,
+      },
+      {
+        element: <ManageStaffAccount />,
+        path: PATH.manageStaffAcc,
+      },
+      {
+        element: <ProfileTemplateAdmin />,
+        path: PATH.profileAdmin,
+      },
+      {
+        element: <ProfileAdminUpdate />,
+        path: PATH.profileAdminUpdate,
+      },
+    ],
+  },
+
+  {
+    element: <ModeratorAuthorize />,
+    path: PATH.moderator,
+    children: [
+      {
+        element: <ManageOrder />,
+        index: true,
+      },
+      {
+        element: <ManagePostProduct />,
+        path: PATH.managePost,
+      },
+      {
+        element: <ManageReportPost />,
+        path: PATH.manageReportPost,
+      },
+      {
+        element: <ProfileTemplateModerator />,
+        path: PATH.profileModerator,
       },
     ],
   },

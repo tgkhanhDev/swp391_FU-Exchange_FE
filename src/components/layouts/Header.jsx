@@ -53,13 +53,13 @@ export const Header = () => {
           <Menu.Item key="/dashboard" className="custome-font-child">
             Thống kê
           </Menu.Item>
-          <Menu.Item key="/dashboard/g" className="custome-font-child">
+          <Menu.Item key="/dashboard/transaction" className="custome-font-child">
             Giao dịch
           </Menu.Item>
           <Menu.Item key="/dashboard/product" className="custome-font-child">
             Sản phẩm
           </Menu.Item>
-          <Menu.Item key="/dashboard/b" className="custome-font-child">
+          <Menu.Item key="/dashboard/post" className="custome-font-child">
             Bài đăng
           </Menu.Item>
         </Menu.SubMenu>
@@ -165,12 +165,12 @@ export const Header = () => {
               overlayClassName="custom-arrow custome-font"
               placement="bottomLeft"
               arrow
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}  // Gắn dropdown vào phần tử cha
             >
               <button className="flex justify-between items-center pl-5">
                 <div className="flex justify-center items-center text-xl">
                   <div className="flex flex-col items-center">
                     <UserOutlined className="mr-4 text-3xl" />
-                    <div>{userInfo.role}</div>
                   </div>
 
                   {(user && user.student

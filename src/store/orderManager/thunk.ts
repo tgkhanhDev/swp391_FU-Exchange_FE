@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { PostFilter_API } from "../../types/post";
 import { manageOrder } from "../../services/manageOrder";
-import { PaymentType } from "../../types/order";
+import { PaymentType, Orders } from "../../types/order";
 
 export const postPayCodThunk = createAsyncThunk(
   "pay_cod",
@@ -26,3 +26,27 @@ export const postPayVnPayThunk = createAsyncThunk(
     }
   }
 );
+export const getOrderThunk = createAsyncThunk(
+  "orderBuy",
+  async (payload: Orders, { rejectWithValue }) => {
+      try {
+          const data = await manageOrder.orderBuy(payload);
+          return data.data.data; // Truy cập vào mảng bên trong đối tượng data
+      } catch (error) {
+          return rejectWithValue(error);
+      }
+  }
+);
+
+export const getOrderDetailThunk = createAsyncThunk(
+  "orderBuyDetail",
+  async (payload: Orders, { rejectWithValue }) => {
+      try {
+          const data = await manageOrder.orderBuyDetail(payload);
+          return data.data.data; 
+      } catch (error) {
+          return rejectWithValue(error);
+      }
+  }
+);
+
