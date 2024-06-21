@@ -1,16 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import { Checkbox, InputNumber, Button } from "antd"
 import './styles.css'
-import { useAppDispatch } from "../../../store";
-import { getItemCartThunk } from "../../../store/cartManager/thunk";
-import { useCart } from "../../../hooks/useCart";
 
 export const Cart = () => {
 
-  const { viewCart } = useCart();
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const [allChecked, setAllChecked] = useState(false);
   const [checkedItems, setCheckedItems] = useState([false, false]); // Initialize the state for the two checkboxes
 
@@ -31,19 +25,6 @@ export const Cart = () => {
     setAllChecked(newCheckedItems.every((item) => item));
   };
 
-  useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-    if (!userInfo) {
-      navigate('/login');
-      return;
-    }
-
-    if (userInfo) {
-      dispatch(getItemCartThunk({ studentId: userInfo.username }));
-    }
-  }, [dispatch]);
-
   return (
     <div>
       <div className='my-12 mx-12'>
@@ -52,24 +33,6 @@ export const Cart = () => {
             <div className='text-6xl font-semibold mb-7'>Giỏ hàng</div>
 
             <div className='flex justify-center items-center gap-10'>
-
-              {Array.isArray(viewCart) && viewCart.length > 0 ? (
-                viewCart.map(item => (
-                  <div key={item.cartPostId.cartId}>
-                    <h3>Product: {item.postProduct.product.detail.productName}</h3>
-                    <p>Quantity: {item.quantity}</p>
-                    <p>Price: {item.postProduct.product.price}</p>
-                    <p>Seller: {item.postProduct.product.seller.student.firstName} {item.postProduct.product.seller.student.lastName}</p>
-                    <p>Category: {item.postProduct.product.category.categoryName}</p>
-                    <p>Post Type: {item.postProduct.postType.postTypeName}</p>
-                    <p>Campus: {item.postProduct.campus.campusName}</p>
-                    <p>Status: {item.postProduct.postStatus.postStatusName}</p>
-                    <p>Variation: {item.variationDetail.description}</p>
-                  </div>
-                ))
-              ) : (
-                <p>No cart found.</p>
-              )}
 
               <NavLink to={'/detail'}>
                 <button className='px-10 py-2 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] bg-white font-semibold hover:border-white duration-300'>
@@ -122,7 +85,7 @@ export const Cart = () => {
             </div>
             <div className='col-span-2 flex flex-col justify-center items-center'>
               <div>Kích thước: </div>
-              <div>Cá chà bặc</div>
+              <div>12cm</div>
             </div>
             <div className='col-span-1 flex justify-center items-center'>
               <div>23,000 VNĐ</div>
@@ -154,7 +117,7 @@ export const Cart = () => {
             </div>
             <div className='col-span-2 flex flex-col justify-center items-center'>
               <div>Kích thước: </div>
-              <div>Cá chà bặc</div>
+              <div>12cm</div>
             </div>
             <div className='col-span-1 flex justify-center items-center'>
               <div>23,000 VNĐ</div>

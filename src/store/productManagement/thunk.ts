@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { manageProduct } from "../../services/manageProduct";
-import { ProductView } from "../../types/product";
+import { createProductType, filterGetProductById } from "../../types/product";
 
 export const getProductByVariationDetailThunk = createAsyncThunk(
   "/productByVariationDetail",
@@ -26,11 +26,23 @@ export const getProductByIdThunk = createAsyncThunk(
   }
 );
 
-export const getProductBySellerIdThunk = createAsyncThunk(
-  "productBySellerId",
-  async (payload: ProductView, { rejectWithValue }) => {
+export const createProductThunk = createAsyncThunk(
+  "/create-product",
+  async (payload: createProductType, { rejectWithValue }) => {
     try {
-      const data = await manageProduct.getProductBySellerId(payload);
+      const data = await manageProduct.createProduct(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getProductByStudentIdThunk = createAsyncThunk(
+  "/get-products-by-id",
+  async (payload: filterGetProductById, { rejectWithValue }) => {
+    try {
+      const data = await manageProduct.getProductByStudentId(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

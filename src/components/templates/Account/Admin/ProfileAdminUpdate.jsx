@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from "../../../../hooks/useAccount";
-import { Radio, Button } from "antd";
+import { Radio } from "antd";
 import { useAppDispatch } from "../../../../store";
 import {
   getStaffInfoThunk,
 } from "../../../../store/userManagement/thunk";
 import { format } from 'date-fns';
 
-export const ProfileTemplateAdmin = () => {
+export const ProfileAdminUpdate = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { staffInfor } = useAccount();
@@ -84,14 +84,9 @@ export const ProfileTemplateAdmin = () => {
             <input className='border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white' defaultValue={formatDay(userInfo?.dob)} readOnly />
           </div>
         </div>
-        <div className="flex justify-end my-5">
-          <Button type="primary" className="text-base font-semibold rounded-sm flex justify-center items-center px-2 py-5">
-            Cập nhật
-          </Button>
-        </div>
       </div>
     </div>
   );
 };
 
-export default ProfileTemplateAdmin;
+export default ProfileAdminUpdate;

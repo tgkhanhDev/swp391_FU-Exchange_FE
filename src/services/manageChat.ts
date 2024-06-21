@@ -1,6 +1,4 @@
 import { apiInstance } from "../constants/apiInstance";
-import { deleteItemCartType, viewItemCart } from "../types/cart";
-import { CodPayment } from "../types/order";
 import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({

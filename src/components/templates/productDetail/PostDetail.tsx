@@ -10,7 +10,8 @@ import { log } from "console";
 import { PATH } from "../../../constants/config";
 import { getProductByIdThunk, getProductByVariationDetailThunk } from "../../../store/productManagement/thunk";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
-import {setProductQuantity, setTest} from "../../../store/productManagement/slice"
+import { setProductQuantity, setTest } from "../../../store/productManagement/slice"
+import { addToCartThunk } from "../../../store/cartManager/thunk";
 
 type PostType = {
   postId: number;
@@ -32,7 +33,7 @@ export const PostDetail: React.FC<PostType> = () => {
   useEffect(() => {
     dispatch(getPostByIdThunk(parseInt(postProductId!)));
     console.log("postProductId:", postProductId);
-    
+
   }, []);
 
   useEffect(() => {
@@ -118,29 +119,34 @@ export const PostDetail: React.FC<PostType> = () => {
           {/* button  */}
 
           <div className="flex my-3 gap-3">
-            <Button onClick={()=> {
+            <Button onClick={() => {
               const userInfo = localStorage.getItem("userInfo");
               const student = userInfo ? JSON.parse(userInfo) : null;
-              if(!student){
+              if (!student) {
                 alert("Sign in to Continue?")
-              }else{
+              } else if (postDetail){
                 console.log("studentID:", student.username);
                 console.log("postProductId:", postDetail?.postProductId);
-                console.log("variationId:", );
+                console.log("variationId:",);
+                const variationList: number[] = [];
+                Object.entries(detail).map(([key, values]) => {
+                  variationList.push(values);
+                });
+                let prdId = postDetail.product.productId;
+                dispatch(addToCartThunk({ studentId: student.username, postProductId: prdId, quantity: quantity, variationDetailId: variationList}))
 
-                alert("OK")
               }
-              
+
             }}>Add to cart</Button>
             <Button
               onClick={() => {
                 if (
                   postDetail &&
                   postDetail.product.variation.length >
-                    Object.keys(detail).length
+                  Object.keys(detail).length
                 ) {
                   alert("Chọn đủ đi");
-                } else if(postDetail) {
+                } else if (postDetail) {
                   let prdId = postDetail.product.productId;
                   const variationList: number[] = [];
                   Object.entries(detail).map(([key, values]) => {
@@ -154,14 +160,14 @@ export const PostDetail: React.FC<PostType> = () => {
                   // prdId? dispatch(getProductByIdThunk(prdId)): ""
 
                   dispatch(getProductByVariationDetailThunk(variationList));
-                  dispatch(setProductQuantity({ id: prdId , quantity: quantity }));
-                  navigate(PATH.payment, {state: {postProductId: 6}});
+                  dispatch(setProductQuantity({ id: prdId, quantity: quantity }));
+                  navigate(PATH.payment, { state: { postProductId: 6 } });
                 }
               }}
             >
               Buy now
             </Button>
-            <div className="flex items-center gap-2"><MinusOutlined onClick={() => quantity > 1? setQuantity(quantity - 1): ""} />{quantity}<PlusOutlined onClick={() => setQuantity(quantity + 1)} /></div>
+            <div className="flex items-center gap-2"><MinusOutlined onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />{quantity}<PlusOutlined onClick={() => setQuantity(quantity + 1)} /></div>
           </div>
           {/* end button  */}
           {/* //! Review  */}

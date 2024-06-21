@@ -1,26 +1,31 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getItemCartThunk } from "./thunk";
-import { viewItemCart } from "../../types/cart"
+import { addToCartThunk } from "./thunk";
+import { toast } from "react-toastify";
 
-type stateType = {
-  viewCart: viewItemCart[];
-};
+interface initialType {
+  cartList:any
+}
 
-const initialState: stateType = {
-  viewCart: [],
-};
+const initialState: initialType = {
+  cartList: [],
+}
 
 export const manageCartSlice = createSlice({
   name: "manageCart",
   initialState,
-  reducers: {},
+  reducers: {
+    
+  },
   extraReducers: (builder) => {
-    // builder.addCase(getPayVnPay.fulfilled, (state, { payload }) => {});
-    builder.addCase(getItemCartThunk.fulfilled, (state, { payload }) => {
-      state.viewCart = payload.data;
+    builder.addCase(addToCartThunk.fulfilled, (state, { payload }) => {
+      // state.createProductRes = payload.data;
+      toast.success(payload.data.content);
     });
   },
 });
+
+// export const { setProductEmpty, setProductQuantity, setTest } =
+//   manageProductSlice.actions;
 
 export const { reducer: manageCartReducer, actions: manageCartActions } =
   manageCartSlice;
