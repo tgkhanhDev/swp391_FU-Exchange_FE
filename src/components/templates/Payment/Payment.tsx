@@ -7,7 +7,7 @@ import { manageProductActions, setProductEmpty } from "../../../store/productMan
 import { useProduct } from "../../../hooks/useProduct";
 import { getProductByIdThunk } from "../../../store/productManagement/thunk";
 import { PATH } from "../../../constants/config";
-import { CodPayment, PostProductToBuyRequestType } from "../../../types/order";
+import { CodPayment, PostProductToBuyRequestType, VnPayPayment } from "../../../types/order";
 import { postPayCodThunk } from "../../../store/orderManager/thunk";
 import TextArea from "antd/es/input/TextArea";
 import { useAccount } from "../../../hooks/useAccount";
@@ -30,7 +30,13 @@ export const Payment = () => {
   const location = useLocation();
   const { postProductId } = location.state || {};
 
-  
+  const handleVnPay = () => {
+    console.log("Hello")
+    const payload: VnPayPayment = {
+      registeredStudentId: studentInfo.registeredStudentId,
+      paymentMethodId: 1,
+    }
+  }
 
   useEffect(() => {
     if (!studentInfo) {
@@ -57,9 +63,10 @@ export const Payment = () => {
     const postProductToBuyRequests: PostProductToBuyRequestType[] = []
 
     productView.map(prd => {
-      prd.variation.map(item => {
+      prd.variation.map((item, index) => {
         postProductToBuyRequests.push(
           {
+            sttOrder: index+1,
             postProductId: postProductId,
             variationDetailId: item.variationId,
             quantity: productQuantity[postProductId],
@@ -178,7 +185,7 @@ export const Payment = () => {
               Đặt hàng
             </button>
             <div className="text-with-lines">HOẶC</div>
-            <button className="px-12 py-3 font-medium bg-white flex my-4 gap-5 justify-between items-center hover:bg-slate-50 w-full duration-200">
+            <button className="px-12 py-3 font-medium bg-white flex my-4 gap-5 justify-between items-center hover:bg-slate-50 w-full duration-200" onClick={handleVnPay}>
               Trả bằng QR VNPAY <img src="/images/logos/VNPAY.png" />
             </button>
           </div>
