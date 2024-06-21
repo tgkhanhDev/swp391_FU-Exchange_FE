@@ -21,10 +21,12 @@ export const OrderTemplate = () => {
   const navigate = useNavigate();
   const [orderDetails, setOrderDetails] = useState({});
   const [postDetails, setPostDetails] = useState({});
+  const [orders, setOrders] = useState([]);
   const [chatRoomData, setChatRoomData] = useState();
   const { studentInfo } = useAccount();
   const [showBoxChat, setShowBoxChat] = useState(false);
   const messageEndRef = useRef(null);
+  const [sortBy, setSortBy] = useState();
 
   useEffect(() => {
     if (showBoxChat && messageEndRef.current) {
@@ -49,6 +51,33 @@ export const OrderTemplate = () => {
         })
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    // Sắp xếp mảng order từ originalOrder và sortBy
+    let sortedOrders = [...order];
+
+    if (sortBy === 'Thấp đến cao') {
+      sortedOrders = sortedOrders.sort((a, b) => {
+        return new Date(a.createDate) - new Date(b.createDate);
+      });
+    } else {
+      sortedOrders = sortedOrders.sort((a, b) => {
+        return new Date(b.createDate) - new Date(a.createDate);
+      });
+    }
+
+    setOrders(sortedOrders);
+  }, [order, sortBy]);
+
+  useEffect(() => {
+    // Sắp xếp mảng order theo createDate giảm dần
+    const sortedOrders = [...order].sort((a, b) => {
+      return new Date(b.createDate) - new Date(a.createDate);
+    });
+
+    // Cập nhật lại state order với mảng đã sắp xếp
+    setOrders(sortedOrders);
+  }, [order]);
 
   const options = [
     { value: 'Tất cả', label: 'Tất cả' },
@@ -99,13 +128,14 @@ export const OrderTemplate = () => {
             <div className="w-40">
               <Select
                 className="custom-select"
-                defaultValue="Tất cả"
+                defaultValue={sortBy}
                 options={options}
+                onChange={(value) => setSortBy(value)}
               />
             </div>
           </div>
 
-          {order.map(item =>
+          {orders.map(item =>
             <div key={item.orderId} className='bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300'>
               <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">
                 <div className="">
@@ -163,7 +193,7 @@ export const OrderTemplate = () => {
                     </div>
                   </div>
                   <div className="flex flex-col justify-between items-end flex-grow text-lg font-medium">
-                    <NavLink to={'/review'}>
+                    <NavLink to={`/review/${item.orderId}/${detail.postProduct.postProductId}`}>
                       <div className="text-[var(--color-primary)] underline">Đánh giá ngay</div>
                     </NavLink>
                     <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: {detail.postProduct.priceBought.toLocaleString('en-US')}VNĐ</div>

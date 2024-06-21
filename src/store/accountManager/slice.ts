@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getAllStaffAccountThunk, setStatusStaffThunk, updateProfileThunk } from "./thunk";
+import { getAllStaffAccountThunk, setStatusStaffThunk, updateAProfileThunk, updateMProfileThunk, updatePasswordStaffThunk } from "./thunk";
 import { Account } from "../../types/account"
 import { toast } from "react-toastify";
 
@@ -24,12 +24,33 @@ export const manageAccountSlice = createSlice({
 
     builder.addCase(setStatusStaffThunk.fulfilled, (state, { payload }) => { });
 
-    builder.addCase(updateProfileThunk.fulfilled, (state, { payload }) => {
+    builder.addCase(updateAProfileThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
         toast.success(`Cập nhật thông tin tài khoản thành công!`);
         setTimeout(() => {
           window.location.href = "/admin/profile";
         }, 2000);
+      } else {
+        toast.error(`${payload.content}`);
+      }
+    }
+    );
+
+    builder.addCase(updateMProfileThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`Cập nhật thông tin tài khoản thành công!`);
+        setTimeout(() => {
+          window.location.href = "/moderator/profile";
+        }, 2000);
+      } else {
+        toast.error(`${payload.content}`);
+      }
+    }
+    );
+
+    builder.addCase(updatePasswordStaffThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`${payload.content}`);
       } else {
         toast.error(`${payload.content}`);
       }

@@ -45,3 +45,10 @@ export interface UpdateProfile {
   phoneNumber: string
   dob: Date
 }
+
+export interface UpdatePassword {
+  staffId: number;
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};

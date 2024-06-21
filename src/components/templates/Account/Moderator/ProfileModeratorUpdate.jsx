@@ -4,11 +4,11 @@ import { useAccount } from "../../../../hooks/useAccount";
 import { Radio, Button, DatePicker } from "antd";
 import { useAppDispatch } from "../../../../store";
 import { getStaffInfoThunk } from "../../../../store/userManagement/thunk";
-import { updateAProfileThunk } from "../../../../store/accountManager/thunk";
+import { updateMProfileThunk } from "../../../../store/accountManager/thunk";
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
 
-export const ProfileAdminUpdate = () => {
+export const ProfileModeratorUpdate = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { staffInfor } = useAccount();
@@ -45,8 +45,8 @@ export const ProfileAdminUpdate = () => {
   useEffect(() => {
     if (!staffInfor) {
       navigate('/');
-    } else if (staffInfor.role !== "Administrator") {
-      navigate('/moderator');
+    } else if (staffInfor.role !== "Moderator") {
+      navigate('/admin');
     }
   }, [staffInfor, navigate]);
 
@@ -83,7 +83,7 @@ export const ProfileAdminUpdate = () => {
 
   const handleUpdate = () => {
     dispatch(
-      updateAProfileThunk({
+      updateMProfileThunk({
         staffId: staffIdRef.current,
         firstName: firstNameRef.current,
         lastName: lastNameRef.current,
@@ -193,7 +193,7 @@ export const ProfileAdminUpdate = () => {
         </div>
         <div className="flex justify-end my-5">
           <div className="flex space-x-4">
-            <NavLink to={'/admin/profile'}>
+            <NavLink to={'/moderator/profile'}>
               <Button className="text-base font-semibold rounded-sm flex justify-center items-center px-2 py-5">
                 Trở về
               </Button>
@@ -212,4 +212,4 @@ export const ProfileAdminUpdate = () => {
   );
 };
 
-export default ProfileAdminUpdate;
+export default ProfileModeratorUpdate;

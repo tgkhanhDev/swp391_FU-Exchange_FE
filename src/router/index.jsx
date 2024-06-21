@@ -10,7 +10,7 @@ import { LoginStaff } from "../components/templates/Account";
 import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTemplate";
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize, ModeratorAuthorize } from "../page/account";
 import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate } from "../components/templates/Account/Admin";
-import { ManageOrder, ManagePostProduct, ManageReportPost, ProfileTemplateModerator } from "../components/templates/Account/Moderator";
+import { ManageOrder, ManagePostProduct, ManageReportPost, ProfileTemplateModerator, ProfileModeratorUpdate } from "../components/templates/Account/Moderator";
 import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
@@ -138,7 +138,11 @@ export const router = [
       },
       {
         element: <ProfileTemplateModerator />,
-        path: PATH.profileModerator,
+        path: PATH.profileModerator, 
+      },
+      {
+        element: <ProfileModeratorUpdate />,
+        path: PATH.profileModeratorUpdate, 
       },
     ],
   },

@@ -8,7 +8,7 @@ export const PATH = {
   authorize: "/authorize",
   order: "/authorize/order",
   cart: "/cart",
-  review: "/review",
+  review: "/review/:orderId/:postProductId",
   payment: "/payment",
   dashboard: "/dashboard",
   manageProduct: "/dashboard/product",
@@ -28,4 +28,5 @@ export const PATH = {
   managePost: "/moderator/post",
   manageReportPost: "/moderator/reportPost",
   profileModerator: "/moderator/profile",
+  profileModeratorUpdate: "/moderator/profile/update",
 };
