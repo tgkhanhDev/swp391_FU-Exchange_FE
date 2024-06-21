@@ -9,7 +9,7 @@ import ProfileTemplate from "../components/templates/Account/BuyerAccount/Profil
 import { LoginStaff } from "../components/templates/Account";
 import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTemplate";
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize, ModeratorAuthorize } from "../page/account";
-import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin } from "../components/templates/Account/Admin";
+import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate } from "../components/templates/Account/Admin";
 import { ManageOrder, ManagePostProduct, ManageReportPost, ProfileTemplateModerator } from "../components/templates/Account/Moderator";
 import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
@@ -95,7 +95,7 @@ export const router = [
 
   {
     element: <AdminAuthorize />,
-    path: PATH.admin,
+    path: PATH.admin, 
     children: [
       {
         element: <ManageCustomerAccount/>,
@@ -112,6 +112,10 @@ export const router = [
       {
         element: <ProfileTemplateAdmin />,
         path: PATH.profileAdmin,
+      },
+      {
+        element: <ProfileAdminUpdate />,
+        path: PATH.profileAdminUpdate,
       },
     ],
   },

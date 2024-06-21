@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { useAccount } from "../../../../hooks/useAccount";
 import { Radio, Button } from "antd";
 import { useAppDispatch } from "../../../../store";
@@ -83,11 +83,17 @@ export const ProfileTemplateAdmin = () => {
             <label className='font-semibold mr-20'>Ngày tháng năm sinh</label>
             <input className='border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white' defaultValue={formatDay(userInfo?.dob)} readOnly />
           </div>
+          <div className='mt-8'>
+            <label className='font-semibold mr-20'>Mật khẩu</label>
+            <input className='border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white' defaultValue={formatDay(userInfo?.dob)} readOnly />
+          </div>
         </div>
         <div className="flex justify-end my-5">
-          <Button type="primary" className="text-base font-semibold rounded-sm flex justify-center items-center px-2 py-5">
-            Cập nhật
-          </Button>
+          <NavLink to={'/admin/profile/update'}>
+            <Button type="primary" className="text-base font-semibold rounded-sm flex justify-center items-center px-2 py-5">
+              Thay đổi thông tin
+            </Button>
+          </NavLink>
         </div>
       </div>
     </div>

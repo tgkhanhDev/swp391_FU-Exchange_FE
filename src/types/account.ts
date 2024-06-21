@@ -4,6 +4,7 @@ export interface Account {
 }
 
 export interface StaffInforResponseList {
+  staffId: number;
   roleId: RoleId
   staffName: string
   gender: string
@@ -27,4 +28,20 @@ export interface Meta {
 export type filterGetStaffAccount = {
   current: number,
   identityCard ?: string,
+}
+
+export type setStatus = {
+  staffId: number,
+  active: number,
+}
+
+export interface UpdateProfile {
+  staffId: number;
+  firstName: string
+  lastName: string
+  gender: string
+  identityCard: string
+  address: string
+  phoneNumber: string
+  dob: Date
 }

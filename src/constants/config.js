@@ -22,6 +22,7 @@ export const PATH = {
   manageStaffAcc: "/admin/staffManage",
   manageReportAcc: "/admin/reportAccManage",
   profileAdmin: "/admin/profile",
+  profileAdminUpdate: "/admin/profile/update",
 
   moderator: "/moderator",
   managePost: "/moderator/post",
