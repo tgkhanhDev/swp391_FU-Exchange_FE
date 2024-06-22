@@ -13,21 +13,21 @@ export const SidebarModerator = () => {
         <div className="mt-8">
 
           <NavLink to={'/admin'}>
-            <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname === '/admin' ? 'bg-[var(--color-primary)]' : ''} `}>
+            <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname === '/admin' || location.pathname === '/admin/accountManagement' || location.pathname === '/admin/sellerRequestAcc' ? 'bg-[var(--color-primary)]' : ''} `}>
               <UserOutlined className="text-2xl" />
               <div>Manage Customer Account</div>
             </div>
           </NavLink>
 
           <NavLink to={'/admin/staffManage'}>
-            <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname === '/admin/staffManage' ? 'bg-[var(--color-primary)]' : ''} `}>
+            <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname.includes('/admin/staffManage') ? 'bg-[var(--color-primary)]' : ''} `}>
               <TeamOutlined className="text-2xl" />
               <div>Manage Staff Account</div>
             </div>
           </NavLink>
 
           <NavLink to={'/admin/reportAccManage'}>
-            <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname === '/admin/reportAccManage' ? 'bg-[var(--color-primary)]' : ''} `}>
+            <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname.includes('/admin/reportAccManage') ? 'bg-[var(--color-primary)]' : ''} `}>
               <FileOutlined className="text-2xl" />
               <div>Manage Report Account</div>
             </div>

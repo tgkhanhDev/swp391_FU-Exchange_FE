@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useAccount } from "../../../../hooks/useAccount";
-import { Radio, Button, Modal, Form, Input} from "antd";
+import { Radio, Button, Modal, Form, Input } from "antd";
 import { useAppDispatch } from "../../../../store";
 import { getStaffInfoThunk } from "../../../../store/userManagement/thunk";
 import { updatePasswordStaffThunk } from "../../../../store/accountManager/thunk";
-import {  } from "../../../../store/accountManager/thunk"
+import { } from "../../../../store/accountManager/thunk"
 import { format } from 'date-fns';
 
 export const ProfileTemplateAdmin = () => {
@@ -63,9 +63,21 @@ export const ProfileTemplateAdmin = () => {
     <div>
       <div className="text-4xl mt-4 font-bold text-center">Tài khoản</div>
       <div className='py-10 pl-10 pr-6'>
-        <div className='pb-10 border-b-2 border-b-[#d0d0d0]'>
-          <label className='font-semibold'>Họ và Tên</label>
-          <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' defaultValue={userInfo?.staffName} readOnly />
+        <div className='grid grid-cols-2 gap-8 pb-10 border-b-2 border-b-[#d0d0d0]'>
+          <div>
+            <label className='font-semibold'>Họ</label>
+            <input
+              className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white'
+              defaultValue={userInfo?.firstName} readOnly
+            />
+          </div>
+          <div>
+            <label className='font-semibold'>Tên</label>
+            <input
+              className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white'
+              defaultValue={userInfo?.lastName} readOnly
+            />
+          </div>
         </div>
 
         <div className='grid grid-cols-2 gap-8 pb-10 border-b-2 border-b-[#d0d0d0] mt-10'>

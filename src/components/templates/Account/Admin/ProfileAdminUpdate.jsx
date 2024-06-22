@@ -20,7 +20,7 @@ export const ProfileAdminUpdate = () => {
   const [identityCard, setIdentityCard] = useState(staffInfor?.identityCard || "");
   const [phoneNumber, setPhoneNumber] = useState(staffInfor?.phoneNumber || "");
   const [address, setAddress] = useState(staffInfor?.address || "");
-  const [gender, setGender] = useState(staffInfor?.gender || "");
+  const [gender, setGender] = useState();
   const [selectedDate, setSelectedDate] = useState(staffInfor?.dob ? new Date(staffInfor.dob) : null);
 
   // Initialize refs with staffInfor values
@@ -63,7 +63,6 @@ export const ProfileAdminUpdate = () => {
             setIdentityCard(payload.identityCard || "");
             setAddress(payload.address || "");
             setPhoneNumber(payload.phoneNumber || "");
-            setGender(payload.gender || "");
             setSelectedDate(payload.dob ? new Date(payload.dob) : null);
 
             // Update refs if the user has not changed the input fields
@@ -174,7 +173,6 @@ export const ProfileAdminUpdate = () => {
             <label className='font-semibold mr-40'>Giới tính</label>
             <Radio.Group
               onChange={handleGenderChange}
-              value={gender}
             >
               <Radio value='Nam'>Nam</Radio>
               <Radio value='Nữ'>Nữ</Radio>
@@ -184,7 +182,6 @@ export const ProfileAdminUpdate = () => {
           <div className="mt-8">
             <label className="font-semibold mr-20">Ngày tháng năm sinh</label>
             <DatePicker
-              value={selectedDate ? dayjs(selectedDate) : null}
               onChange={handleDateChange}
               className="border-slate-400 w-60 focus:outline-none border px-4 h-10 rounded-md bg-white"
               placeholder="Chọn ngày tháng năm sinh"

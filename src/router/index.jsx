@@ -9,9 +9,9 @@ import ProfileTemplate from "../components/templates/Account/BuyerAccount/Profil
 import { LoginStaff } from "../components/templates/Account";
 import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTemplate";
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize, ModeratorAuthorize } from "../page/account";
-import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate } from "../components/templates/Account/Admin";
+import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate, AccountManager, SellerAccountManager } from "../components/templates/Account/Admin";
 import { ManageOrder, ManagePostProduct, ManageReportPost, ProfileTemplateModerator, ProfileModeratorUpdate } from "../components/templates/Account/Moderator";
-import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post } from "../components/templates/Account/SellerAccount";
+import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post, ProductDetailById } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 import { Payment } from "../components/templates/Payment";
@@ -89,7 +89,11 @@ export const router = [
       {
         element: <Post />,
         path: PATH.post,
-      }
+      },
+      {
+        element: <ProductDetailById />,
+        path: PATH.productDetailbyId,
+      },
     ],
   },
 
@@ -100,6 +104,14 @@ export const router = [
       {
         element: <ManageCustomerAccount/>,
         index: true,
+      },
+      {
+        element: <AccountManager />,
+        path: PATH.adminAccManage,
+      },
+      {
+        element: <SellerAccountManager />,
+        path: PATH.adminSellerRequest,
       },
       {
         element: <ManageReportAccount />,

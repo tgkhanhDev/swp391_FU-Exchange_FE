@@ -12,6 +12,7 @@ import {
   updateBankingThunk,
   getLoginStaffThunk,
   getStaffInfoThunk,
+  updateDeliveryAddressThunk
 } from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -107,7 +108,6 @@ export const manageUsersSlice = createSlice({
         (state, { payload }) => {
           if (payload.status == 200) {
             toast.success(`${payload.content}`);
-
             state.isAllowRegister = true;
           } else {
             toast.error(`${payload.content}`);
@@ -148,8 +148,10 @@ export const manageUsersSlice = createSlice({
     });
     builder.addCase(updatePasswordThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
         toast.success(`${payload.content}`);
-        window.location.href = "/authorize";
       } else {
         toast.error(`${payload.content}`);
       }
@@ -157,8 +159,21 @@ export const manageUsersSlice = createSlice({
     );
     builder.addCase(updateBankingThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
         toast.success(`${payload.content}`);
-        window.location.href = "/authorize";
+      } else {
+        toast.error(`${payload.content}`);
+      }
+    }
+    );
+    builder.addCase(updateDeliveryAddressThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 500); // Hiển thị thông báo sau 1 giây
+        toast.success(`${payload.content}`);
       } else {
         toast.error(`${payload.content}`);
       }

@@ -39,7 +39,6 @@ export const Header = () => {
         break;
       default:
         navigate(key);
-
         break;
     }
   };
@@ -48,7 +47,7 @@ export const Header = () => {
     <Menu onClick={handleMenuClick} className="w-44 custome-font">
       <Menu.Item key="/authorize">Tài khoản</Menu.Item>
       <Menu.Item key="/authorize/order">Đơn hàng</Menu.Item>
-      {userInfo && userInfo.role === "Seller" ? (
+      {userInfo && userInfo.role === "Seller" && user?.sellerTO?.active !== 2 ? (
         <Menu.SubMenu key="seller" title="Quản lý bán hàng">
           <Menu.Item key="/dashboard" className="custome-font-child">
             Thống kê
@@ -63,11 +62,11 @@ export const Header = () => {
             Bài đăng
           </Menu.Item>
         </Menu.SubMenu>
-      ) : (
+      ) : userInfo && userInfo.role !== "Seller" ? (
         <Menu.Item key="/registerSeller" className="custome-font-child">
           Trở thành người bán
         </Menu.Item>
-      )}
+      ) : ''}
       <Menu.Item key="logout">Đăng xuất</Menu.Item>
     </Menu>
   );
@@ -96,11 +95,13 @@ export const Header = () => {
       } else {
         dispatch(
           getSellerInfoThunk({
-            RegisteredStudent: {
-              Student: {
-                studentId: userInfo.username,
-              },
-            },
+            sellerTO: {
+              RegisteredStudent: {
+                Student: {
+                  studentId: userInfo.username
+                }
+              }
+            }
           })
         )
           .then((action) => {
@@ -172,24 +173,12 @@ export const Header = () => {
                   <div className="flex flex-col items-center">
                     <UserOutlined className="mr-4 text-3xl" />
                   </div>
-
-                  {(user && user.student
-                    ? user.student.firstName + " " + user.student.lastName
-                    : "") || (user ? user.firstName + " " + user.lastName : "")}
+                  {(user && user.sellerTO
+                    ? user.sellerTO.student.firstName + " " + user.sellerTO.student.lastName
+                    : "") || (user ? user.student?.firstName + " " + user.student?.lastName : "")}
                 </div>
               </button>
             </Dropdown>
-            /* <button
-            className='flex justify-center items-center pl-5'
-              onClick={() => {
-                localStorage.removeItem("userInfo");
-                // window.location.href('/login')
-                // Navigate("/login");
-                setUser(null);
-              }}
-            >
-                <div className='ml-2 text-xl'><UserOutlined className="mr-2" />Tài khoản</div>
-            </button> */
           )}
         </div>
       </div>

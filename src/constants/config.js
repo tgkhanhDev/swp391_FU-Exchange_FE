@@ -10,15 +10,20 @@ export const PATH = {
   cart: "/cart",
   review: "/review/:orderId/:postProductId",
   payment: "/payment",
+
   dashboard: "/dashboard",
   manageProduct: "/dashboard/product",
-  updateProduct: "/dashboard/product/update",
+  updateProduct: "/dashboard/product/update/:productId",
   createProduct: "/dashboard/product/create",
   transaction: "/dashboard/transaction",
   post: "/dashboard/post",
+  productDetailbyId: "/dashboard/product/:productId",
 
   loginStaff: "/loginStaff",
+
   admin: "/admin",
+  adminAccManage: "/admin/accountManagement",
+  adminSellerRequest: "/admin/sellerRequestAcc",
   manageStaffAcc: "/admin/staffManage",
   manageReportAcc: "/admin/reportAccManage",
   profileAdmin: "/admin/profile",

@@ -61,7 +61,7 @@ export const HeaderStaff = () => {
         </div>
         <button className="flex justify-between items-center gap-x-4" onClick={handleClickProfile}>
           <UserOutlined className="text-2xl" />
-          <div className="font-medium text-xl">{userInfo?.staffName}</div>
+          <div className="font-medium text-xl">{userInfo?.firstName}&nbsp;{userInfo?.lastName}</div>
         </button>
       </div>
     </div>

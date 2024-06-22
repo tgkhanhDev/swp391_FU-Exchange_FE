@@ -6,7 +6,8 @@ export interface Account {
 export interface StaffInforResponseList {
   staffId: number;
   roleId: RoleId
-  staffName: string
+  firstName: string
+  lastName: string
   gender: string
   identityCard: string
   address: string

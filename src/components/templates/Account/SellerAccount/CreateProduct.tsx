@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useView } from '../../../../hooks/useView';
 import { getCategoryThunk } from "../../../../store/viewManager/thunk";
+import { getSellerInfoThunk } from "../../../../store/userManagement/thunk";
 import { useAppDispatch } from '../../../../store/index';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Select, InputNumber, Input, Button, Form, FormProps } from 'antd';
@@ -29,6 +30,7 @@ interface Group {
 export const CreateProduct = () => {
   const navigate = useNavigate();
   // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const [user, setUser] = useState('');
   const { studentInfo } = useAccount();
   const { category } = useView();
   const dispatch = useAppDispatch();
@@ -87,12 +89,39 @@ export const CreateProduct = () => {
   };
 
   useEffect(() => {
+
+    dispatch(
+      getSellerInfoThunk({
+        sellerTO: {
+          RegisteredStudent: {
+            Student: {
+              studentId: studentInfo.username
+            }
+          }
+        }
+      })
+    )
+      .then((action) => {
+        const { payload } = action;
+        const { data } = payload;
+        setUser(data); // Kết hợp userInfo và data thành một đối tượng mới
+      })
+      .catch((error) => {
+        console.error("Error fetching account information:", error);
+      });
+
     if (!studentInfo) {
       navigate('/login');
     } else if (studentInfo.role !== "Seller") {
       navigate('/authorize');
     }
   }, [navigate, studentInfo]);
+
+  useEffect(() => {
+    if (user && user.sellerTO?.active === 2) {
+      navigate('/*');
+    }
+  }, [user, navigate]);
 
   const handleAddGroup = () => {
     setGroups([...groups, { variationName: '', categories: [''] }]);

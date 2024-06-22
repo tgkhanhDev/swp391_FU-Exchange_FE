@@ -1,12 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import { useAccount } from "../../../../hooks/useAccount";
+import { getSellerInfoThunk } from "../../../../store/userManagement/thunk";
+import { useAppDispatch } from "../../../../store";
 
 export const Post = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { studentInfo } = useAccount();
+  const [user, setUser] = useState('');
 
   useEffect(() => {
+    dispatch(
+      getSellerInfoThunk({
+        sellerTO: {
+          RegisteredStudent: {
+            Student: {
+              studentId: studentInfo.username
+            }
+          }
+        }
+      })
+    )
+    .then((action) => {
+      const { payload } = action;
+      const { data } = payload;
+      setUser(data); // Kết hợp userInfo và data thành một đối tượng mới
+    })
+    .catch((error) => {
+      console.error("Error fetching account information:", error);
+    });
+
     if (!studentInfo) {
       navigate('/login');
     }
@@ -14,6 +38,12 @@ export const Post = () => {
       navigate('/authorize');
     }
   })
+
+  useEffect(() => {
+    if (user && user.sellerTO?.active === 2) {
+      navigate('/*');
+    }
+  }, [user, navigate]);
 
   return (
     <div>

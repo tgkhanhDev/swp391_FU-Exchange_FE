@@ -94,7 +94,7 @@ export const ManageStaffAccount = () => {
           <tbody>
             {filteredStaffList.map((staffInfo, index) => (
               <tr key={index} className="hover:bg-gray-50 duration-150">
-                <td className="py-5 px-2 text-center">{staffInfo.staffName}</td>
+                <td className="py-5 px-2 text-center">{staffInfo.firstName}&nbsp;{staffInfo.lastName}</td>
                 <td className="py-5 px-2 text-center">{staffInfo.identityCard}</td>
                 <td className="py-5 px-2 text-center">{staffInfo.phoneNumber}</td>
                 <td className="py-5 px-2 text-center">{staffInfo.address}</td>

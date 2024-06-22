@@ -7,7 +7,7 @@ import {
   RegisterStudentReq,
   RegisteredStudent,
   UpdatePassword,
-  Seller,
+  viewSeller,
   UpdateBanking,
   LoginStaffType,
   Staff,
@@ -51,8 +51,8 @@ export const manageUsers = {
   updatePassword: (payload: UpdatePassword) =>
     apiC.put<utilsResponse<any>>(`update-password`, payload),
 
-  getSellerInfo: (payload: Seller) => {
-    return apiB.get<utilsResponse<any>>(`information/${payload.RegisteredStudent.Student.studentId}`);
+  getSellerInfo: (payload: viewSeller) => {
+    return apiB.get<utilsResponse<any>>(`information/${payload.sellerTO.RegisteredStudent.Student.studentId}`);
   },
 
   updateBanking : (payload: UpdateBanking) =>
@@ -63,4 +63,7 @@ export const manageUsers = {
 
   getStaffInfo: (payload: number) =>
     apiD.get<utilsResponse<any>>(`detail/${payload}`),
+
+  updateDeliveryAddress : (payload: RegisteredStudent) =>
+    apiC.put<utilsResponse<any>>(`${payload.registeredStudentId}/update-registered-student?deliveryAddress=${payload.deliveryAddress}`, payload),
 };

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useParams } from 'react-router-dom'
 import { Input, Button, Rate } from "antd";
 import { getPostByIdThunk } from "../../../store/postManagement/thunk";
+import { createReviewThunk } from "../../../store/reviewManager/thunk"
 import { useAppDispatch } from "../../../store";
 import { usePost } from "../../../hooks/usePost";
 import './styles.css'
@@ -15,6 +16,11 @@ export const ReviewProduct = () => {
   const { postDetail } = usePost();
   const [post, setPost] = useState();
 
+  const postProductIdRef = postProductId;
+  const orderIdRef = orderId;
+  const ratingRef = value;
+  const descripRef = useRef("");
+
   useEffect(() => {
     // Dispatch action để lấy thông tin bài đăng khi component được mount
     dispatch(getPostByIdThunk(postProductId)); // Gọi hàm getPostByIdThunk với postId từ useParams
@@ -26,8 +32,16 @@ export const ReviewProduct = () => {
     }
   }, [postDetail]);
 
-
-
+  const hanldeClick = () => {
+    dispatch(
+      createReviewThunk({
+        postProductId: postProductIdRef,
+        orderId: orderIdRef,
+        ratingNumber: ratingRef,
+        description: descripRef.current,
+      })
+    );
+  }
 
   return (
     <div className="py-6 px-28">
@@ -51,11 +65,18 @@ export const ReviewProduct = () => {
           </div>
           <div className="mt-8 mb-4">
             <div className="font-semibold text-2xl mb-5">Viết đánh giá của bạn tại đây</div>
-            <Input.TextArea style={{ height: '100px', fontSize: '1.125rem' }} placeholder="Tuyệt vời!"></Input.TextArea>
+            <Input.TextArea style={{ height: '100px', fontSize: '1.125rem' }} placeholder="Tuyệt vời!"
+              onChange={(e) => {
+                descripRef.current = e.target.value;
+              }}
+            ></Input.TextArea>
           </div>
           <div className="flex justify-end gap-10">
             <NavLink to={'/authorize/order'}><Button className="custom-button-re text-lg font-semibold">Hủy</Button></NavLink>
-            <Button type="primary" className="custom-button-re text-lg font-semibold">Gửi</Button>
+            <Button type="primary" className="custom-button-re text-lg font-semibold"
+              onClick={hanldeClick}
+            >Gửi
+            </Button>
           </div>
         </div>
       </div>

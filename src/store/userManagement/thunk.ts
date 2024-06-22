@@ -6,7 +6,7 @@ import {
   RegisterStudentReq,
   RegisteredStudent,
   UpdatePassword,
-  Seller,
+  viewSeller,
   UpdateBanking,
   LoginStaffType,
   Staff,
@@ -101,7 +101,7 @@ export const updatePasswordThunk = createAsyncThunk(
 
 export const getSellerInfoThunk = createAsyncThunk(
   "getSellerInfo",
-  async (payload: Seller, { rejectWithValue }) => {
+  async (payload: viewSeller, { rejectWithValue }) => {
     try {
       const data = await manageUsers.getSellerInfo(payload);
       return data.data;
@@ -141,6 +141,18 @@ export const getStaffInfoThunk = createAsyncThunk(
     try {
       const data = await manageUsers.getStaffInfo(payload);
       return data.data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const updateDeliveryAddressThunk = createAsyncThunk(
+  "updateDeliveryAddress",
+  async (payload: RegisteredStudent, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.updateDeliveryAddress(payload);
+      return data.data;
     } catch (error) {
       return rejectWithValue(error);
     }

@@ -56,7 +56,7 @@ export const OrderTemplate = () => {
     // Sắp xếp mảng order từ originalOrder và sortBy
     let sortedOrders = [...order];
 
-    if (sortBy === 'Thấp đến cao') {
+    if (sortBy === '2') {
       sortedOrders = sortedOrders.sort((a, b) => {
         return new Date(a.createDate) - new Date(b.createDate);
       });
@@ -80,9 +80,8 @@ export const OrderTemplate = () => {
   }, [order]);
 
   const options = [
-    { value: 'Tất cả', label: 'Tất cả' },
-    { value: 'Cao đến thấp', label: 'Cao đến thấp' },
-    { value: 'Thấp đến cao', label: 'Thấp đến cao' },
+    { value: '1', label: 'Giảm dần theo ngày' },
+    { value: '2', label: 'Tăng dần theo ngày' },
   ];
 
   const formatDate = (dateString) => {
@@ -125,17 +124,19 @@ export const OrderTemplate = () => {
         <div className='pl-14'>
           <div className="flex justify-between items-center mb-10">
             <div className='font-bold text-4xl'>Đơn hàng của tôi</div>
-            <div className="w-40">
+            <div className="w-60">
               <Select
-                className="custom-select"
-                defaultValue={sortBy}
+                className="w-60"
+                defaultValue={'Giảm dần theo ngày'}
                 options={options}
                 onChange={(value) => setSortBy(value)}
               />
             </div>
           </div>
 
-          {orders.map(item =>
+          {orders.length === 0 ? (
+            <div className="flex justify-center items-center text-red-500 text-2xl font-semibold">Chưa có đơn hàng</div>
+          ) : (orders.map(item =>
             <div key={item.orderId} className='bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300'>
               <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">
                 <div className="">
@@ -188,7 +189,11 @@ export const OrderTemplate = () => {
                       <div className="mt-2">Số lượng: {detail.quantity}</div>
                     </div>
                     <div className="flex justify-between">
-                      <button className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold">Mua lại</button>
+                        <button className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold"
+                        onClick={() => {
+                          navigate(`/detail/${detail.postProduct.postProductId}`);
+                        }}
+                        >Mua lại</button>
                       <button className="px-8 py-3 border-2 border-current bg-white text-[var(--color-primary)] font-bold" onClick={() => setShowBoxChat(!showBoxChat)}>Liên hệ người bán</button>
                     </div>
                   </div>
@@ -201,7 +206,7 @@ export const OrderTemplate = () => {
                 </div>
               )}
             </div>
-          )}
+          ))}
         </div>
       </main>
 

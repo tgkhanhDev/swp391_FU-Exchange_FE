@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, NavLink } from 'react-router-dom'
 import { Button } from "antd"
 import { PlusOutlined } from '@ant-design/icons';
 import { useAccount } from "../../../../hooks/useAccount";
 import { useAppDispatch } from "../../../../store";
 import { getProductByStudentIdThunk } from "../../../../store/productManagement/thunk";
+import { getSellerInfoThunk } from "../../../../store/userManagement/thunk";
 import { useProduct } from "../../../../hooks/useProduct";
 
 export const ManageProduct = () => {
@@ -12,9 +13,29 @@ export const ManageProduct = () => {
   const { studentInfo } = useAccount();
   const { wareHouse } = useProduct()
   const dispatch = useAppDispatch();
+  const [user, setUser] = useState('');
 
   useEffect(() => {
     dispatch(getProductByStudentIdThunk({ current: 5, name: "", studentId: studentInfo.username }))
+    dispatch(
+      getSellerInfoThunk({
+        sellerTO: {
+          RegisteredStudent: {
+            Student: {
+              studentId: studentInfo.username
+            }
+          }
+        }
+      })
+    )
+      .then((action) => {
+        const { payload } = action;
+        const { data } = payload;
+        setUser(data); // Kết hợp userInfo và data thành một đối tượng mới
+      })
+      .catch((error) => {
+        console.error("Error fetching account information:", error);
+      });
 
     if (!studentInfo) {
       navigate('/login');
@@ -23,6 +44,12 @@ export const ManageProduct = () => {
       navigate('/authorize');
     }
   }, [])
+
+  useEffect(() => {
+    if (user && user.sellerTO?.active === 2) {
+      navigate('/*');
+    }
+  }, [user, navigate]);
 
   return (
     <div>
@@ -65,21 +92,22 @@ export const ManageProduct = () => {
                   <div>{product.price} VNĐ</div>
                 </div>
                 <div className='col-span-1 flex justify-center items-center'>
-                  <Button type="link" className="text-base flex justify-center items-center">Chi tiết</Button>
+                  <Button type="link" className="text-base flex justify-center items-center" onClick={() => {
+                          navigate(`/dashboard/product/${product.productId}`);
+                        }}>Chi tiết</Button>
                 </div>
                 <div className='col-span-3 flex justify-center items-center gap-2'>
                   <NavLink to={'/dashboard/product/update'}>
-                    <Button type="primary" className="flex justify-center items-center text-lg py-4 px-4">Chỉnh sửa</Button>
+                    <Button type="primary" className="flex justify-center items-center text-lg py-4 px-4"
+                    onClick={() => {
+                      navigate(`/dashboard/product/update/${product.productId}`);
+                    }}
+                    >Chỉnh sửa</Button>
                   </NavLink>
                   <Button type="link" className="flex justify-center items-center text-base">Xóa</Button>
                 </div>
               </div>
             })}
-
-
-
-
-
           </div>
         </div>
       </main>
