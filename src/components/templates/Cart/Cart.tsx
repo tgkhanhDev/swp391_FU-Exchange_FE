@@ -1,12 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Checkbox, InputNumber, Button } from "antd"
 import './styles.css'
+import { useAppDispatch } from '../../../store'
+import { viewCartThunk } from '../../../store/cartManager/thunk'
+import { useAccount } from "../../../hooks/useAccount";
+import { useCart } from "../../../hooks/useCart";
 
 export const Cart = () => {
 
   const [allChecked, setAllChecked] = useState(false);
   const [checkedItems, setCheckedItems] = useState([false, false]); // Initialize the state for the two checkboxes
+  const { studentInfo } = useAccount();
+  const { cartList } = useCart();
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(viewCartThunk(studentInfo.registeredStudentId))
+  }, [])
 
   // Function to handle the change of the first checkbox
   const handleAllCheck = (e) => {
@@ -15,7 +27,7 @@ export const Cart = () => {
     setCheckedItems(checkedItems.map(() => isChecked));
   };
 
-  // Function to handle the change of individual checkboxes
+  // Function to handle the change of individual checkboxesz
   const handleItemCheck = (index) => (e) => {
     const newCheckedItems = [...checkedItems];
     newCheckedItems[index] = e.target.checked;
@@ -24,6 +36,9 @@ export const Cart = () => {
     // If all checkboxes are checked, set the allChecked state to true, otherwise set it to false
     setAllChecked(newCheckedItems.every((item) => item));
   };
+
+  const handleBuyAll = () => {
+  }
 
   return (
     <div>
@@ -41,7 +56,7 @@ export const Cart = () => {
               </NavLink>
 
               <NavLink to={'/payment'}>
-                <button className='px-14 py-3 text-base hover:text-[var(--color-secondary)] hover:bg-white font-semibold text-white bg-[var(--color-primary)] duration-300 hover:shadow-[inset_0_0_0_2px_var(--color-secondary)]'>
+                <button onClick={handleBuyAll} className='px-14 py-3 text-base hover:text-[var(--color-secondary)] hover:bg-white font-semibold text-white bg-[var(--color-primary)] duration-300 hover:shadow-[inset_0_0_0_2px_var(--color-secondary)]'>
                   Mua tất cả - 23,000VNĐ
                 </button>
               </NavLink>
@@ -69,69 +84,43 @@ export const Cart = () => {
           </div>
 
           {/*Card */}
-          <div className='bg-white rounded-md h-40 w-full grid grid-cols-12 gap-2 mb-2'>
 
-            <div className='col-span-1 flex justify-center items-center'><Checkbox
-              className="custom-checkbox"
-              checked={checkedItems[0]}
-              onChange={handleItemCheck(0)}
-            ></Checkbox></div>
+          {cartList.map(item => {
+            return (
+              <div className='bg-white rounded-md h-40 w-full grid grid-cols-12 gap-2 mb-2'>
 
-            <div className='col-span-4 flex items-center'>
-              <div className='flex gap-2'>
-                <img src="https://firebasestorage.googleapis.com/v0/b/fu-exchange.appspot.com/o/Product1_1.jfif?alt=media&token=b33326cb-35d1-492b-8e58-b402ac8045c2" className='h-32 w-32 border-2'></img>
-                <div className='flex items-center'>Bút máy trường học chất lượng cao</div>
+                <div className='col-span-1 flex justify-center items-center'><Checkbox
+                  className="custom-checkbox"
+                  checked={checkedItems[0]}
+                  onChange={handleItemCheck(0)}
+                ></Checkbox></div>
+
+                <div className='col-span-4 flex items-center'>
+                  <div className='flex gap-2'>
+                    <img src={item.postProduct.product.image[0].imageUrl} className='h-32 w-32 border-2'></img>
+                    <div className='flex items-center'>{item.postProduct.content}</div>
+                  </div>
+                </div>
+                <div className='col-span-2 flex flex-col justify-center items-center'>
+                  <div>Kích thước: </div>
+                  <div>12cm</div>
+                </div>
+                <div className='col-span-1 flex justify-center items-center'>
+                  <div>{item.postProduct.product.price} VNĐ</div>
+                </div>
+                <div className='col-span-2 flex justify-center items-center'>
+                  <InputNumber min={1} max={10} defaultValue={item.postProduct.quantity}></InputNumber>
+                </div>
+                <div className='col-span-1 flex justify-center items-center'>
+                  <div>{item.postProduct.product.price * item.postProduct.quantity * 1000} VNĐ</div>
+                </div>
+                <div className='col-span-1 flex justify-center items-center'>
+                  <Button type="link">Delete</Button>
+                </div>
               </div>
-            </div>
-            <div className='col-span-2 flex flex-col justify-center items-center'>
-              <div>Kích thước: </div>
-              <div>12cm</div>
-            </div>
-            <div className='col-span-1 flex justify-center items-center'>
-              <div>23,000 VNĐ</div>
-            </div>
-            <div className='col-span-2 flex justify-center items-center'>
-              <InputNumber min={1} max={10} defaultValue={3}></InputNumber>
-            </div>
-            <div className='col-span-1 flex justify-center items-center'>
-              <div>23,000 VNĐ</div>
-            </div>
-            <div className='col-span-1 flex justify-center items-center'>
-              <Button type="link">Delete</Button>
-            </div>
-          </div>
+            )
+          })}
 
-          <div className='bg-white rounded-md h-40 w-full grid grid-cols-12 gap-2'>
-
-            <div className='col-span-1 flex justify-center items-center'><Checkbox
-              className="custom-checkbox"
-              checked={checkedItems[1]}
-              onChange={handleItemCheck(1)}
-            ></Checkbox></div>
-
-            <div className='col-span-4 flex items-center'>
-              <div className='flex gap-2'>
-                <img src="https://firebasestorage.googleapis.com/v0/b/fu-exchange.appspot.com/o/Product1_1.jfif?alt=media&token=b33326cb-35d1-492b-8e58-b402ac8045c2" className='h-32 w-32 border-2'></img>
-                <div className='flex items-center'>Bút máy trường học chất lượng cao</div>
-              </div>
-            </div>
-            <div className='col-span-2 flex flex-col justify-center items-center'>
-              <div>Kích thước: </div>
-              <div>12cm</div>
-            </div>
-            <div className='col-span-1 flex justify-center items-center'>
-              <div>23,000 VNĐ</div>
-            </div>
-            <div className='col-span-2 flex justify-center items-center'>
-              <InputNumber min={1} max={10} defaultValue={3}></InputNumber>
-            </div>
-            <div className='col-span-1 flex justify-center items-center'>
-              <div>23,000 VNĐ</div>
-            </div>
-            <div className='col-span-1 flex justify-center items-center'>
-              <Button type="link">Delete</Button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
