@@ -61,7 +61,8 @@ export const Payment = () => {
           {
             sttOrder: index + 1,
             postProductId: postProductId,
-            variationDetailId: item.variationId,
+            variationId:  item.variationId,
+            variationDetailId: item.variationDetail.variationDetailId,
             quantity: productQuantity[postProductId],
             price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
           }
@@ -87,7 +88,8 @@ export const Payment = () => {
           {
             sttOrder: index + 1,
             postProductId: postProductId,
-            variationDetailId: item.variationId,
+            variationId: item.variationId ,
+            variationDetailId: item.variationDetail.variationDetailId,
             quantity: productQuantity[postProductId],
             price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
           }
@@ -95,7 +97,6 @@ export const Payment = () => {
       })
 
     })
-
 
 
     const payment: PaymentType = {

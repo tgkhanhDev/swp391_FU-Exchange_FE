@@ -1,4 +1,5 @@
 import { apiInstance } from "../constants/apiInstance";
+import { PostProduct } from "../types/order";
 import { CreatePostType, Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
@@ -13,6 +14,7 @@ export const managePost = {
     ),
   getPostById: (payload: number) =>
     api.get<utilsResponse<Post>>(`/detail/${payload}`),
-
-  createPost: (payload: CreatePostType) => api.post<any>(`/create`, payload) 
+  createPost: (payload: CreatePostType) => api.post<any>(`/create`, payload),
+  getPostByRegId: (payload: number) =>
+    api.get<PostProduct>(`/seller-post-product-by-regId/${payload}`),
 };

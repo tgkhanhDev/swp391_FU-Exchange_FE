@@ -9,6 +9,7 @@ export interface PaymentType {
 export interface PostProductToBuyRequestType {
   sttOrder: number;
   postProductId: number;
+  variationId: number;
   variationDetailId: number;
   quantity: number;
   price: number;

@@ -39,3 +39,15 @@ export const createPostThunk = createAsyncThunk(
     }
   }
 );
+
+export const getPostByIdRegIdThunk = createAsyncThunk(
+  "postById",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const data = await managePost.getPostByRegId(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
