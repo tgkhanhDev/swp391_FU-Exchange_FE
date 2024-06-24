@@ -1,5 +1,5 @@
 import { apiInstance } from "../constants/apiInstance";
-import { Post, PostFilter_API, PostLoadMore } from "../types/post";
+import { CreatePostType, Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({
@@ -13,4 +13,6 @@ export const managePost = {
     ),
   getPostById: (payload: number) =>
     api.get<utilsResponse<Post>>(`/detail/${payload}`),
+
+  createPost: (payload: CreatePostType) => api.post<any>(`/create`, payload) 
 };

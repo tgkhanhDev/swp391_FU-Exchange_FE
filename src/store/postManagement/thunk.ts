@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { managePost } from "../../services/managePost";
-import { PostFilter_API } from "../../types/post";
+import { CreatePostType, PostFilter_API } from "../../types/post";
 
 export const getPostThunk = createAsyncThunk(
   "post",
@@ -21,6 +21,18 @@ export const getPostByIdThunk = createAsyncThunk(
   async (payload: number, { rejectWithValue }) => {
     try {
       const data = await managePost.getPostById(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const createPostThunk = createAsyncThunk(
+  "create-post",
+  async (payload: CreatePostType, { rejectWithValue }) => {
+    try {
+      const data = await managePost.createPost(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

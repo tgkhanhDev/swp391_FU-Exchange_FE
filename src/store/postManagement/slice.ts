@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getPostByIdThunk, getPostThunk } from "./thunk";
+import { createPostThunk, getPostByIdThunk, getPostThunk } from "./thunk";
 import { Post, PostLoadMore } from "../../types/post";
+import { toast } from "react-toastify";
 
 type stateType = {
   products: any;
@@ -24,8 +25,11 @@ export const managePostSlice = createSlice({
     }),
       builder.addCase(getPostByIdThunk.fulfilled, (state, { payload }) => {
         state.postDetail = payload.data;
-      });
-  },
+      }),
+      builder.addCase(createPostThunk.fulfilled, (state, { payload }) => {
+        toast.success(payload.content)
+      })
+  }
 });
 
 export const { reducer: managePostReducer, actions: managePostActions } =

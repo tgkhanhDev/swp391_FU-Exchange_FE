@@ -75,3 +75,11 @@ export interface PostFilter_API {
   postTypeId?: number | "";
   name?: string;
 }
+
+export interface CreatePostType {
+  productId: number;
+  postTypeId: number;
+  campusId: number;
+  quantity: number;
+  content: string;
+}
