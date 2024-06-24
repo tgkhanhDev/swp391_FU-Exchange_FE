@@ -1,6 +1,6 @@
 import { apiInstance } from "../constants/apiInstance";
 import { addCartItem, deleteItemCartType } from "../types/cart";
-import { CodPayment } from "../types/order";
+import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({
@@ -13,6 +13,6 @@ export const manageCart = {
   updateQuantity: (payload) => api.put(`/cart-update`, payload),
   // deleteItemCart: (payload: deleteItemCartType) =>
   //   api.delete(`/cart-delete`, payload),
-
   // pay_vnpay: (payload: string) => api.get(`/vn-pay?amount=${payload}`),
+
 };

@@ -32,8 +32,6 @@ export const PostDetail: React.FC<PostType> = () => {
 
   useEffect(() => {
     dispatch(getPostByIdThunk(parseInt(postProductId!)));
-    console.log("postProductId:", postProductId);
-
   }, []);
 
   useEffect(() => {
@@ -51,12 +49,12 @@ export const PostDetail: React.FC<PostType> = () => {
       [key]: value,
     }));
 
-    console.log("length:::", Object.keys(detail).length);
+    // console.log("length:::", Object.keys(detail).length);
   };
 
-  useEffect(() => {
-    console.log("detail:::", detail);
-  }, [detail]);
+  // useEffect(() => {
+  //   console.log("detail:::", detail);
+  // }, [detail]);
 
   return (
     <div className="container">
@@ -161,7 +159,7 @@ export const PostDetail: React.FC<PostType> = () => {
 
                   dispatch(getProductByVariationDetailThunk(variationList));
                   dispatch(setProductQuantity({ id: prdId, quantity: quantity }));
-                  navigate(PATH.payment, { state: { postProductId: 6 } });
+                  navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!)} });
                 }
               }}
             >

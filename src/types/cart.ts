@@ -1,3 +1,6 @@
+import { Post } from "./post";
+import { VaritationDetail } from "./product";
+
 export interface deleteItemCartType {
   cartId: number;
   postProductId: number;
@@ -13,4 +16,11 @@ export interface addCartItem {
   postProductId: number;
   variationDetailId: number[];
   quantity: number;
+}
+
+export interface cartItem {
+  cartPostId: deleteItemCartType;
+  postProduct: Post;
+  quantity: number;
+  variationDetail: VaritationDetail;
 }

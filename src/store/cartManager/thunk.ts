@@ -13,3 +13,15 @@ export const addToCartThunk = createAsyncThunk(
     }
   }
 );
+
+export const viewCartThunk = createAsyncThunk(
+  "view-cart",
+  async (payload: string, { rejectWithValue }) => {
+    try {
+      const data = await manageCart.viewCart(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

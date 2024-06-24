@@ -25,10 +25,19 @@ export type ProductDetail = {
 export type Variation = {
   variationId: number;
   variationName: string;
-  variationDetail: {
-    variationDetailId: number;
-    description: string;
-  }[];
+  variationDetail: Omit<VaritationDetail[], "variation">;
+};
+export type VaritationDetail = {
+  variationDetailId: number;
+  variation: {
+    variationId: number;
+    variationName: string;
+    variationDetail: {
+      variationDetailId: number;
+      variationName: string;
+    }[];
+  };
+  description: string;
 };
 
 export interface ProductPaymentType {

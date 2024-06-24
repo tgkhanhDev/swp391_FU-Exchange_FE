@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addToCartThunk } from "./thunk";
+import { addToCartThunk, viewCartThunk } from "./thunk";
 import { toast } from "react-toastify";
+import { cartItem } from "../../types/cart";
 
 interface initialType {
-  cartList:any
+  cartList: cartItem[];
 }
 
 const initialState: initialType = {
@@ -21,6 +22,11 @@ export const manageCartSlice = createSlice({
       // state.createProductRes = payload.data;
       toast.success(payload.data.content);
     });
+    builder.addCase(viewCartThunk.fulfilled, (state, {payload} ) => {
+      console.log("SDADAD: ", payload);
+      
+      state.cartList = payload.data;
+    })
   },
 });
 
