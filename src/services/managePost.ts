@@ -13,4 +13,7 @@ export const managePost = {
     ),
   getPostById: (payload: number) =>
     api.get<utilsResponse<Post>>(`/detail/${payload}`),
+
+  getPostBySellerId: (payload: number) =>
+    api.get<utilsResponse<Post>>(`seller-post-product/${payload}`),
 };

@@ -1,10 +1,30 @@
 export interface Product {
   productId: number;
+  seller?: Seller
   detail: ProductDetail;
   image: Image[];
   category: Category;
   variation: Variation[];
   price: number;
+}
+
+export interface Seller {
+  sellerId: number
+  student: Student
+  bankingName: string
+  bankingNumber: string
+  active: number
+}
+
+export interface Student {
+  studentId: string
+  firstName: string
+  lastName: string
+  identityCard: string
+  address: string
+  phoneNumber: string
+  gender: string
+  dob: string
 }
 
 export interface Image {

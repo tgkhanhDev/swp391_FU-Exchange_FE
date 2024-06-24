@@ -7,11 +7,11 @@ import PostList from "../components/templates/productList/PostList";
 import Cart from "../components/templates/Cart/Cart";
 import ProfileTemplate from "../components/templates/Account/BuyerAccount/ProfileTemplate";
 import { LoginStaff } from "../components/templates/Account";
-import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTemplate";
+import OrderTemplate from "../components/templates/Account/BuyerAccount/OrderTemplate";
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize, ModeratorAuthorize } from "../page/account";
 import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate, AccountManager, SellerAccountManager } from "../components/templates/Account/Admin";
 import { ManageOrder, ManagePostProduct, ManageReportPost, ProfileTemplateModerator, ProfileModeratorUpdate } from "../components/templates/Account/Moderator";
-import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post, ProductDetailById } from "../components/templates/Account/SellerAccount";
+import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post, ProductDetailById, Wishlist, UpdateWishlist } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 import { Payment } from "../components/templates/Payment";
@@ -96,6 +96,14 @@ export const router = [
         path: PATH.post,
       },
       {
+        element: <Wishlist />,
+        path: PATH.wishlist,
+      },
+      {
+        element: <UpdateWishlist />,
+        path: PATH.wishlistUpdate,
+      },
+      {
         element: <ProductDetailById />,
         path: PATH.productDetailbyId,
       },
@@ -104,10 +112,10 @@ export const router = [
 
   {
     element: <AdminAuthorize />,
-    path: PATH.admin, 
+    path: PATH.admin,
     children: [
       {
-        element: <ManageCustomerAccount/>,
+        element: <ManageCustomerAccount />,
         index: true,
       },
       {
@@ -155,11 +163,11 @@ export const router = [
       },
       {
         element: <ProfileTemplateModerator />,
-        path: PATH.profileModerator, 
+        path: PATH.profileModerator,
       },
       {
         element: <ProfileModeratorUpdate />,
-        path: PATH.profileModeratorUpdate, 
+        path: PATH.profileModeratorUpdate,
       },
     ],
   },
@@ -177,7 +185,7 @@ export const router = [
     path: PATH.registerSeller,
   },
   {
-    element: <LoginStaff/>,
+    element: <LoginStaff />,
     path: PATH.loginStaff,
   },
   {

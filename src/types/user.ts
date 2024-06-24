@@ -15,8 +15,8 @@ export type RegisteredStudent = {
   registeredStudentId: number;
   Student: Student;
   Role: Role;
-  active: boolean
-  deliveryAddress: string
+  active: boolean;
+  deliveryAddress: string;
 };
 
 export type Role = {

@@ -27,3 +27,15 @@ export const getPostByIdThunk = createAsyncThunk(
     }
   }
 );
+
+export const getPostBySellerIdThunk = createAsyncThunk(
+  "postBySellerId",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const data = await managePost.getPostBySellerId(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

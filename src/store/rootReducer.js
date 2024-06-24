@@ -8,6 +8,7 @@ import { manageCartReducer } from "./cartManager/slice";
 import { manageChatReducer } from "./chatManager/slice";
 import { manageAccountReducer } from "./accountManager/slice"
 import { manageReviewReducer } from "./reviewManager/slice"
+import { manageWishlistReducer } from "./wishlistManager/slice"
 
 export const rootReducer = combineReducers({
   manageProduct: manageProductReducer,
@@ -19,4 +20,5 @@ export const rootReducer = combineReducers({
   manageChat: manageChatReducer,
   manageAccount: manageAccountReducer,
   manageReview: manageReviewReducer,
+  manageWishlist: manageWishlistReducer,
 });

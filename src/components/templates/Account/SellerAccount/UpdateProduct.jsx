@@ -81,7 +81,7 @@ export const UpdateProduct = () => {
   }, [navigate, userInfo]);
 
   useEffect(() => {
-    if (user && user.sellerTO?.active === 2) {
+    if (user && (user.sellerTO?.active === 2 || user.sellerTO?.active === 0)) {
       navigate('/*');
     }
   }, [user, navigate]);

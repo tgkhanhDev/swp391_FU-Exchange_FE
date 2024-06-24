@@ -25,6 +25,8 @@ export interface Post {
   quantity: number;
   createDate: string;
   content: string;
+  totalReview: number
+  totalRating: number
 }
 
 // export interface Product {
@@ -75,3 +77,7 @@ export interface PostFilter_API {
   postTypeId?: number | "";
   name?: string;
 }
+
+//
+//
+//

@@ -88,11 +88,23 @@ export const getAccountInfoThunk = createAsyncThunk(
   }
 );
 
-export const getSellerInfoBySellerIdThunk = createAsyncThunk(
-  "getSellerbySellerIdInfo",
-  async (payload: RegisteredStudent, { rejectWithValue }) => {
+export const getAccountInfoTypeThunk = createAsyncThunk(
+  "getAccountTypeInfo",
+  async (payload: number | null, { rejectWithValue }) => {
     try {
-      const data = await manageUsers.getAccountInfo(payload);
+      const data = await manageUsers.getAccountTypeInfo(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getSellerInfoBySellerIdThunk = createAsyncThunk(
+  "getSellerInfoBySellerIdThunk",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getSellerInfoBySellerId(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

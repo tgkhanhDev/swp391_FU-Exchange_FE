@@ -46,10 +46,11 @@ export const manageUsers = {
   registerSeller: (payload: RegisterSellerReq) =>
     apiB.post<utilsResponse<any>>(`register-to-seller`, payload),
 
-  getAccountInfo: (payload: RegisteredStudent) => {
-    console.log(payload)
-    return apiC.get<utilsResponse<any>>(`${payload.registeredStudentId}`);
-  },
+  getAccountInfo: (payload: RegisteredStudent) => 
+    apiC.get<utilsResponse<any>>(`${payload.registeredStudentId}`),
+
+  getAccountTypeInfo: (payload: number | null) => 
+    apiC.get<utilsResponse<any>>(`${payload}`),
 
   updatePassword: (payload: UpdatePassword) =>
     apiC.put<utilsResponse<any>>(`update-password`, payload),
@@ -57,6 +58,9 @@ export const manageUsers = {
   getSellerInfo: (payload: viewSeller) => {
     return apiB.get<utilsResponse<any>>(`information/${payload.sellerTO.RegisteredStudent.Student.studentId}`);
   },
+
+  getSellerInfoBySellerId: (payload: number) => 
+    apiB.get<utilsResponse<any>>(`${payload}`),
 
   updateBanking : (payload: UpdateBanking) =>
     apiB.put<utilsResponse<any>>(`update-information`, payload),

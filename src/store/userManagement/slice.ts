@@ -13,7 +13,9 @@ import {
   getLoginStaffThunk,
   getStaffInfoThunk,
   updateDeliveryAddressThunk,
-  getAllRegisteredStudentThunk
+  getAllRegisteredStudentThunk,
+  getAccountInfoTypeThunk,
+  getSellerInfoBySellerIdThunk
 } from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -140,11 +142,17 @@ export const manageUsersSlice = createSlice({
     builder.addCase(getAccountInfoThunk.fulfilled, (state, { payload }) => {
       state.users = payload.data;
     });
+    builder.addCase(getAccountInfoTypeThunk.fulfilled, (state, { payload }) => {
+      state.users = payload.data;
+    });
     builder.addCase(getSellerInfoThunk.fulfilled, (state, { payload }) => {
       state.users = payload.data;
     });
 
     builder.addCase(getStaffInfoThunk.fulfilled, (state, { payload }) => {
+      state.users = payload.data;
+    });
+    builder.addCase(getSellerInfoBySellerIdThunk.fulfilled, (state, { payload }) => {
       state.users = payload.data;
     });
     builder.addCase(updatePasswordThunk.fulfilled, (state, { payload }) => {
