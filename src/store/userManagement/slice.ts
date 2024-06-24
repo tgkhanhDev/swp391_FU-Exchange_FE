@@ -12,7 +12,8 @@ import {
   updateBankingThunk,
   getLoginStaffThunk,
   getStaffInfoThunk,
-  updateDeliveryAddressThunk
+  updateDeliveryAddressThunk,
+  getAllRegisteredStudentThunk
 } from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -179,6 +180,9 @@ export const manageUsersSlice = createSlice({
       }
     }
     );
+    builder.addCase(getAllRegisteredStudentThunk.fulfilled, (state, { payload }) => {
+      state.users = payload.data;
+    });
   },
 });
 

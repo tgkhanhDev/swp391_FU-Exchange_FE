@@ -36,6 +36,11 @@ export type setStatus = {
   active: number,
 }
 
+export type setStatusAcc = {
+  registeredStudentId: number,
+  active: number,
+}
+
 export interface UpdateProfile {
   staffId: number;
   firstName: string
@@ -53,3 +58,27 @@ export interface UpdatePassword {
   newPassword: string;
   confirmNewPassword: string;
 };
+
+export interface Seller {
+  sellerId: number
+  student: Student
+  bankingName: string
+  bankingNumber: string
+  active: number
+};
+
+export interface Student {
+  studentId: string
+  firstName: string
+  lastName: string
+  identityCard: string
+  address: string
+  phoneNumber: string
+  gender: string
+  dob: string
+};
+
+export type filterGetCustomerAccount = {
+  current: number,
+  name?: string,
+}

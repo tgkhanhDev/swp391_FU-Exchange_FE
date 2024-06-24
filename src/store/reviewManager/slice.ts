@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createReviewThunk } from "./thunk";
+import { createReviewThunk } from "./thunk"
 import { toast } from "react-toastify";
 
 type stateType = {

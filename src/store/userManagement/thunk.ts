@@ -11,6 +11,7 @@ import {
   LoginStaffType,
   Staff,
 } from "../../types/user";
+import { filterGetCustomerAccount } from "../../types/account"
 import { managePost } from "../../services/managePost";
 import { PostFilter_API } from "../../types/post";
 import { manageUsers } from "../../services/manageUser";
@@ -87,6 +88,18 @@ export const getAccountInfoThunk = createAsyncThunk(
   }
 );
 
+export const getSellerInfoBySellerIdThunk = createAsyncThunk(
+  "getSellerbySellerIdInfo",
+  async (payload: RegisteredStudent, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getAccountInfo(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const updatePasswordThunk = createAsyncThunk(
   "updatePassword",
   async (payload: UpdatePassword, { rejectWithValue }) => {
@@ -152,6 +165,18 @@ export const updateDeliveryAddressThunk = createAsyncThunk(
   async (payload: RegisteredStudent, { rejectWithValue }) => {
     try {
       const data = await manageUsers.updateDeliveryAddress(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getAllRegisteredStudentThunk = createAsyncThunk(
+  "getAllRegisteredStudent",
+  async (payload: filterGetCustomerAccount, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getAllRegisteredStudent(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

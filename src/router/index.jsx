@@ -15,6 +15,7 @@ import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Po
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 import { Payment } from "../components/templates/Payment";
+import { ShopId } from "../components/templates/shop";
 
 export const router = [
   {
@@ -24,6 +25,10 @@ export const router = [
       {
         element: <ProductList />,
         index: true,
+      },
+      {
+        element: <ShopId />,
+        path: PATH.shop,
       },
       {
         element: <PostList />,

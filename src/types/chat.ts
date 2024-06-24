@@ -12,3 +12,22 @@ export interface ChatMessage {
   content: string;
   timeSend: Date;
 }
+
+export interface StudentToSellerChat {
+  registeredStudentId: number;
+  sellerId: number;
+}
+
+export interface SendMessage {
+  studentSendId: number;
+  studentReceiveId: number;
+  chatRoomId: number;
+  content: string;
+}
+
+export interface ContactSeller {
+  registeredStudentId: number;
+  sellerId: number;
+  content: string;
+}
+

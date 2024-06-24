@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { manageAccount } from "../../services/manageAccount";
-import { filterGetStaffAccount, setStatus, UpdateProfile, UpdatePassword } from "../../types/account"
+import { filterGetStaffAccount, setStatus, UpdateProfile, UpdatePassword, setStatusAcc } from "../../types/account"
 
 export const getAllStaffAccountThunk = createAsyncThunk(
   "getAllStaff",
@@ -55,6 +55,18 @@ export const updatePasswordStaffThunk = createAsyncThunk(
   async (payload: UpdatePassword, { rejectWithValue }) => {
     try {
       const data = await manageAccount.updateStaffPassword(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const setStatusAccountThunk = createAsyncThunk(
+  "setStatusAcc",
+  async (payload: setStatusAcc, { rejectWithValue }) => {
+    try {
+      const data = await manageAccount.setStatusAcc(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getAllStaffAccountThunk, setStatusStaffThunk, updateAProfileThunk, updateMProfileThunk, updatePasswordStaffThunk } from "./thunk";
+import { getAllStaffAccountThunk, setStatusStaffThunk, updateAProfileThunk, updateMProfileThunk, updatePasswordStaffThunk, setStatusAccountThunk } from "./thunk";
 import { Account } from "../../types/account"
 import { toast } from "react-toastify";
 
@@ -56,6 +56,8 @@ export const manageAccountSlice = createSlice({
       }
     }
     );
+
+    builder.addCase(setStatusAccountThunk.fulfilled, (state, { payload }) => { });
   },
 });
 

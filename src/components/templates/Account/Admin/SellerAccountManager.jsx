@@ -17,7 +17,7 @@ export const SellerAccountManager = () => {
 
   return (
     <div>
-      cục shit
+      
     </div>
   )
 }

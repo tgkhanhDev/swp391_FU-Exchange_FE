@@ -10,6 +10,7 @@ export const PATH = {
   cart: "/cart",
   review: "/review/:orderId/:postProductId",
   payment: "/payment",
+  shop: "/shop/:sellerId",
 
   dashboard: "/dashboard",
   manageProduct: "/dashboard/product",

@@ -67,6 +67,8 @@ export const ManageStaffAccount = () => {
     setSearchQuery(event.target.value); // Update searchQuery state with input value
   };
 
+  console.log(filteredStaffList)
+
   return (
     <div className="mx-auto p-4">
       <div className="text-4xl font-semibold text-center py-6">Tài khoản nhân viên</div>
@@ -108,7 +110,7 @@ export const ManageStaffAccount = () => {
                 <td className="py-5 px-2 text-center">
                   <button
                     className="bg-blue-500 px-2 py-1 text-white rounded duration-150 hover:bg-blue-700"
-                    onClick={() => showModal(staffInfo.staffId)}
+                    onClick={() => showModal(staffInfo.staffID)}
                   >
                     Thay đổi
                   </button>

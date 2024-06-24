@@ -12,6 +12,7 @@ import {
   LoginStaffType,
   Staff,
 } from "../types/user";
+import { filterGetCustomerAccount } from "../types/account";
 import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({
@@ -45,8 +46,10 @@ export const manageUsers = {
   registerSeller: (payload: RegisterSellerReq) =>
     apiB.post<utilsResponse<any>>(`register-to-seller`, payload),
 
-  getAccountInfo: (payload: RegisteredStudent) =>
-    apiC.get<utilsResponse<any>>(`${payload.registeredStudentId}`),
+  getAccountInfo: (payload: RegisteredStudent) => {
+    console.log(payload)
+    return apiC.get<utilsResponse<any>>(`${payload.registeredStudentId}`);
+  },
 
   updatePassword: (payload: UpdatePassword) =>
     apiC.put<utilsResponse<any>>(`update-password`, payload),
@@ -66,4 +69,7 @@ export const manageUsers = {
 
   updateDeliveryAddress : (payload: RegisteredStudent) =>
     apiC.put<utilsResponse<any>>(`${payload.registeredStudentId}/update-registered-student?deliveryAddress=${payload.deliveryAddress}`, payload),
+
+  getAllRegisteredStudent: (payload: filterGetCustomerAccount) =>
+    apiC.get<utilsResponse<any>>(`registered-student/${payload.current}?name=${payload.name}`),
 };
