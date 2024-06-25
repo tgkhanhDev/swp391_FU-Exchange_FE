@@ -5,7 +5,10 @@ import { getSellerInfoThunk, getAccountInfoTypeThunk } from "../../../../store/u
 import { useAppDispatch } from "../../../../store";
 import { useWishlist } from "../../../../hooks/useWishlist"
 import { viewWishlistThunk } from "../../../../store/wishlistManager/thunk"
+import { updateStatusWishlistThunk } from "../../../../store/wishlistManager/thunk"
 import { format } from 'date-fns';
+import { Modal, Button, Select } from 'antd';
+import { contactSeller } from "../../../../store/chatManager/thunk";
 
 export const UpdateWishlist = () => {
   const navigate = useNavigate();
@@ -15,6 +18,10 @@ export const UpdateWishlist = () => {
   const [user, setUser] = useState(null); // Khởi tạo với giá trị null hoặc một giá trị mặc định khác
   const { view } = useWishlist();
   const [userDetail, setUserDetail] = useState();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState();
+  const [selectedStatus, setSelectedStatus] = useState();
+  const [contentTemp, setContentTemp] = useState();
 
   useEffect(() => {
     if (!studentInfo) {
@@ -43,6 +50,7 @@ export const UpdateWishlist = () => {
         });
     }
   }, [dispatch]);
+
 
   useEffect(() => {
     if (userDetail && (userDetail.sellerTO?.active === 2 || userDetail.sellerTO?.active === 0)) {
@@ -74,8 +82,34 @@ export const UpdateWishlist = () => {
     }
   }, [view, dispatch]);
 
+  const handleStatusChange = (value) => {
+    setSelectedStatus(value);
+  };
+
   const formatDate = (dateString) => {
     return format(new Date(dateString), 'dd-MM-yyyy HH:mm:ss');
+  };
+
+  const showModal = (wishListId, contentCreate) => {
+    setSelectedId(wishListId);
+    setIsModalVisible(true);
+    setContentTemp(contentCreate)
+  };
+
+  const handleOk = () => {
+    dispatch(updateStatusWishlistThunk({ wishListId: selectedId, active: selectedStatus }));
+    if (userDetail?.sellerId && selectedStatus === 1) {
+      const content = `Tôi tặng cho bạn sản phẩm này: ${contentTemp}`
+      dispatch(contactSeller({ registeredStudentId: selectedId, sellerId: userDetail?.sellerId, content: content }))
+    }
+    else if (userDetail?.sellerId && selectedStatus === 0) {
+      const content = `Tôi không muốn tặng cho bạn sản phẩm này nữa: ${contentTemp}`
+      dispatch(contactSeller({ registeredStudentId: selectedId, sellerId: userDetail?.sellerId, content: content }))
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   return (
@@ -111,7 +145,7 @@ export const UpdateWishlist = () => {
                     <td className="py-5 px-2 text-center">
                       <button
                         className="bg-blue-500 px-2 py-1 text-white rounded duration-150 hover:bg-blue-700"
-                        onClick={() => showModal(item.registeredStudentId)}
+                        onClick={() => showModal(item.wishListId, item.postProductResponse.productResponse.productDetailResponse.productName)}
                       >
                         Thay đổi
                       </button>
@@ -123,6 +157,30 @@ export const UpdateWishlist = () => {
           </table>
         </div>
       </main>
+      <Modal
+        title="Thay đổi trạng thái"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Hủy
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleOk}>
+            Lưu
+          </Button>,
+        ]}
+      >
+        <Select
+          placeholder="Chọn trạng thái"
+          onChange={handleStatusChange}
+          style={{ width: '100%' }}
+          value={selectedStatus}
+        >
+          <Option value="1">Tặng</Option>
+          <Option value="0">Chưa tặng</Option>
+        </Select>
+      </Modal>
     </div>
   );
 };

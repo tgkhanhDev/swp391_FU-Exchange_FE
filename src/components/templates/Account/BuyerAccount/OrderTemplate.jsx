@@ -31,7 +31,6 @@ export const OrderTemplate = () => {
   const [userDetail, setUserDetail] = useState();
   const [sellerId, setSellerId] = useState();
   const [content, setContent] = useState();
-  const [chatroomCreate, setChatroomCreate] = useState();
 
   const formatDay = (dateTimeString) => {
     if (!dateTimeString) return '';
@@ -172,7 +171,6 @@ export const OrderTemplate = () => {
         .then((action) => {
           const { payload } = action;
           const { data } = payload;
-          setChatroomCreate(data);
 
           if (data?.studentReceiveId && data?.studentSendId) {
             dispatch(chatRoomStS({ studentSendId: data.studentSendId, studentReceiveId: data.studentReceiveId }));

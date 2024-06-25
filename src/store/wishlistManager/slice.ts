@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { viewWishlistThunk, createWishlistThunk } from "./thunk"
+import { viewWishlistThunk, createWishlistThunk, updateStatusWishlistThunk } from "./thunk"
 import { toast } from "react-toastify";
 import { viewWishlist } from "../../types/wishlist"
 
@@ -21,12 +21,19 @@ export const manageWishlistSlice = createSlice({
     })
     builder.addCase(createWishlistThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
-        toast.success(`Đăng kí Tặng thành công!`);
+        toast.success(`Gửi yêu cầu Tặng thành công!`);
       } else if (payload.status == 400) {
         toast.warning(`${payload.content}`)
       }
        else {
-        toast.error(`Bạn đã tạo đăng kí Tăng trước đó!`);
+        toast.error(`Bạn đã gửi yêu cầu trước đó!`);
+      }
+    })
+    builder.addCase(updateStatusWishlistThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`Cập nhật thành công!`);
+      } else if (payload.status == 400) {
+        toast.error(`Cập nhật thất bại!`)
       }
     })
   },

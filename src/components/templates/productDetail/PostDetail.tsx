@@ -13,10 +13,12 @@ import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { setProductQuantity, setTest } from "../../../store/productManagement/slice"
 import { addToCartThunk } from "../../../store/cartManager/thunk";
 import { getAccountInfoTypeThunk } from "../../../store/userManagement/thunk";
+import { contactSeller } from "../../../store/chatManager/thunk";
 import { useWishlist } from "../../../hooks/useWishlist"
 import { viewWishlistThunk, createWishlistThunk } from "../../../store/wishlistManager/thunk"
 import { format } from 'date-fns';
 import { useAccount } from "../../../hooks/useAccount"
+import { toast } from "react-toastify";
 
 type PostType = {
   postId: number;
@@ -114,6 +116,27 @@ export const PostDetail: React.FC<PostType> = () => {
   //   console.log("detail:::", detail);
   // }, [detail]);
 
+  const contentCreate = `Tôi muốn thực hiện trao đổi đối với sản phẩm này: ${postDetail?.product.detail.productName}`
+
+  const handleChat = () => {
+    dispatch(contactSeller({
+      registeredStudentId: studentInfo?.registeredStudentId,
+      sellerId: postDetail?.product?.seller?.sellerId,
+      content: contentCreate
+    }))
+      .then((action) => {
+        const { payload } = action;
+        if (payload.status === 200) {
+          toast.success(`Gửi yêu cầu thành công! Liên hệ ${postDetail?.product.seller?.student.firstName} ${postDetail?.product.seller?.student.lastName} để biết thêm chi tiết nhé!`);
+        } else {
+          toast.error(`Gửi Yêu cầu trao đổi thất bại!`);
+        }
+      })
+      .catch((error) => {
+        toast.error("Error contacting seller. Please try again later.");
+      });
+  };
+
   return (
     <div className="container">
       {/* <FirebaseUpload /> */}
@@ -129,7 +152,7 @@ export const PostDetail: React.FC<PostType> = () => {
             </div>
           </div>
           {/* end title  */}
-          {postDetail?.postType.postTypeId === 2 && (
+          {(postDetail?.postType.postTypeId === 3) && (
             <div className="my-1">{postDetail?.product.price}VNĐ</div>
           )}
           <div className="min-h-[100px] my-3">
@@ -232,7 +255,9 @@ export const PostDetail: React.FC<PostType> = () => {
           )}
           {postDetail?.postType.postTypeId === 2 && (
             <div className="flex my-3 gap-3">
-              <Button type="primary" className="flex justify-center items-center px-4 py-6 text-lg font-semibold">Tôi muốn trao đổi</Button>
+              <Button type="primary" className="flex justify-center items-center px-4 py-6 text-lg font-semibold"
+                onClick={handleChat}
+              >Tôi muốn trao đổi</Button>
             </div>
           )}
 

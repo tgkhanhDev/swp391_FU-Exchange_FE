@@ -67,8 +67,6 @@ export const ManageStaffAccount = () => {
     setSearchQuery(event.target.value); // Update searchQuery state with input value
   };
 
-  console.log(filteredStaffList)
-
   return (
     <div className="mx-auto p-4">
       <div className="text-4xl font-semibold text-center py-6">Tài khoản nhân viên</div>

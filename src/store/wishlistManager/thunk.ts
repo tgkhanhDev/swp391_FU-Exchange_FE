@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { manageWishlist } from "../../services/manageWishlist";
-import { createWishlist } from "../../types/wishlist"
+import { createWishlist, updateStatusWishlist } from "../../types/wishlist"
 
 export const viewWishlistThunk = createAsyncThunk(
   "viewWishlist",
@@ -19,6 +19,18 @@ export const createWishlistThunk = createAsyncThunk(
   async (payload: createWishlist, { rejectWithValue }) => {
     try {
       const data = await manageWishlist.createWishlist(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const updateStatusWishlistThunk = createAsyncThunk(
+  "updateStatusWishlist",
+  async (payload: updateStatusWishlist, { rejectWithValue }) => {
+    try {
+      const data = await manageWishlist.updateStatusWishlist(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

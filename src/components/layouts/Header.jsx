@@ -156,7 +156,7 @@ export const Header = () => {
   const isEmptyChatDetail = !chatDetail || Object.keys(chatDetail).length === 0 ||
     Object.keys(chatDetail).every(roomId => chatDetail[roomId].length === 0);
 
-  const registeredId = studentInfo.registeredStudentId;
+  const registeredId = studentInfo?.registeredStudentId;
 
   const handleChat = () => {
     setShowChat(prevShowChat => !prevShowChat)
@@ -203,6 +203,7 @@ export const Header = () => {
 
   const handleSelectChat = (studentSendId, studentReceiveId) => {
     dispatch(chatRoomStS({ studentSendId: studentSendId, studentReceiveId: studentReceiveId }));
+    if (studentReceiveId !== userInfo.registeredStudentId) {
     dispatch(getAccountInfoThunk({ registeredStudentId: studentReceiveId }))
       .then((action) => {
         const { payload } = action;
@@ -212,6 +213,17 @@ export const Header = () => {
       .catch((error) => {
         console.error("Error fetching account information:", error);
       });
+    } else if (studentSendId !== userInfo.registeredStudentId) {
+      dispatch(getAccountInfoThunk({ registeredStudentId: studentSendId }))
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          setUserDetail(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
+      }
   }
 
   return (
@@ -367,24 +379,46 @@ export const Header = () => {
                         <div key={roomId}>
                           {chatDetail[roomId].length > 0 && (
                             chatDetail[roomId].map(message => (
-                              message.studentSendId !== registeredId ? (
-                                <div key={message.messageId} className="flex items-center my-4">
-                                  <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
-                                    <UserOutlined className="text-lg" />
+                              userInfo && userInfo.role === "Seller" ? (
+                                message.studentSendId !== registeredId ? (
+                                  <div key={message.chatMessageId} className="flex items-center my-4">
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
+                                    <div className="bg-slate-200 max-w-[52%] ml-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
                                   </div>
-                                  <div className="bg-slate-200 max-w-[52%] ml-2 rounded-lg px-2 py-1">
-                                    {message.content}
+                                ) : (
+                                  <div key={message.chatMessageId} className="flex justify-end items-center my-4">
+                                    <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
                                   </div>
-                                </div>
+                                )
                               ) : (
-                                <div key={message.messageId} className="flex justify-end items-center my-4">
-                                  <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
-                                    {message.content}
+                                message.studentSendId !== registeredId ? (
+                                  <div key={message.chatMessageId} className="flex items-center my-4">
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
+                                    <div className="bg-slate-200 max-w-[52%] ml-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
                                   </div>
-                                  <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
-                                    <UserOutlined className="text-lg" />
+                                ) : (
+                                  <div key={message.chatMessageId} className="flex justify-end items-center my-4">
+                                    <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
                                   </div>
-                                </div>
+                                )
                               )
                             ))
                           )}

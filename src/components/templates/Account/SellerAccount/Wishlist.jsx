@@ -85,7 +85,7 @@ export const Wishlist = () => {
                           "..."
                         : item.product.detail.productName}
                     </div>
-                    <div className="flex w-full justify-between pb-4">
+                    <div className="flex w-full justify-between py-4">
                       <div className="italic">Còn lại: {item.quantity}</div>
                       <div className="font-bold">{item.campus.campusName}</div>
                     </div>
