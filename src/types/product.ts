@@ -1,5 +1,8 @@
+import { Seller } from "./user";
+
 export interface Product {
   productId: number;
+  seller: Seller;
   detail: ProductDetail;
   image: Image[];
   category: Category;

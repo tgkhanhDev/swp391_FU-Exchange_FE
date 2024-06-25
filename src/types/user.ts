@@ -1,6 +1,7 @@
 export type Seller = {
   sellerId: number;
-  RegisteredStudent: RegisteredStudent;
+  // RegisteredStudent: RegisteredStudent;
+  student: Student;
   bankingNumber: string;
   bankingName: string;
 };
