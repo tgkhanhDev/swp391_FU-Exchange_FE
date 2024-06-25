@@ -13,9 +13,9 @@ export interface ChatMessage {
   timeSend: Date;
 }
 
-export interface StudentToSellerChat {
-  registeredStudentId: number;
-  sellerId: number;
+export interface StudentToStudentChat {
+  studentSendId: number;
+  studentReceiveId: number;
 }
 
 export interface SendMessage {

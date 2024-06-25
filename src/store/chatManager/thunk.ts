@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { manageChat } from "../../services/manageChat";
-import { StudentToSellerChat, SendMessage, ContactSeller } from "../../types/chat"
+import { StudentToStudentChat, SendMessage, ContactSeller } from "../../types/chat"
 
 export const viewChatRoom = createAsyncThunk(
   "chatRoom",
@@ -16,7 +16,7 @@ export const viewChatRoom = createAsyncThunk(
 
 export const chatRoomStS = createAsyncThunk(
   "chatRoomStS",
-  async (payload: StudentToSellerChat, { rejectWithValue }) => {
+  async (payload: StudentToStudentChat, { rejectWithValue }) => {
     try {
       const data = await manageChat.chatRoomStS(payload);
       return data.data;

@@ -1,18 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, UserOutlined, MessageOutlined, ShrinkOutlined, ExclamationCircleOutlined, PhoneOutlined, SendOutlined, DeleteOutlined, EllipsisOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../store";
 import {
   getAccountInfoThunk,
   getSellerInfoThunk,
 } from "../../store/userManagement/thunk";
-import { Dropdown, Menu } from "antd";
+import { CSSTransition } from "react-transition-group";
+import { Dropdown, Menu, Popover } from "antd";
 import "./styles.css";
+import { useChat } from "../../hooks/useChat"
+import { viewChatRoom, sendMessage, chatRoomStS } from "../../store/chatManager/thunk"
+import { useAccount } from "../../hooks/useAccount"
+import { format } from 'date-fns';
 
 export const Header = () => {
   const [user, setUser] = useState();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [showChat, setShowChat] = useState(false);
+  const { chatroom, chatDetail } = useChat();
+  const [userDetail, setUserDetail] = useState();
+  const { studentInfo } = useAccount();
+  const messageEndRef = useRef(null);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -42,6 +52,30 @@ export const Header = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    // Đảm bảo chatroom không rỗng và có ít nhất một phòng chat
+    if (chatroom && chatroom.length > 0) {
+      // Lặp qua các phòng chat để lấy thông tin người dùng từ studentReceiveId
+      chatroom.forEach(room => {
+        const registeredId = room.chatMessage[0].studentReceiveId;
+
+        // Dispatch Thunk để lấy dữ liệu người dùng dựa trên registeredId
+        dispatch(getAccountInfoThunk({ registeredStudentId: registeredId }))
+          .then((action) => {
+            const { payload } = action;
+            const { data } = payload;
+            setUser((prevUser) => ({
+              ...prevUser,
+              [registeredId]: data  // Lưu trữ thông tin người dùng dựa trên registeredId
+            }));
+          })
+          .catch((error) => {
+            console.error("Error fetching account information:", error);
+          });
+      });
+    }
+  }, [chatroom, dispatch]);
 
   const userMenu = (
     <Menu onClick={handleMenuClick} className="w-44 custome-font">
@@ -117,6 +151,69 @@ export const Header = () => {
     }
   }, [dispatch]);
 
+  //chat
+
+  const isEmptyChatDetail = !chatDetail || Object.keys(chatDetail).length === 0 ||
+    Object.keys(chatDetail).every(roomId => chatDetail[roomId].length === 0);
+
+  const registeredId = studentInfo.registeredStudentId;
+
+  const handleChat = () => {
+    setShowChat(prevShowChat => !prevShowChat)
+  }
+
+  useEffect(() => {
+    if (studentInfo && studentInfo.registeredStudentId) {
+      dispatch(viewChatRoom(studentInfo.registeredStudentId))
+    }
+  }, [dispatch]);
+
+  const studentSendIdRef = registeredId
+  let studentReceiveId = null
+  let chatRoomId = null
+  const contentRef = useRef("")
+  const [transitionKey, setTransitionKey] = useState(Date.now());
+
+  const reloadBoxChat = () => {
+    if (chatDetail && chatroom) {
+      dispatch(
+        sendMessage({
+          studentSendId: studentSendIdRef, // Assuming studentSendIdRef is correctly defined elsewhere
+          studentReceiveId: studentReceiveId,
+          chatRoomId: chatRoomId,
+          content: contentRef.current,
+        })
+      );
+
+      // Force render by changing a state variable or key
+      setTransitionKey(Date.now()); // Assuming transitionKey is a state variable in your component
+    }
+  };
+
+  const formatDay = (dateTimeString) => {
+    if (!dateTimeString) return '';
+    return dateTimeString.substring(0, 10); // Lấy từ vị trí 0 đến 10
+  };
+
+  const truncateContent = (content, maxLength) => {
+    if (!content) return '';
+    if (content.length <= maxLength) return content;
+    return content.slice(0, maxLength) + '...';
+  };
+
+  const handleSelectChat = (studentSendId, studentReceiveId) => {
+    dispatch(chatRoomStS({ studentSendId: studentSendId, studentReceiveId: studentReceiveId }));
+    dispatch(getAccountInfoThunk({ registeredStudentId: studentReceiveId }))
+      .then((action) => {
+        const { payload } = action;
+        const { data } = payload;
+        setUserDetail(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching account information:", error);
+      });
+  }
+
   return (
     <header className="top-0 sticky w-full min-w-[950px] z-50">
       <div className="flex justify-between items-center py-3 px-2 text-xl text-[var(--color-primary)] bg-[var(--color-bg-hightlight)]">
@@ -180,8 +277,140 @@ export const Header = () => {
               </button>
             </Dropdown>
           )}
+          {user && (
+            <div onClick={handleChat}>
+              <MessageOutlined className="ml-10 cursor-pointer text-xl" />
+            </div>
+          )}
         </div>
       </div>
+      <CSSTransition
+        key={transitionKey}
+        in={showChat}
+        timeout={300}
+        classNames="boxchat"
+        unmountOnExit
+      >
+        <div className="fixed bottom-0 right-2 left-[45%] top-80 bg-white z-10 rounded-t-md shadow-[0_0_10px_1px_rgba(0,0,0,0.3)]">
+          <div className="flex justify-between items-center py-2 px-4 text-2xl text-[var(--color-primary)] border-b-2 border-b-slate-300">
+            <div className="font-semibold">Chat</div>
+            <button onClick={() => setShowChat(!showChat)}><ShrinkOutlined /></button>
+          </div>
+
+          <div className="flex h-[calc(100%-50px)]">
+            {/*Bên trái */}
+            <div className="w-[60%] border-r-2 border-r-slate-300 py-3">
+              {/*Chat tổng*/}
+              <div className="flex items-center mb-4 px-2">
+                {chatroom && chatroom.length > 0 && (
+                  <div className="w-full">
+                    {chatroom.map(room => (
+                      room?.active === true && (
+                        <div onClick={() => handleSelectChat(room.chatMessage[0].studentSendId, room.chatMessage[0].studentReceiveId)}>
+                          <div>
+                            <div key={room.chatRoomId} className="hover:bg-gray-100 cursor-pointer duration-200 w-full">
+                              <div className="flex items-center mb-4 px-2">
+                                <div className="rounded-full bg-white border border-slate-300 w-12 h-12 flex justify-center items-center">
+                                  <UserOutlined className="text-3xl" />
+                                </div>
+                                {room.chatMessage && room.chatMessage.length > 0 && (
+                                  <div key={room.chatMessage[0].messageId} className="flex flex-grow items-center justify-between ml-2">
+                                    <div>
+                                      <div className="text-base font-semibold">{truncateContent(`${user?.[room.chatMessage[0].studentReceiveId]?.student?.firstName} ${user?.[room.chatMessage[0].studentReceiveId]?.student?.lastName}`, 8)}</div>
+                                      <div>{truncateContent(room.chatMessage.slice(-1)[0].content, 14)}</div>
+                                    </div>
+                                    <div className="text-right text-sm">
+                                      <div>{formatDay(room.chatMessage[0].timeSend)}</div>
+                                      <Popover
+                                        placement="bottomRight"
+                                        content={(
+                                          <button className="rounded flex justify-center items-center">
+                                            <DeleteOutlined className="text-xl mr-2" />Delete
+                                          </button>
+                                        )}
+                                        trigger="click"
+                                      >
+                                        <button><EllipsisOutlined className="text-3xl" /></button>
+                                      </Popover>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/*Bên phải */}
+            <div className="w-full h-full flex flex-col">
+              <div className="flex justify-between items-center border-b-2 border-b-slate-300 py-2 px-4 text-lg text-[var(--color-primary)]">
+                <div className="font-semibold">{userDetail?.student?.firstName} {userDetail?.student?.lastName}</div>
+                <Popover placement="bottomRight" content={<div><ExclamationCircleOutlined className="mr-1" />Chức năng đang trong giai đoạn phát triển</div>}>
+                  <button><PhoneOutlined /></button>
+                </Popover>
+              </div>
+
+              <div className="flex-grow overflow-y-auto">
+                {/*Tổng đoạn chat chi tiết */}
+                <div className="px-2 py-2">
+                  {/*Bên kia */}
+                  {isEmptyChatDetail ? (
+                    <div className="text-center text-gray-500 mt-4">Không có tin nhắn nào.</div>
+                  ) : (
+                    <div>
+                      {Object.keys(chatDetail).map(roomId => (
+                        <div key={roomId}>
+                          {chatDetail[roomId].length > 0 && (
+                            chatDetail[roomId].map(message => (
+                              message.studentSendId !== registeredId ? (
+                                <div key={message.messageId} className="flex items-center my-4">
+                                  <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                    <UserOutlined className="text-lg" />
+                                  </div>
+                                  <div className="bg-slate-200 max-w-[52%] ml-2 rounded-lg px-2 py-1">
+                                    {message.content}
+                                  </div>
+                                </div>
+                              ) : (
+                                <div key={message.messageId} className="flex justify-end items-center my-4">
+                                  <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
+                                    {message.content}
+                                  </div>
+                                  <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                    <UserOutlined className="text-lg" />
+                                  </div>
+                                </div>
+                              )
+                            ))
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Thêm phần tử cuối cùng để cuộn tới đây */}
+                  <div ref={messageEndRef}></div>
+                </div>
+              </div>
+
+              {chatDetail && !isEmptyChatDetail && (
+                <div className="flex justify-between items-center border-t-2 border-t-slate-300 py-2 px-4">
+                  <input type="text" placeholder="Gửi gì đó đi..." className="w-full focus:outline-none pr-3" onChange={(e) => {
+                    contentRef.current = e.target.value;
+                  }} />
+                  <button onClick={reloadBoxChat}><SendOutlined className="text-[var(--color-primary)]" /></button>
+                </div>
+              )}
+            </div>
+          </div>
+
+        </div>
+      </CSSTransition>
     </header>
   );
 };

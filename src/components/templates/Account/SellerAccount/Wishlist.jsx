@@ -57,7 +57,7 @@ export const Wishlist = () => {
           <div className="grid grid-cols-3 gap-10 mt-10">
             {postView?.map((item) => (
               // Kiểm tra item.postType tồn tại và postTypeId === 1 trước khi render
-              item.postType && item.postType.postTypeId === 1 && (
+              item.postType && item.postType.postTypeId === 1 && item.postStatus.postStatusId === 4 && (
                 <button
                   key={item.postProductId}
                   className="flex flex-col m-auto w-[250px] hover:cursor-pointer border border-[var(--color-primary)] hover:-translate-y-2 transition-all ease-in-out"

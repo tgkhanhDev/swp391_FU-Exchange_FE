@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Select, Popover } from "antd";
 import { UserOutlined, ShrinkOutlined, EllipsisOutlined, SendOutlined, PhoneOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import './styles.css';
-import { CSSTransition } from 'react-transition-group';
+import { CSSTransition } from "react-transition-group";
 import { useAppDispatch } from "../../../../store";
 import { getOrderThunk, getOrderDetailThunk } from "../../../../store/orderManager/thunk";
 import { getPostByIdThunk } from "../../../../store/postManagement/thunk";
@@ -17,14 +17,12 @@ import { format } from 'date-fns';
 
 export const OrderTemplate = () => {
   const { order } = useOrder();
-  const { postDetail } = usePost();
   const { chatroom, chatDetail } = useChat();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [orderDetails, setOrderDetails] = useState({});
   const [postDetails, setPostDetails] = useState({});
   const [orders, setOrders] = useState([]);
-  const [chatRoomData, setChatRoomData] = useState([]);
   const { studentInfo } = useAccount();
   const [showBoxChat, setShowBoxChat] = useState(false);
   const messageEndRef = useRef(null);
@@ -33,6 +31,7 @@ export const OrderTemplate = () => {
   const [userDetail, setUserDetail] = useState();
   const [sellerId, setSellerId] = useState();
   const [content, setContent] = useState();
+  const [chatroomCreate, setChatroomCreate] = useState();
 
   const formatDay = (dateTimeString) => {
     if (!dateTimeString) return '';
@@ -64,13 +63,6 @@ export const OrderTemplate = () => {
         registeredStudent: studentInfo.registeredStudentId
       }));
       dispatch(viewChatRoom(studentInfo.registeredStudentId))
-        .then((data) => {
-          // Sau khi nhận được dữ liệu từ action, gán vào state chatRoomData
-          setChatRoomData(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching account information:", error);
-        });
     }
   }, [dispatch]);
 
@@ -172,24 +164,29 @@ export const OrderTemplate = () => {
     setContent(content);
   }
 
+  const contentCreate = `Tôi muốn trao đổi về sản phẩm này: ${content}`;
+
   useEffect(() => {
     if (sellerId && registeredId && showBoxChat) {
-      dispatch(chatRoomStS({ registeredStudentId: registeredId, sellerId: sellerId }));
+      dispatch(contactSeller({ registeredStudentId: registeredId, sellerId: sellerId, content: contentCreate }))
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          setChatroomCreate(data);
+
+          if (data?.studentReceiveId && data?.studentSendId) {
+            dispatch(chatRoomStS({ studentSendId: data.studentSendId, studentReceiveId: data.studentReceiveId }));
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
     }
-  }, [dispatch, sellerId, registeredId, showBoxChat]);
+  }, [dispatch, sellerId, registeredId, showBoxChat, contentCreate]);
 
-  const handleSelectChat = () => {
-    dispatch(chatRoomStS({ registeredStudentId: registeredId, sellerId: sellerId }));
-  }
-
-  let currentReceivedId = null;
-
-  const isEmptyChatDetail = !chatDetail || Object.keys(chatDetail).length === 0 ||
-    Object.keys(chatDetail).every(roomId => chatDetail[roomId].length === 0);
-
-
-  useEffect(() => {
-    dispatch(getAccountInfoThunk({ registeredStudentId: currentReceivedId }))
+  const handleSelectChat = (studentSendId, studentReceiveId) => {
+    dispatch(chatRoomStS({ studentSendId: studentSendId, studentReceiveId: studentReceiveId }))
+    dispatch(getAccountInfoThunk({ registeredStudentId: studentReceiveId }))
       .then((action) => {
         const { payload } = action;
         const { data } = payload;
@@ -198,9 +195,10 @@ export const OrderTemplate = () => {
       .catch((error) => {
         console.error("Error fetching account information:", error);
       });
-  }, [chatDetail, dispatch]);
+  }
 
-  console.log(userDetail)
+  const isEmptyChatDetail = !chatDetail || Object.keys(chatDetail).length === 0 ||
+    Object.keys(chatDetail).every(roomId => chatDetail[roomId].length === 0);
 
   const studentSendIdRef = registeredId
   let studentReceiveId = null
@@ -209,18 +207,20 @@ export const OrderTemplate = () => {
   const [transitionKey, setTransitionKey] = useState(Date.now());
 
   const reloadBoxChat = () => {
-    dispatch(
-      sendMessage({
-        studentSendId: studentSendIdRef,
-        studentReceiveId: studentReceiveId,
-        chatRoomId: chatRoomId,
-        content: contentRef.current,
-      })
-    );
-    setTransitionKey(Date.now()); // Thay đổi key để force render lại component
-  };
+    if (chatDetail && chatroom) {
+      dispatch(
+        sendMessage({
+          studentSendId: studentSendIdRef, // Assuming studentSendIdRef is correctly defined elsewhere
+          studentReceiveId: studentReceiveId,
+          chatRoomId: chatRoomId,
+          content: contentRef.current,
+        })
+      );
 
-  console.log(chatDetail)
+      // Force render by changing a state variable or key
+      setTransitionKey(Date.now()); // Assuming transitionKey is a state variable in your component
+    }
+  };
 
   return (
     <div>
@@ -335,37 +335,39 @@ export const OrderTemplate = () => {
                 {chatroom && chatroom.length > 0 && (
                   <div className="w-full">
                     {chatroom.map(room => (
-                      <div onClick={handleSelectChat}>
-                        <div key={room.chatRoomId} className="hover:bg-gray-100 cursor-pointer duration-200 w-full">
-                          <div className="flex items-center mb-4 px-2">
-                            <div className="rounded-full bg-white border border-slate-300 w-12 h-12 flex justify-center items-center">
-                              <UserOutlined className="text-3xl" />
-                            </div>
-                            {room.chatMessage && room.chatMessage.length > 0 && (
-                              <div key={room.chatMessage[0].messageId} className="flex flex-grow items-center justify-between ml-2">
-                                <div>
-                                  <div className="text-base font-semibold">{truncateContent(`${user?.[room.chatMessage[0].studentReceiveId]?.student?.firstName} ${user?.[room.chatMessage[0].studentReceiveId]?.student?.lastName}`, 8)}</div>
-                                  <div>{truncateContent(room.chatMessage.slice(-1)[0].content, 14)}</div>
-                                </div>
-                                <div className="text-right text-sm">
-                                  <div>{formatDay(room.chatMessage[0].timeSend)}</div>
-                                  <Popover
-                                    placement="bottomRight"
-                                    content={(
-                                      <button className="rounded flex justify-center items-center">
-                                        <DeleteOutlined className="text-xl mr-2" />Delete
-                                      </button>
-                                    )}
-                                    trigger="click"
-                                  >
-                                    <button><EllipsisOutlined className="text-3xl" /></button>
-                                  </Popover>
-                                </div>
+                      room?.active === true && (
+                        <div onClick={() => handleSelectChat(room.chatMessage[0].studentSendId, room.chatMessage[0].studentReceiveId)}>
+                          <div key={room.chatRoomId} className="hover:bg-gray-100 cursor-pointer duration-200 w-full">
+                            <div className="flex items-center mb-4 px-2">
+                              <div className="rounded-full bg-white border border-slate-300 w-12 h-12 flex justify-center items-center">
+                                <UserOutlined className="text-3xl" />
                               </div>
-                            )}
+                              {room.chatMessage && room.chatMessage.length > 0 && (
+                                <div key={room.chatMessage[0].messageId} className="flex flex-grow items-center justify-between ml-2">
+                                  <div>
+                                    <div className="text-base font-semibold">{truncateContent(`${user?.[room.chatMessage[0].studentReceiveId]?.student?.firstName} ${user?.[room.chatMessage[0].studentReceiveId]?.student?.lastName}`, 8)}</div>
+                                    <div>{truncateContent(room.chatMessage.slice(-1)[0].content, 14)}</div>
+                                  </div>
+                                  <div className="text-right text-sm">
+                                    <div>{formatDay(room.chatMessage[0].timeSend)}</div>
+                                    <Popover
+                                      placement="bottomRight"
+                                      content={(
+                                        <button className="rounded flex justify-center items-center">
+                                          <DeleteOutlined className="text-xl mr-2" />Delete
+                                        </button>
+                                      )}
+                                      trigger="click"
+                                    >
+                                      <button><EllipsisOutlined className="text-3xl" /></button>
+                                    </Popover>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      )
                     ))}
                   </div>
                 )}
@@ -396,7 +398,6 @@ export const OrderTemplate = () => {
                             chatDetail[roomId].map(message => (
                               studentReceiveId = message.studentSendId,
                               message.studentSendId !== registeredId ? (
-                                currentReceivedId = message.studentSendId,
                                 <div key={message.messageId} className="flex items-center my-4">
                                   <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
                                     <UserOutlined className="text-lg" />
@@ -425,13 +426,14 @@ export const OrderTemplate = () => {
                   <div ref={messageEndRef}></div>
                 </div>
               </div>
-
-              <div className="flex justify-between items-center border-t-2 border-t-slate-300 py-2 px-4">
-                <input type="text" placeholder="Gửi gì đó đi..." className="w-full focus:outline-none pr-3" onChange={(e) => {
-                  contentRef.current = e.target.value;
-                }} />
-                <button onClick={reloadBoxChat}><SendOutlined className="text-[var(--color-primary)]" /></button>
-              </div>
+              {chatDetail && !isEmptyChatDetail && (
+                <div className="flex justify-between items-center border-t-2 border-t-slate-300 py-2 px-4">
+                  <input type="text" placeholder="Gửi gì đó đi..." className="w-full focus:outline-none pr-3" onChange={(e) => {
+                    contentRef.current = e.target.value;
+                  }} />
+                  <button onClick={reloadBoxChat}><SendOutlined className="text-[var(--color-primary)]" /></button>
+                </div>
+              )}
             </div>
           </div>
         </div>
