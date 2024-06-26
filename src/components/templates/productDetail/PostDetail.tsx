@@ -169,9 +169,10 @@ export const PostDetail: React.FC<PostType> = () => {
 
   const { Option } = Select;
 
-  const [sortOption, setSortOption] = useState("newest");
-  const sortedReviews = review.reviews?.slice().sort((a, b) => {
-    if (sortOption === "newest") {
+  const [sortOption, setSortOption] = useState(1);
+
+  const sortedReviews = review?.reviews?.slice().sort((a, b) => {
+    if (sortOption === 1) {
       return new Date(b.createTime).getTime() - new Date(a.createTime).getTime();
     } else {
       return new Date(a.createTime).getTime() - new Date(b.createTime).getTime();
@@ -368,12 +369,16 @@ export const PostDetail: React.FC<PostType> = () => {
       <div className="my-28 px-4 flex flex-col lg:flex-row">
         <div className="w-full lg:w-1/3 mb-8 lg:mb-0">
           <div className="text-3xl font-semibold mb-4">Đánh giá</div>
+          {review ? (
           <div className="flex items-center mb-6">
             <StarRating rating={review.totalRating} />
             <div className="flex justify-center items-center text-xl ml-5">
               {review.totalReview} Đánh giá
             </div>
           </div>
+          ): (
+            <div>Chưa có đánh giá nào</div>
+          )}
         </div>
 
         <div className="w-full lg:w-2/3 ml-20">
@@ -382,8 +387,8 @@ export const PostDetail: React.FC<PostType> = () => {
               value={sortOption}
               onChange={(value) => setSortOption(value)}
             >
-              <Option value="newest">Đánh giá mới nhất</Option>
-              <Option value="oldest">Đánh giá cũ nhất</Option>
+              <Option value={1}>Đánh giá mới nhất</Option>
+              <Option value={0}>Đánh giá cũ nhất</Option>
             </Select>
           </div>
           {sortedReviews?.map((rev) => (
