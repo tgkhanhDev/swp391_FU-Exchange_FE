@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Select, Option } from "antd";
 import React, { useEffect, useState } from "react";
 import { usePost } from "../../../hooks/usePost";
 import { useAppDispatch } from "../../../store";
@@ -19,6 +19,10 @@ import { viewWishlistThunk, createWishlistThunk } from "../../../store/wishlistM
 import { format } from 'date-fns';
 import { useAccount } from "../../../hooks/useAccount"
 import { toast } from "react-toastify";
+import { viewAllReviewThunk } from "../../../store/reviewManager/thunk"
+import { useReview } from "../../../hooks/useReview"
+import Rating from 'react-rating';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 type PostType = {
   postId: number;
@@ -40,6 +44,7 @@ export const PostDetail: React.FC<PostType> = () => {
   const [showTable, setShowTable] = useState(false);
   const { view } = useWishlist();
   const { studentInfo } = useAccount();
+  const { review } = useReview();
 
   const handleInputChange = (event) => {
     const value = parseInt(event.target.value);
@@ -65,6 +70,7 @@ export const PostDetail: React.FC<PostType> = () => {
     if (postProductId) {
       dispatch(getPostByIdThunk(parseInt(postProductId)));
       dispatch(viewWishlistThunk(parseInt(postProductId)));
+      dispatch(viewAllReviewThunk(parseInt(postProductId)));
     }
   }, [dispatch]);
 
@@ -136,6 +142,41 @@ export const PostDetail: React.FC<PostType> = () => {
         toast.error("Error contacting seller. Please try again later.");
       });
   };
+
+  const StarRating = ({ rating }) => {
+    return (
+      <Rating
+        emptySymbol={<i className="far fa-star text-yellow-500 text-3xl"></i>}
+        fullSymbol={<i className="fas fa-star text-yellow-500 text-3xl"></i>}
+        fractions={10}
+        initialRating={rating}
+        readonly
+      />
+    );
+  };
+
+  const StarDetailRating = ({ rating }) => {
+    return (
+      <Rating
+        emptySymbol={<i className="far fa-star text-yellow-500 text-xl"></i>}
+        fullSymbol={<i className="fas fa-star text-yellow-500 text-xl"></i>}
+        fractions={10}
+        initialRating={rating}
+        readonly
+      />
+    );
+  };
+
+  const { Option } = Select;
+
+  const [sortOption, setSortOption] = useState("newest");
+  const sortedReviews = review.reviews?.slice().sort((a, b) => {
+    if (sortOption === "newest") {
+      return new Date(b.createTime).getTime() - new Date(a.createTime).getTime();
+    } else {
+      return new Date(a.createTime).getTime() - new Date(b.createTime).getTime();
+    }
+  });
 
   return (
     <div className="container">
@@ -324,6 +365,42 @@ export const PostDetail: React.FC<PostType> = () => {
           </table>
         </div>
       )}
+      <div className="my-28 px-4 flex flex-col lg:flex-row">
+        <div className="w-full lg:w-1/3 mb-8 lg:mb-0">
+          <div className="text-3xl font-semibold mb-4">Đánh giá</div>
+          <div className="flex items-center mb-6">
+            <StarRating rating={review.totalRating} />
+            <div className="flex justify-center items-center text-xl ml-5">
+              {review.totalReview} Đánh giá
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full lg:w-2/3 ml-20">
+          <div className="mb-6 mt-12 flex justify-end">
+            <Select
+              value={sortOption}
+              onChange={(value) => setSortOption(value)}
+            >
+              <Option value="newest">Đánh giá mới nhất</Option>
+              <Option value="oldest">Đánh giá cũ nhất</Option>
+            </Select>
+          </div>
+          {sortedReviews?.map((rev) => (
+            <div key={rev.review} className="mb-8 p-4 border border-gray-300 rounded-lg hover:bg-gray-200 duration-150">
+              <div className="mb-2">
+                <div className="font-semibold">{formatDate(rev.createTime)}</div>
+              </div>
+              <div className="mb-2">
+                <StarDetailRating rating={rev.rating} />
+              </div>
+              <div className="mb-2">
+                <span className="font-semibold">Đánh giá: </span>{rev.description}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

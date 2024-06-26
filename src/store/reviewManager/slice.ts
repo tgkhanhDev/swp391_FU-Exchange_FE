@@ -1,13 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createReviewThunk } from "./thunk"
+import { createReviewThunk, viewAllReviewThunk } from "./thunk"
 import { toast } from "react-toastify";
+import { viewReview } from "../../types/review"
 
 type stateType = {
-
+  review: viewReview[];
 };
 
 const initialState: stateType = {
-
+  review: [],
 };
 
 export const manageReviewSlice = createSlice({
@@ -24,6 +25,9 @@ export const manageReviewSlice = createSlice({
       } else {
         toast.error('Đánh giá thất bại!');
       }
+    })
+    builder.addCase(viewAllReviewThunk.fulfilled, (state, { payload }) => {
+      state.review = payload.data;
     })
   },
 });

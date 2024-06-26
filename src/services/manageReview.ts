@@ -7,6 +7,8 @@ const api = apiInstance({
 });
 
 export const manageReview = {
-  createReview: (payload: Review) => 
+  createReview: (payload: Review) =>
     api.post<utilsResponse<any>>(`/create`, payload),
+  viewAllReview: (payload: number) =>
+    api.get<utilsResponse<any>>(`all/${payload}`),
 };

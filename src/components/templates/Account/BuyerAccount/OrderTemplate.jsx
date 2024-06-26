@@ -9,7 +9,6 @@ import { getOrderThunk, getOrderDetailThunk } from "../../../../store/orderManag
 import { getPostByIdThunk } from "../../../../store/postManagement/thunk";
 import { viewChatRoom, chatRoomStS, sendMessage, contactSeller } from "../../../../store/chatManager/thunk"
 import { getAccountInfoThunk } from "../../../../store/userManagement/thunk"
-import { usePost } from "../../../../hooks/usePost";
 import { useOrder } from "../../../../hooks/useOrder";
 import { useAccount } from "../../../../hooks/useAccount";
 import { useChat } from "../../../../hooks/useChat";

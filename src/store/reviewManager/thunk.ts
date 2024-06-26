@@ -14,3 +14,16 @@ export const createReviewThunk = createAsyncThunk(
     }
   }
 );
+
+export const viewAllReviewThunk = createAsyncThunk(
+  "viewAllReview",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const data = await manageReview.viewAllReview(payload);
+      console.log(data.data.data)
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
