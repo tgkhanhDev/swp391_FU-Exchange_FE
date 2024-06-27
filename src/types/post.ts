@@ -83,3 +83,16 @@ export interface CreatePostType {
   quantity: number;
   content: string;
 }
+
+export interface ModeratorGetPostFilter {
+  page: number;
+  sellerName ?: string;
+  postTypeId ?: number;
+  campusId ?: number;
+  postStatus ?: number;
+}
+
+export interface ModeratorUpdateStatusPostProductFilter {
+  postProductId: number;
+  postStatusId: number;
+}

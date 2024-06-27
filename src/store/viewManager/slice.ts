@@ -27,7 +27,7 @@ export const manageViewSlice = createSlice({
       }),
       builder.addCase(getCategoryThunk.fulfilled, (state, { payload }) => {
         state.category = payload.data;
-      });
+      })
   },
 });
 
