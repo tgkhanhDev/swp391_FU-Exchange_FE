@@ -1,5 +1,5 @@
-import { Button, Select, Option } from "antd";
-import React, { useEffect, useState } from "react";
+import { Button, Select, Modal, Input, Form } from "antd";
+import React, { useEffect, useState, useRef } from "react";
 import { usePost } from "../../../hooks/usePost";
 import { useAppDispatch } from "../../../store";
 import { getPostByIdThunk } from "../../../store/postManagement/thunk";
@@ -15,7 +15,7 @@ import { addToCartThunk } from "../../../store/cartManager/thunk";
 import { getAccountInfoTypeThunk } from "../../../store/userManagement/thunk";
 import { contactSeller } from "../../../store/chatManager/thunk";
 import { useWishlist } from "../../../hooks/useWishlist"
-import { viewWishlistThunk, createWishlistThunk } from "../../../store/wishlistManager/thunk"
+import { viewWishlistThunk, createWishlistThunk, updateQuantityWishlistThunk, deleteWishlistThunk } from "../../../store/wishlistManager/thunk"
 import { format } from 'date-fns';
 import { useAccount } from "../../../hooks/useAccount"
 import { toast } from "react-toastify";
@@ -178,6 +178,34 @@ export const PostDetail: React.FC<PostType> = () => {
       return new Date(a.createTime).getTime() - new Date(b.createTime).getTime();
     }
   });
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedWishlist, setSelectedWishlist] = useState();
+
+  const showModal = (wishlistiId) => {
+    setSelectedWishlist(wishlistiId);
+    setIsModalVisible(true);
+  };
+
+  const updateQuantityRef = useRef("");
+
+  const handleOk = () => {
+    if (selectedWishlist && updateQuantityRef) {
+      dispatch(updateQuantityWishlistThunk({ wishListId: selectedWishlist, quantity: updateQuantityRef.current }))
+      setIsModalVisible(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleDeleteWishlist = () => {
+    if (selectedWishlist) {
+      dispatch(deleteWishlistThunk(selectedWishlist))
+      setIsModalVisible(false);
+    }
+  }
 
   return (
     <div className="container">
@@ -345,6 +373,7 @@ export const PostDetail: React.FC<PostType> = () => {
                 <th className="py-5 px-2 text-center">Thời gian đăng kí</th>
                 <th className="py-5 px-2 text-center">Số lượng</th>
                 <th className="py-5 px-2 text-center">Trạng thái hiện tại</th>
+                <th className="py-5 px-2 text-center">Cập nhật số lượng</th>
               </tr>
             </thead>
             {view && view.length > 0 && (
@@ -359,6 +388,11 @@ export const PostDetail: React.FC<PostType> = () => {
                     ) : (
                       <td className="py-5 text-red-500 font-semibold text-center">Đang chờ được tặng</td>
                     )}
+                    {studentInfo.registeredStudentId === item.registeredStudentId && (
+                      <td className="py-5 px-2 flex justify-center items-center">
+                        <Button onClick={() => showModal(item.wishListId)}>Cập nhật</Button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -370,13 +404,13 @@ export const PostDetail: React.FC<PostType> = () => {
         <div className="w-full lg:w-1/3 mb-8 lg:mb-0">
           <div className="text-3xl font-semibold mb-4">Đánh giá</div>
           {review ? (
-          <div className="flex items-center mb-6">
-            <StarRating rating={review.totalRating} />
-            <div className="flex justify-center items-center text-xl ml-5">
-              {review.totalReview} Đánh giá
+            <div className="flex items-center mb-6">
+              <StarRating rating={review.totalRating} />
+              <div className="flex justify-center items-center text-xl ml-5">
+                {review.totalReview} Đánh giá
+              </div>
             </div>
-          </div>
-          ): (
+          ) : (
             <div>Chưa có đánh giá nào</div>
           )}
         </div>
@@ -406,6 +440,39 @@ export const PostDetail: React.FC<PostType> = () => {
           ))}
         </div>
       </div>
+      <Modal
+        title="Thay đổi trạng thái"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Hủy
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleOk}>
+            Lưu
+          </Button>,
+        ]}
+      >
+        <Form>
+          <Form.Item>
+            <div className="mt-2 flex items-center">
+              <div className="mb-2 mr-5">Cập nhật số lượng: </div>
+              <input
+                type="number"
+                className="h-8 rounded-md px-4 border border-gray-300 w-20"
+                onChange={(e) => {
+                  updateQuantityRef.current = e.target.value;
+                }}
+              />
+            </div>
+            <div className="my-5">Hoặc</div>
+            <Button type="primary" onClick={handleDeleteWishlist}>
+              Hủy đăng kí tặng
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

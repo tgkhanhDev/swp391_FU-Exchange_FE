@@ -31,3 +31,9 @@ export interface ContactSeller {
   content: string;
 }
 
+export interface ContactStudent {
+  registeredStudentId: number;
+  sellerId: number;
+  content: string;
+}
+

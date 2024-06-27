@@ -174,22 +174,6 @@ export const Header = () => {
   const contentRef = useRef("")
   const [transitionKey, setTransitionKey] = useState(Date.now());
 
-  const reloadBoxChat = () => {
-    if (chatDetail && chatroom) {
-      dispatch(
-        sendMessage({
-          studentSendId: studentSendIdRef, // Assuming studentSendIdRef is correctly defined elsewhere
-          studentReceiveId: studentReceiveId,
-          chatRoomId: chatRoomId,
-          content: contentRef.current,
-        })
-      );
-
-      // Force render by changing a state variable or key
-      setTransitionKey(Date.now()); // Assuming transitionKey is a state variable in your component
-    }
-  };
-
   const formatDay = (dateTimeString) => {
     if (!dateTimeString) return '';
     return dateTimeString.substring(0, 10); // Lấy từ vị trí 0 đến 10
@@ -204,15 +188,15 @@ export const Header = () => {
   const handleSelectChat = (studentSendId, studentReceiveId) => {
     dispatch(chatRoomStS({ studentSendId: studentSendId, studentReceiveId: studentReceiveId }));
     if (studentReceiveId !== userInfo.registeredStudentId) {
-    dispatch(getAccountInfoThunk({ registeredStudentId: studentReceiveId }))
-      .then((action) => {
-        const { payload } = action;
-        const { data } = payload;
-        setUserDetail(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching account information:", error);
-      });
+      dispatch(getAccountInfoThunk({ registeredStudentId: studentReceiveId }))
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          setUserDetail(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
     } else if (studentSendId !== userInfo.registeredStudentId) {
       dispatch(getAccountInfoThunk({ registeredStudentId: studentSendId }))
         .then((action) => {
@@ -223,8 +207,27 @@ export const Header = () => {
         .catch((error) => {
           console.error("Error fetching account information:", error);
         });
-      }
+    }
   }
+
+  const reloadBoxChat = () => {
+    if (chatDetail && chatroom) {
+      console.log(studentReceiveId),
+        console.log(chatRoomId),
+        console.log(studentSendIdRef)
+      dispatch(
+        sendMessage({
+          studentSendId: studentSendIdRef, // Assuming studentSendIdRef is correctly defined elsewhere
+          studentReceiveId: studentReceiveId,
+          chatRoomId: chatRoomId,
+          content: contentRef.current,
+        })
+      );
+
+      // Force render by changing a state variable or key
+      setTransitionKey(Date.now()); // Assuming transitionKey is a state variable in your component
+    }
+  };
 
   return (
     <header className="top-0 sticky w-full min-w-[950px] z-50">
@@ -374,6 +377,7 @@ export const Header = () => {
                   {isEmptyChatDetail ? (
                     <div className="text-center text-gray-500 mt-4">Không có tin nhắn nào.</div>
                   ) : (
+                    chatRoomId = chatDetail.chatRoomId,
                     <div>
                       {Object.keys(chatDetail).map(roomId => (
                         <div key={roomId}>
@@ -381,6 +385,7 @@ export const Header = () => {
                             chatDetail[roomId].map(message => (
                               userInfo && userInfo.role === "Seller" ? (
                                 message.studentSendId !== registeredId ? (
+                                  studentReceiveId = message.studentSendId,
                                   <div key={message.chatMessageId} className="flex items-center my-4">
                                     <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
                                       <UserOutlined className="text-lg" />
@@ -390,6 +395,7 @@ export const Header = () => {
                                     </div>
                                   </div>
                                 ) : (
+                                  studentReceiveId = message.studentReceiveId,
                                   <div key={message.chatMessageId} className="flex justify-end items-center my-4">
                                     <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
                                       {message.content}

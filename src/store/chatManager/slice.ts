@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { viewChatRoom, chatRoomStS, sendMessage, contactSeller } from "./thunk";
+import { viewChatRoom, chatRoomStS, sendMessage, contactSeller, contactStudent } from "./thunk";
 import { ChatRoom } from "../../types/chat"
+import { toast } from "react-toastify";
  
 type stateType = {
   chatroom: ChatRoom[];
@@ -25,6 +26,14 @@ export const manageChatSlice = createSlice({
     })
     builder.addCase(sendMessage.fulfilled, (state, { payload }) => {})
     builder.addCase(contactSeller.fulfilled, (state, { payload }) => {})
+
+    builder.addCase(contactStudent.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`${payload.content}`);
+      } else if (payload.status == 400) {
+        toast.error(`${payload.content}`)
+      }
+    })
   },
 });
 

@@ -1,6 +1,6 @@
 import { apiInstance } from "../constants/apiInstance";
 import { utilsResponse } from "../types/utils";
-import { StudentToStudentChat, SendMessage, ContactSeller } from "../types/chat"
+import { StudentToStudentChat, SendMessage, ContactSeller, ContactStudent } from "../types/chat"
 
 const api = apiInstance({
   baseURL: "http://localhost:8080/chat",
@@ -11,13 +11,17 @@ export const manageChat = {
     api.get<utilsResponse<any>>(`chat-room/${payload}`),
 
   chatRoomStS: (payload: StudentToStudentChat) => {
-    console.log(payload)
     return api.get<utilsResponse<any>>(`chat-room/student-to-student?studentSendId=${payload.studentSendId}&studentReceiveId=${payload.studentReceiveId}`);
   },
 
-  sendMessage: (payload: SendMessage) =>
-    api.post<utilsResponse<any>>(`send-message`, payload),
+  sendMessage: (payload: SendMessage) => {
+    console.log(payload);
+    return api.post<utilsResponse<any>>(`send-message`, payload);
+  },
 
   contactSeller: (payload: ContactSeller) =>
     api.post<utilsResponse<any>>(`contact-to-seller`, payload),
+
+  contactStudent: (payload: ContactStudent) =>
+    api.post<utilsResponse<any>>(`contact-to-student`, payload),
 };

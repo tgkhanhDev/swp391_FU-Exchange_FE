@@ -39,3 +39,8 @@ export interface updateStatusWishlist {
   active: number
 }
 
+export interface updateQuantityWishlist {
+  wishListId: number
+  quantity: number
+}
+
