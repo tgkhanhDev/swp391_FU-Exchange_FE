@@ -25,6 +25,8 @@ export interface Post {
   quantity: number;
   createDate: string;
   content: string;
+  totalReview: number;
+  totalRating: number;
 }
 
 // export interface Product {
@@ -86,10 +88,10 @@ export interface CreatePostType {
 
 export interface ModeratorGetPostFilter {
   page: number;
-  sellerName ?: string;
-  postTypeId ?: number;
-  campusId ?: number;
-  postStatus ?: number;
+  sellerName?: string;
+  postTypeId?: number;
+  campusId?: number;
+  postStatus?: number;
 }
 
 export interface ModeratorUpdateStatusPostProductFilter {

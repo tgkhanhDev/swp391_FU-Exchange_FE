@@ -7,14 +7,15 @@ import PostList from "../components/templates/productList/PostList";
 import Cart from "../components/templates/Cart/Cart";
 import ProfileTemplate from "../components/templates/Account/BuyerAccount/ProfileTemplate";
 import { LoginStaff } from "../components/templates/Account";
-import OrderTemplate  from "../components/templates/Account/BuyerAccount/OrderTemplate";
+import OrderTemplate from "../components/templates/Account/BuyerAccount/OrderTemplate";
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize, ModeratorAuthorize } from "../page/account";
-import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate } from "../components/templates/Account/Admin";
-import { ManageOrder, ManagePostProduct, ManageReportPost, ProfileTemplateModerator } from "../components/templates/Account/Moderator";
-import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post } from "../components/templates/Account/SellerAccount";
+import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate, AccountManager, SellerAccountManager } from "../components/templates/Account/Admin";
+import { ManageOrder, ManagePostProduct, ManageReportPost, ProfileTemplateModerator, ProfileModeratorUpdate } from "../components/templates/Account/Moderator";
+import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post, ProductDetailById, Wishlist, UpdateWishlist } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 import { Payment } from "../components/templates/Payment";
+import { ShopId } from "../components/templates/shop";
 
 export const router = [
   {
@@ -24,6 +25,10 @@ export const router = [
       {
         element: <ProductList />,
         index: true,
+      },
+      {
+        element: <ShopId />,
+        path: PATH.shop,
       },
       {
         element: <PostList />,
@@ -89,17 +94,37 @@ export const router = [
       {
         element: <Post />,
         path: PATH.post,
-      }
+      },
+      {
+        element: <Wishlist />,
+        path: PATH.wishlist,
+      },
+      {
+        element: <UpdateWishlist />,
+        path: PATH.wishlistUpdate,
+      },
+      {
+        element: <ProductDetailById />,
+        path: PATH.productDetailbyId,
+      },
     ],
   },
 
   {
     element: <AdminAuthorize />,
-    path: PATH.admin, 
+    path: PATH.admin,
     children: [
       {
-        element: <ManageCustomerAccount/>,
+        element: <ManageCustomerAccount />,
         index: true,
+      },
+      {
+        element: <AccountManager />,
+        path: PATH.adminAccManage,
+      },
+      {
+        element: <SellerAccountManager />,
+        path: PATH.adminSellerRequest,
       },
       {
         element: <ManageReportAccount />,
@@ -140,6 +165,10 @@ export const router = [
         element: <ProfileTemplateModerator />,
         path: PATH.profileModerator,
       },
+      {
+        element: <ProfileModeratorUpdate />,
+        path: PATH.profileModeratorUpdate,
+      },
     ],
   },
 
@@ -156,7 +185,7 @@ export const router = [
     path: PATH.registerSeller,
   },
   {
-    element: <LoginStaff/>,
+    element: <LoginStaff />,
     path: PATH.loginStaff,
   },
   {

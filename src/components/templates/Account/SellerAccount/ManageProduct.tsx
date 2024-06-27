@@ -5,6 +5,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useAccount } from "../../../../hooks/useAccount";
 import { useAppDispatch } from "../../../../store";
 import { getProductByStudentIdThunk } from "../../../../store/productManagement/thunk";
+import { getSellerInfoThunk } from "../../../../store/userManagement/thunk";
 import { useProduct } from "../../../../hooks/useProduct";
 import CreatePostModal from "./ui/CreatePostModal";
 
@@ -32,8 +33,31 @@ export const ManageProduct = () => {
     setFilterName(e.target.value);
   };
 
+  const [user, setUser] = useState('');
+
   useEffect(() => {
     dispatch(getProductByStudentIdThunk({ current: itemQuantity, name: filterName, studentId: studentInfo.username }))
+
+    // dispatch(getProductByStudentIdThunk({ current: 5, name: "", studentId: studentInfo.username }))
+    dispatch(
+      getSellerInfoThunk({
+        sellerTO: {
+          RegisteredStudent: {
+            Student: {
+              studentId: studentInfo.username,
+            }
+          }
+        }
+      })
+    )
+      .then((action) => {
+        const { payload } = action;
+        const { data } = payload;
+        setUser(data); // Kết hợp userInfo và data thành một đối tượng mới
+      })
+      .catch((error) => {
+        console.error("Error fetching account information:", error);
+      });
 
     if (!studentInfo) {
       navigate('/login');
@@ -42,6 +66,12 @@ export const ManageProduct = () => {
       navigate('/authorize');
     }
   }, [itemQuantity, filterName])
+
+  useEffect(() => {
+    if (user && (user.sellerTO?.active === 2 || user.sellerTO?.active === 0)) {
+      navigate('/*');
+    }
+  }, [user, navigate]);
 
   return (
     <div>
@@ -90,7 +120,9 @@ export const ManageProduct = () => {
                   <div>{product.price} VNĐ</div>
                 </div>
                 <div className='col-span-1 flex justify-center items-center'>
-                  <Button type="link" className="text-base flex justify-center items-center">Chi tiết</Button>
+                  <Button type="link" className="text-base flex justify-center items-center" onClick={() => {
+                    navigate(`/dashboard/product/${product.productId}`);
+                  }}>Chi tiết</Button>
                 </div>
                 <div className='col-span-2 flex justify-center items-center gap-2'>
                   <CreatePostModal productId={product.productId} />
@@ -98,7 +130,11 @@ export const ManageProduct = () => {
 
                 <div className='col-span-2 flex justify-center items-center gap-2'>
                   <NavLink to={'/dashboard/product/update'}>
-                    <Button type="primary" className="flex justify-center items-center text-lg py-4 px-4">Chỉnh sửa</Button>
+                    <Button type="primary" className="flex justify-center items-center text-lg py-4 px-4"
+                      onClick={() => {
+                        navigate(`/dashboard/product/update/${product.productId}`);
+                      }}
+                    >Chỉnh sửa</Button>
                   </NavLink>
                   <Button type="link" className="flex justify-center items-center text-base">Xóa</Button>
                 </div>
@@ -116,10 +152,6 @@ export const ManageProduct = () => {
                 {posts?.meta?.current}/{posts?.meta?.total}
               </span> */}
             </Button>
-
-
-
-
           </div>
         </div>
       </main>

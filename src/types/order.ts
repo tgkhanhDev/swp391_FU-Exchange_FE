@@ -96,3 +96,8 @@ export interface PostProductInOrder {
   firstVariation: string;
   secondVariation?: string;
 }
+
+export interface orderPostProduct {
+  postProductID: number
+  totalpriceBought: number
+}

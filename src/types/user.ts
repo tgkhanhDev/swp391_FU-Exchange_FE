@@ -1,16 +1,23 @@
-export type Seller = {
+export interface viewSeller {
+  sellerTO: SellerTo
+  deliveryAddress: string
+}
+
+export type SellerTo = {
   sellerId: number;
   // RegisteredStudent: RegisteredStudent;
   student: Student;
   bankingNumber: string;
   bankingName: string;
+  active: number;
 };
 
 export type RegisteredStudent = {
   registeredStudentId: number;
   Student: Student;
   Role: Role;
-  password: string;
+  active: boolean;
+  deliveryAddress: string;
 };
 
 export type Role = {
@@ -79,7 +86,8 @@ export type UpdateBanking = {
 
 export interface Staff {
   roleId: Role;
-  staffName: string;
+  firstName: string;
+  lastName: string;
   gender: string;
   identityCard: string;
   address: string;

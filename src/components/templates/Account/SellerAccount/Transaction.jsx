@@ -1,17 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import { useAccount } from "../../../../hooks/useAccount";
 import { useOrder } from "../../../../hooks/useOrder";
 import { useAppDispatch } from "../../../../store";
 import { getOrderThunk } from "../../../../store/orderManager/thunk";
+import { getSellerInfoThunk } from "../../../../store/userManagement/thunk";
 
 export const Transaction = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { studentInfo } = useAccount();
   const { order } = useOrder();
+  const [user, setUser] = useState('');
 
   useEffect(() => {
+
+    dispatch(
+      getSellerInfoThunk({
+        sellerTO: {
+          RegisteredStudent: {
+            Student: {
+              studentId: studentInfo.username
+            }
+          }
+        }
+      })
+    )
+      .then((action) => {
+        const { payload } = action;
+        const { data } = payload;
+        setUser(data); // Kết hợp userInfo và data thành một đối tượng mới
+      })
+      .catch((error) => {
+        console.error("Error fetching account information:", error);
+      });
+
     if (!studentInfo) {
       navigate('/login');
     }
@@ -23,6 +46,12 @@ export const Transaction = () => {
       dispatch(getOrderThunk({ registeredStudent: studentInfo.registeredStudentId }));
     }
   }, [dispatch])
+
+  useEffect(() => {
+    if (user && (user.sellerTO?.active === 2 || user.sellerTO?.active === 0)) {
+      navigate('/*');
+    }
+  }, [user, navigate]);
 
   return (
     <div>

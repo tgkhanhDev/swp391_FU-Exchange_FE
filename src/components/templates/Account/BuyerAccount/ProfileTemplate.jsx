@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Radio, Button, Modal, Form, Input, Select } from "antd"
 import { useAppDispatch } from "../../../../store";
-import { getAccountInfoThunk, updatePasswordThunk, getSellerInfoThunk, updateBankingThunk } from "../../../../store/userManagement/thunk";
+import { getAccountInfoThunk, updatePasswordThunk, getSellerInfoThunk, updateBankingThunk, updateDeliveryAddressThunk } from "../../../../store/userManagement/thunk";
 import { format } from 'date-fns';
 
 export const ProfileTemplate = () => {
@@ -25,6 +25,8 @@ export const ProfileTemplate = () => {
   const sellIdRef = useRef("");
   const bankNumRef = useRef("");
   const bankNameRef = useRef("");
+
+  const deliverAddressRef = useRef("");
 
   const options = [
     { value: 'VIETCAPITALBANK', label: 'VIETCAPITALBANK' },
@@ -82,9 +84,11 @@ export const ProfileTemplate = () => {
       }
       else {
         dispatch(getSellerInfoThunk({
-          RegisteredStudent: {
-            Student: {
-              studentId: userInfo.username
+          sellerTO: {
+            RegisteredStudent: {
+              Student: {
+                studentId: userInfo.username
+              }
             }
           }
         }))
@@ -124,6 +128,17 @@ export const ProfileTemplate = () => {
     setIsModalBankOpen(false);
   };
 
+  const [isModalDeliverOpen, setIsModalDeliverOpen] = useState(false);
+
+  const showDeliverModal = () => {
+    setIsModalDeliverOpen(true);
+  };
+
+  const handleDeliverCancel = () => {
+    setIsModalDeliverOpen(false);
+  };
+
+
   return (
     <div>
       <main className='py-10'>
@@ -135,12 +150,12 @@ export const ProfileTemplate = () => {
               {/*First Name */}
               <div>
                 <label className='font-semibold'>Họ</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={(user && user.student ? user.student.firstName : '') || (user ? user.firstName : '')}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={(user && user.sellerTO ? user.sellerTO.student.firstName : '') || (user ? user.student?.firstName : '')}></input>
               </div>
               {/*Last Name*/}
               <div>
                 <label className='font-semibold'>Tên</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={(user && user.student ? user.student.lastName : '') || (user ? user.lastName : '')}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={(user && user.sellerTO ? user.sellerTO.student.lastName : '') || (user ? user.student?.lastName : '')}></input>
               </div>
             </div>
 
@@ -149,12 +164,12 @@ export const ProfileTemplate = () => {
               {/*ID Number */}
               <div>
                 <label className='font-semibold'>Số CCCD/CMND</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={(user && user.student ? user.student.identityCard : '') || (user ? user.identityCard : '')}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={(user && user.sellerTO ? user.sellerTO.student.identityCard : '') || (user ? user.student?.identityCard : '')}></input>
               </div>
               {/*Phone Number*/}
               <div>
                 <label className='font-semibold'>Số điện thoại</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={(user && user.student ? user.student.phoneNumber : '') || (user ? user.phoneNumber : '')}></input>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={(user && user.sellerTO ? user.sellerTO.student.phoneNumber : '') || (user ? user.student?.phoneNumber : '')}></input>
               </div>
             </div>
 
@@ -162,14 +177,23 @@ export const ProfileTemplate = () => {
             <div className='pb-10 border-b-2 border-b-[#d0d0d0] mt-10'>
               {/*Địa chỉ chi tiết (Tên đường, số nhà) */}
               <div>
-                <label className='font-semibold' htmlFor='name'>Địa chỉ cụ thể (Số nhà, tên đường)</label>
-                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={(user && user.student ? user.student.address : '') || (user ? user.address : '')}></input>
+                <label className='font-semibold' htmlFor='name'>Địa chỉ nhà</label>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={(user && user.sellerTO ? user.sellerTO.student.address : '') || (user ? user.student?.address : '')}></input>
+              </div>
+
+              <div className="mt-8">
+                <label className='font-semibold' htmlFor='name'>Địa chỉ nhận hàng (Số nhà, tên đường)</label>
+                <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={user.deliveryAddress ? user.deliveryAddress : 'Không có'}></input>
+                <div className="mt-4 flex justify-end">
+                  <Button type="primary" onClick={showDeliverModal}>Cập nhật địa chỉ nhận hàng</Button>
+                </div>
               </div>
             </div>
+            
             <div className='pb-10 border-b-2 border-b-[#d0d0d0] mt-10'>
               <div>
                 <label className='font-semibold mr-40'>Giới tính</label>
-                <Radio.Group value={(user && user.student ? user.student.gender : '') || (user ? user.gender : '')}>
+                <Radio.Group value={(user && user.sellerTO ? user.sellerTO.student.gender : '') || (user ? user.student?.gender : '')}>
                   <Radio value={'Nam'} className='mr-20'>Nam</Radio>
                   <Radio value={'Nữ'} className='mr-20'>Nữ</Radio>
                   <Radio value={'Khác'} className='mr-20'>Khác</Radio>
@@ -177,22 +201,22 @@ export const ProfileTemplate = () => {
               </div>
               <div className='mt-8'>
                 <label className='font-semibold mr-20'>Ngày tháng năm sinh</label>
-                <input className=" border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white" readOnly defaultValue={(user && user.student ? formatDay(user.student.dob) : '') || (user ? formatDay(user.dob) : '')}></input>
+                <input className=" border-slate-400 focus:outline-none border px-4 h-10 rounded-md bg-white" readOnly defaultValue={(user && user.sellerTO ? formatDay(user.sellerTO.student.dob) : '') || (user ? formatDay(user.student?.dob) : '')}></input>
               </div>
             </div>
 
-            {user && user.role === 'Seller' && (
+            {user.sellerTO && user.role === 'Seller' && user.sellerTO?.active !== 2 && (
               <div className="border-b-[#d0d0d0] mt-10 pb-10 border-b-2">
                 <div className='grid grid-cols-2 gap-8'>
                   {/*First Name */}
                   <div>
                     <label className='font-semibold'>Tên ngân hàng</label>
-                    <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={user ? user.bankingName : ''}></input>
+                    <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={user.sellerTO ? user.sellerTO.bankingName : ''}></input>
                   </div>
                   {/*Last Name*/}
                   <div>
                     <label className='font-semibold'>Số tài khoản ngân hàng</label>
-                    <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={user ? user.bankingNumber : ''}></input>
+                    <input className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white' readOnly defaultValue={user ? user.sellerTO.bankingNumber : ''}></input>
                   </div>
                 </div>
                 <div className="flex justify-end mt-5">
@@ -295,6 +319,30 @@ export const ProfileTemplate = () => {
               </Modal>
 
             </div>
+
+            <Modal title={<span className="text-2xl">Cập nhật địa chỉ nhận hàng</span>} open={isModalDeliverOpen} onOk={() => {
+                dispatch(
+                  updateDeliveryAddressThunk({
+                    registeredStudentId: idRef.current,
+                    deliveryAddress: deliverAddressRef.current,
+                  })
+                );
+              }} onCancel={handleDeliverCancel}>
+                <Form>
+                  <Form.Item>
+                    <div className="mt-2">
+                      <div className="mb-2">Địa chỉ nhận hàng mới: </div>
+                      <Input.TextArea
+                        className="h-8 rounded-md px-4"
+                        onChange={(e) => {
+                          deliverAddressRef.current = e.target.value;
+                        }}
+                      />
+                    </div>
+                  </Form.Item>
+                </Form>
+              </Modal>
+
           </div>
         </div>
       </main>

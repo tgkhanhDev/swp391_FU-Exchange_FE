@@ -1,5 +1,5 @@
 import { apiInstance } from "../constants/apiInstance";
-import { PaymentType , Orders, PostProductInOrder  } from "../types/order";
+import { PaymentType, Orders, PostProductInOrder } from "../types/order";
 import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
@@ -11,12 +11,25 @@ const apiOrder = apiInstance({
   baseURL: "http://localhost:8080/student",
 });
 
+const apiB = apiInstance({
+  baseURL: "http://localhost:8080/orderPostProduct",
+});
+
 export const manageOrder = {
-  pay_cod: (payload: PaymentType) => apiPayment.post(`/payment/pay-order`, payload),
-  pay_vnpay: (payload: PaymentType) => apiPayment.post(`/payment/vn-pay`, payload),
-  orderBuy: (payload: Orders ) => apiOrder.get<utilsResponse<Orders[]>>(`order/${payload.registeredStudent}`),
+  pay_cod: (payload: PaymentType) =>
+    apiPayment.post(`/payment/pay-order`, payload),
+  pay_vnpay: (payload: PaymentType) =>
+    apiPayment.post(`/payment/vn-pay`, payload),
+  orderBuy: (payload: Orders) =>
+    apiOrder.get<utilsResponse<Orders[]>>(`order/${payload.registeredStudent}`),
   orderBuyDetail: (payload: Orders) => {
-    return apiOrder.get<utilsResponse<PostProductInOrder[]>>(`order-detail/${payload.registeredStudent}/${payload.orderId}?orderStatusId=${payload.orderStatus.orderStatusId}`);
+    return apiOrder.get<utilsResponse<PostProductInOrder[]>>(
+      `order-detail/${payload.registeredStudent}/${payload.orderId}?orderStatusId=${payload.orderStatus.orderStatusId}`
+    );
+  },
+
+  getOrderPostProduct: (payload: number) => {
+    return apiB.get<utilsResponse<any>>(`${payload}`);
   },
   //registerStudentId/orderId
 };

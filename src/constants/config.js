@@ -8,17 +8,25 @@ export const PATH = {
   authorize: "/authorize",
   order: "/authorize/order",
   cart: "/cart",
-  review: "/review",
+  review: "/review/:orderId/:postProductId",
   payment: "/payment",
+  shop: "/shop/:sellerId",
+
   dashboard: "/dashboard",
   manageProduct: "/dashboard/product",
-  updateProduct: "/dashboard/product/update",
+  updateProduct: "/dashboard/product/update/:productId",
   createProduct: "/dashboard/product/create",
   transaction: "/dashboard/transaction",
+  wishlist: "/dashboard/wishlist",
+  wishlistUpdate: "/dashboard/wishlist/:postProductId",
   post: "/dashboard/post",
+  productDetailbyId: "/dashboard/product/:productId",
 
   loginStaff: "/loginStaff",
+
   admin: "/admin",
+  adminAccManage: "/admin/accountManagement",
+  adminSellerRequest: "/admin/sellerRequestAcc",
   manageStaffAcc: "/admin/staffManage",
   manageReportAcc: "/admin/reportAccManage",
   profileAdmin: "/admin/profile",
@@ -28,4 +36,5 @@ export const PATH = {
   managePost: "/moderator/post",
   manageReportPost: "/moderator/reportPost",
   profileModerator: "/moderator/profile",
+  profileModeratorUpdate: "/moderator/profile/update",
 };

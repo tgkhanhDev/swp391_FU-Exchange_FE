@@ -6,11 +6,12 @@ import {
   RegisterStudentReq,
   RegisteredStudent,
   UpdatePassword,
-  Seller,
+  viewSeller,
   UpdateBanking,
   LoginStaffType,
   Staff,
 } from "../../types/user";
+import { filterGetCustomerAccount } from "../../types/account"
 import { managePost } from "../../services/managePost";
 import { PostFilter_API } from "../../types/post";
 import { manageUsers } from "../../services/manageUser";
@@ -87,6 +88,30 @@ export const getAccountInfoThunk = createAsyncThunk(
   }
 );
 
+export const getAccountInfoTypeThunk = createAsyncThunk(
+  "getAccountTypeInfo",
+  async (payload: number | null, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getAccountTypeInfo(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getSellerInfoBySellerIdThunk = createAsyncThunk(
+  "getSellerInfoBySellerIdThunk",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getSellerInfoBySellerId(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const updatePasswordThunk = createAsyncThunk(
   "updatePassword",
   async (payload: UpdatePassword, { rejectWithValue }) => {
@@ -101,7 +126,7 @@ export const updatePasswordThunk = createAsyncThunk(
 
 export const getSellerInfoThunk = createAsyncThunk(
   "getSellerInfo",
-  async (payload: Seller, { rejectWithValue }) => {
+  async (payload: viewSeller, { rejectWithValue }) => {
     try {
       const data = await manageUsers.getSellerInfo(payload);
       return data.data;
@@ -141,6 +166,30 @@ export const getStaffInfoThunk = createAsyncThunk(
     try {
       const data = await manageUsers.getStaffInfo(payload);
       return data.data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const updateDeliveryAddressThunk = createAsyncThunk(
+  "updateDeliveryAddress",
+  async (payload: RegisteredStudent, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.updateDeliveryAddress(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getAllRegisteredStudentThunk = createAsyncThunk(
+  "getAllRegisteredStudent",
+  async (payload: filterGetCustomerAccount, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getAllRegisteredStudent(payload);
+      return data.data;
     } catch (error) {
       return rejectWithValue(error);
     }

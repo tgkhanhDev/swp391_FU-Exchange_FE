@@ -4,7 +4,7 @@ import { useAccount } from "../../../../hooks/useAccount";
 import { Radio, Button, DatePicker } from "antd";
 import { useAppDispatch } from "../../../../store";
 import { getStaffInfoThunk } from "../../../../store/userManagement/thunk";
-import { updateProfileThunk } from "../../../../store/accountManager/thunk";
+import { updateAProfileThunk } from "../../../../store/accountManager/thunk";
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
 
@@ -20,7 +20,7 @@ export const ProfileAdminUpdate = () => {
   const [identityCard, setIdentityCard] = useState(staffInfor?.identityCard || "");
   const [phoneNumber, setPhoneNumber] = useState(staffInfor?.phoneNumber || "");
   const [address, setAddress] = useState(staffInfor?.address || "");
-  const [gender, setGender] = useState(staffInfor?.gender || "");
+  const [gender, setGender] = useState();
   const [selectedDate, setSelectedDate] = useState(staffInfor?.dob ? new Date(staffInfor.dob) : null);
 
   // Initialize refs with staffInfor values
@@ -63,7 +63,6 @@ export const ProfileAdminUpdate = () => {
             setIdentityCard(payload.identityCard || "");
             setAddress(payload.address || "");
             setPhoneNumber(payload.phoneNumber || "");
-            setGender(payload.gender || "");
             setSelectedDate(payload.dob ? new Date(payload.dob) : null);
 
             // Update refs if the user has not changed the input fields
@@ -83,7 +82,7 @@ export const ProfileAdminUpdate = () => {
 
   const handleUpdate = () => {
     dispatch(
-      updateProfileThunk({
+      updateAProfileThunk({
         staffId: staffIdRef.current,
         firstName: firstNameRef.current,
         lastName: lastNameRef.current,
@@ -105,6 +104,7 @@ export const ProfileAdminUpdate = () => {
             <label className='font-semibold'>Họ</label>
             <input
               className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white'
+              placeholder={firstName}
               defaultValue={staffInfor?.firstName}
               onChange={(e) => {
                 setFirstName(e.target.value);
@@ -116,6 +116,7 @@ export const ProfileAdminUpdate = () => {
             <label className='font-semibold'>Tên</label>
             <input
               className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white'
+              placeholder={lastName}
               defaultValue={staffInfor?.lastName}
               onChange={(e) => {
                 setLastName(e.target.value);
@@ -130,6 +131,7 @@ export const ProfileAdminUpdate = () => {
             <label className='font-semibold'>Số CCCD/CMND</label>
             <input
               className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white'
+              placeholder={identityCard}
               defaultValue={staffInfor?.identityCard}
               onChange={(e) => {
                 setIdentityCard(e.target.value);
@@ -141,6 +143,7 @@ export const ProfileAdminUpdate = () => {
             <label className='font-semibold'>Số điện thoại</label>
             <input
               className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white'
+              placeholder={phoneNumber}
               defaultValue={staffInfor?.phoneNumber}
               onChange={(e) => {
                 setPhoneNumber(e.target.value);
@@ -155,6 +158,7 @@ export const ProfileAdminUpdate = () => {
             <label className='font-semibold'>Địa chỉ cụ thể (Số nhà, tên đường)</label>
             <input
               className='border-slate-400 focus:outline-none border px-4 h-10 w-full rounded-md mt-2 bg-white'
+              placeholder={address}
               defaultValue={staffInfor?.address}
               onChange={(e) => {
                 setAddress(e.target.value);
@@ -169,7 +173,6 @@ export const ProfileAdminUpdate = () => {
             <label className='font-semibold mr-40'>Giới tính</label>
             <Radio.Group
               onChange={handleGenderChange}
-              value={gender}
             >
               <Radio value='Nam'>Nam</Radio>
               <Radio value='Nữ'>Nữ</Radio>
@@ -179,7 +182,6 @@ export const ProfileAdminUpdate = () => {
           <div className="mt-8">
             <label className="font-semibold mr-20">Ngày tháng năm sinh</label>
             <DatePicker
-              value={selectedDate ? dayjs(selectedDate) : null}
               onChange={handleDateChange}
               className="border-slate-400 w-60 focus:outline-none border px-4 h-10 rounded-md bg-white"
               placeholder="Chọn ngày tháng năm sinh"
