@@ -24,7 +24,7 @@ export const manageOrder = {
     apiOrder.get<utilsResponse<Orders[]>>(`order/${payload.registeredStudent}`),
   orderBuyDetail: (payload: Orders) => {
     return apiOrder.get<utilsResponse<PostProductInOrder[]>>(
-      `order-detail/${payload.registeredStudent}/${payload.orderId}?orderStatusId=${payload.orderStatus.orderStatusId}`
+      `order-detail/${payload.registeredStudent}/${payload.orderId}`
     );
   },
 

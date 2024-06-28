@@ -203,6 +203,12 @@ export const OrderTemplate = () => {
   const contentRef = useRef("")
   const [transitionKey, setTransitionKey] = useState(Date.now());
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      reloadBoxChat();
+    }
+  };
+
   const reloadBoxChat = () => {
     if (chatDetail && chatroom) {
       dispatch(
@@ -247,7 +253,7 @@ export const OrderTemplate = () => {
 
                 <div className="">
                   <div className="text-lg font-bold">Tổng đơn: </div>
-                  <div>{item.totalPrice.toLocaleString('en-US')} VNĐ</div>
+                  <div>{item.totalPrice?.toLocaleString('en-US')} VNĐ</div>
                 </div>
 
                 <div className="">
@@ -427,7 +433,8 @@ export const OrderTemplate = () => {
                 <div className="flex justify-between items-center border-t-2 border-t-slate-300 py-2 px-4">
                   <input type="text" placeholder="Gửi gì đó đi..." className="w-full focus:outline-none pr-3" onChange={(e) => {
                     contentRef.current = e.target.value;
-                  }} />
+                  }}
+                    onKeyPress={handleKeyPress} />
                   <button onClick={reloadBoxChat}><SendOutlined className="text-[var(--color-primary)]" /></button>
                 </div>
               )}

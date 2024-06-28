@@ -24,7 +24,7 @@ export const ProfileTemplate = () => {
 
   const sellIdRef = useRef("");
   const bankNumRef = useRef("");
-  const bankNameRef = useRef("");
+  const bankNameRef = useRef(""); 
 
   const deliverAddressRef = useRef("");
 
@@ -97,8 +97,8 @@ export const ProfileTemplate = () => {
             const { data } = payload;
             const info = { ...userInfo, ...data };
             setUser(info); // Kết hợp userInfo và data thành một đối tượng mới
-            if (data && data.sellerId) {
-              sellIdRef.current = data.sellerId;
+            if (data && data.sellerTO?.sellerId) {
+              sellIdRef.current = data.sellerTO?.sellerId;
             }
           })
           .catch((error) => {

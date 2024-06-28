@@ -68,7 +68,7 @@ export interface ProductPaymentType {
     detail: ProductDetail;
     image: Image[];
     category: Category;
-    price: string;
+    price: number;
     productStatus: boolean;
   };
   variation: {
