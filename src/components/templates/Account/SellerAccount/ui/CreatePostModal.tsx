@@ -62,8 +62,8 @@ export const CreatePostModal: React.FC<postProps> = ({ productId }) => {
 
     return (
         <>
-            <Button type="primary" onClick={showLoading}>
-                Đăng bài {productId}
+            <Button className='rounded' type="primary" onClick={showLoading}>
+                Đăng bài
             </Button>
             <Modal
                 title={<p>Loading Modal</p>}

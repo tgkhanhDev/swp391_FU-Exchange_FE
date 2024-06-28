@@ -33,7 +33,7 @@ const SidebarCustomer = () => {
       .catch((error) => {
         console.error("Error fetching account information:", error);
       });
-  })
+  }, [])
 
   return (
     <nav className='w-64 py-10 sticky top-24 max-h-[calc(100vh)] overflow-auto'>

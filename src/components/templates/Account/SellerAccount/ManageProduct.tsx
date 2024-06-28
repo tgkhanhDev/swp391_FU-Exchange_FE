@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, NavLink } from 'react-router-dom'
-import { Button, Input } from "antd"
+import { Button, Input, Modal } from "antd"
 import { PlusOutlined } from '@ant-design/icons';
 import { useAccount } from "../../../../hooks/useAccount";
 import { useAppDispatch } from "../../../../store";
-import { getProductByStudentIdThunk } from "../../../../store/productManagement/thunk";
+import { deleteProductWarehouseByIdThunk, getProductByStudentIdThunk } from "../../../../store/productManagement/thunk";
 import { getSellerInfoThunk } from "../../../../store/userManagement/thunk";
 import { useProduct } from "../../../../hooks/useProduct";
 import CreatePostModal from "./ui/CreatePostModal";
+import { toast } from "react-toastify";
 
 export const ManageProduct = () => {
   const navigate = useNavigate();
@@ -16,7 +17,8 @@ export const ManageProduct = () => {
   const dispatch = useAppDispatch();
   const [itemQuantity, setItemQuantity] = useState<number>(6);
   const [filterName, setFilterName] = useState<string>("");
-
+  //DetailModal
+  const [openDetail, setOpenDetail] = React.useState<boolean>(false);
 
   const loadMorePost = () => {
     let newItemQuantity: number;
@@ -29,14 +31,18 @@ export const ManageProduct = () => {
   };
 
   const handleSearch = (e) => {
-    console.log("âdasd:::", e.target.value);
     setFilterName(e.target.value);
   };
+
+  const fetchProductWareHouse = () => {
+    dispatch(getProductByStudentIdThunk({ current: itemQuantity, name: filterName, studentId: studentInfo.username }))
+  }
 
   const [user, setUser] = useState('');
 
   useEffect(() => {
-    dispatch(getProductByStudentIdThunk({ current: itemQuantity, name: filterName, studentId: studentInfo.username }))
+
+    fetchProductWareHouse()
 
     // dispatch(getProductByStudentIdThunk({ current: 5, name: "", studentId: studentInfo.username }))
     dispatch(
@@ -104,42 +110,54 @@ export const ManageProduct = () => {
             {/* Card */}
 
             {wareHouse.map(product => {
-              return <div className='bg-white rounded-md w-full grid grid-cols-12 gap-2 mb-2 py-3'>
+              if (product.productStatus) {
+                return <div className='bg-white rounded-md w-full grid grid-cols-12 gap-2 mb-2 py-3'>
 
-                <div className='col-span-1 flex justify-center items-center'>
-                  <img src={product.image[0].imageUrl} className='h-24 w-24 border-2 ml-4'></img>
-                </div>
+                  <div className='col-span-1 flex justify-center items-center'>
+                    <img src={product.image[0].imageUrl} className='h-24 w-24 border-2 ml-4'></img>
+                  </div>
 
-                <div className='col-span-2 flex justify-center items-center'>
-                  <div>{product.detail.productName}</div>
-                </div>
-                <div className='col-span-2 flex justify-center items-center'>
-                  <div>{product.category.categoryName}</div>
-                </div>
-                <div className='col-span-2 flex justify-center items-center'>
-                  <div>{product.price} VNĐ</div>
-                </div>
-                <div className='col-span-1 flex justify-center items-center'>
-                  <Button type="link" className="text-base flex justify-center items-center" onClick={() => {
-                    navigate(`/dashboard/product/${product.productId}`);
-                  }}>Chi tiết</Button>
-                </div>
-                <div className='col-span-2 flex justify-center items-center gap-2'>
-                  <CreatePostModal productId={product.productId} />
-                </div>
+                  <div className='col-span-2 flex justify-center items-center'>
+                    <div>{product.detail.productName}</div>
+                  </div>
+                  <div className='col-span-2 flex justify-center items-center'>
+                    <div>{product.category.categoryName}</div>
+                  </div>
+                  <div className='col-span-2 flex justify-center items-center'>
+                    <div>{product.price} VNĐ</div>
+                  </div>
+                  <div className='col-span-1 flex justify-center items-center'>
+                    <Button type="link" className="text-base flex justify-center items-center" onClick={() => {
+                      navigate(`/dashboard/product/${product.productId}`);
+                    }}>Chi tiết</Button>
+                  </div>
+                  <div className='col-span-2 flex justify-center items-center gap-2'>
+                    <CreatePostModal productId={product.productId} />
+                  </div>
 
-                <div className='col-span-2 flex justify-center items-center gap-2'>
-                  <NavLink to={'/dashboard/product/update'}>
-                    <Button type="primary" className="flex justify-center items-center text-lg py-4 px-4"
+                  <div className='col-span-2 flex justify-center items-center gap-2'>
+                    {/* <NavLink to={'/dashboard/product/update'}>
+                      <Button type="primary" className="flex justify-center items-center text-lg py-4 px-4 rounded"
+                        onClick={() => {
+                          navigate(`/dashboard/product/update/${product.productId}`);
+                        }}
+                      >Chỉnh sửa</Button>
+                    </NavLink> */}
+                    <Button type="link" className="flex justify-center items-center text-base rounded"
                       onClick={() => {
-                        navigate(`/dashboard/product/update/${product.productId}`);
-                      }}
-                    >Chỉnh sửa</Button>
-                  </NavLink>
-                  <Button type="link" className="flex justify-center items-center text-base">Xóa</Button>
-                </div>
+                        dispatch(deleteProductWarehouseByIdThunk(product.productId)).then((data) => {
+                          if (data.payload.status == 400) {
+                            toast.error(data.payload.content)
+                          } else {
+                            toast.success(data.payload.content)
+                            fetchProductWareHouse()
+                          }
+                        })
+                      }}>Xóa</Button>
+                  </div>
 
-              </div>
+                </div>
+              } else { return null }
             })}
             <Button
               onClick={loadMorePost}
@@ -153,6 +171,21 @@ export const ManageProduct = () => {
               </span> */}
             </Button>
           </div>
+          {/* <Modal
+            title={<p>Loading Modal</p>}
+            footer={
+              <Button type="primary">
+                Reload
+              </Button>
+            }
+            // loading={loading}
+            open={openDetail}
+            onCancel={() => setOpenDetail(false)}
+          >
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+          </Modal> */}
         </div>
       </main>
     </div>

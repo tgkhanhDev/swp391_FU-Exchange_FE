@@ -89,7 +89,6 @@ export const CreateProduct = () => {
   };
 
   useEffect(() => {
-
     dispatch(
       getSellerInfoThunk({
         sellerTO: {
@@ -115,13 +114,13 @@ export const CreateProduct = () => {
     } else if (studentInfo.role !== "Seller") {
       navigate('/authorize');
     }
-  }, [navigate, studentInfo]);
+  }, []);
 
-  useEffect(() => {
-    if (user && (user.sellerTO?.active === 2 || user.sellerTO?.active === 0)) {
-      navigate('/*');
-    }
-  }, [user, navigate]);
+  // useEffect(() => {
+  //   if (user && (user.sellerTO?.active === 2 || user.sellerTO?.active === 0)) {
+  //     navigate('/*');
+  //   }
+  // }, [user, navigate]);
 
   const handleAddGroup = () => {
     setGroups([...groups, { variationName: '', categories: [''] }]);
@@ -172,8 +171,11 @@ export const CreateProduct = () => {
       values.productImageRequestsList.push({imageUrl: imgUrl})
     })
 
-    console.log('Success:', values);
-    dispatch(createProductThunk(values));
+    // console.log('Success:', values);
+    dispatch(createProductThunk(values)).then(()=> {
+      navigate(-1)
+      toast.success("Tạo sản phẩm thành công!")
+    });
   };
 
   const onFinishFailed: FormProps<createProductType>['onFinishFailed'] = (errorInfo) => {
@@ -462,7 +464,7 @@ export const CreateProduct = () => {
             </div>
 
             <div className="flex items-center justify-end mt-5 gap-x-5">
-              <Button className="px-5 py-2 flex justify-center items-center text-lg">Hủy</Button>
+              <Button onClick={()=>{navigate(-1)}} className="px-5 py-2 flex justify-center items-center text-lg">Hủy</Button>
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                 <Button htmlType="submit" type="primary" className="px-5 py-2 flex justify-center items-center text-lg">Tạo sản phẩm</Button>
               </Form.Item>

@@ -12,12 +12,12 @@ export const SidebarModerator = () => {
       <div className="text-lg text-white pt-[20px]">
         <div className="mt-8">
 
-          <NavLink to={'/moderator'}>
+          {/* <NavLink to={'/moderator'}>
             <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname === '/moderator' ? 'bg-[var(--color-primary)]' : ''} `}>
               <ShoppingCartOutlined className="text-2xl" />
               <div>Manage Order</div>
             </div>
-          </NavLink>
+          </NavLink> */}
 
           <NavLink to={'/moderator/post'}>
             <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname === '/moderator/post' ? 'bg-[var(--color-primary)]' : ''} `}>

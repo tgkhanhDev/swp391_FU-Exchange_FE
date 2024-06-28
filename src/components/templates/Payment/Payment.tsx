@@ -75,6 +75,9 @@ export const Payment = () => {
       paymentMethodId: 1,
       description: (document.getElementById("description") as HTMLInputElement).value,
     }
+
+    // console.log("payment:::", payment);
+    
     dispatch(postPayCodThunk(payment))
   }
 
@@ -105,6 +108,8 @@ export const Payment = () => {
       paymentMethodId: 2,
       description: (document.getElementById("description") as HTMLInputElement).value
     }
+    // console.log("payment:::", payment);
+
     dispatch(postPayVnPayThunk(payment)).then((response) => {
       window.location.href = response.payload.paymentUrl;
     });

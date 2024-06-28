@@ -11,7 +11,7 @@ import {
   LoginStaffType,
   Staff,
 } from "../../types/user";
-import { filterGetCustomerAccount } from "../../types/account"
+import { deleteSellerPostProductFilter, filterGetCustomerAccount } from "../../types/account";
 import { managePost } from "../../services/managePost";
 import { PostFilter_API } from "../../types/post";
 import { manageUsers } from "../../services/manageUser";
@@ -189,6 +189,21 @@ export const getAllRegisteredStudentThunk = createAsyncThunk(
   async (payload: filterGetCustomerAccount, { rejectWithValue }) => {
     try {
       const data = await manageUsers.getAllRegisteredStudent(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteSellerPostProductThunk = createAsyncThunk(
+  "getAllRegisteredStudent",
+  async (
+    payload: deleteSellerPostProductFilter,
+    { rejectWithValue }
+  ) => {
+    try {
+      const data = await manageUsers.deleteSellerPostProduct(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

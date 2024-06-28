@@ -106,7 +106,7 @@ export const ProfileTemplate = () => {
           });
       }
     }
-  }, [dispatch]);
+  }, []);
 
   const [isModalPassOpen, setIsModalPassOpen] = useState(false);
 

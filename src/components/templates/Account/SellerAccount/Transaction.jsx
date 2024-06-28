@@ -45,7 +45,7 @@ export const Transaction = () => {
     if (studentInfo.registeredStudentId) {
       dispatch(getOrderThunk({ registeredStudent: studentInfo.registeredStudentId }));
     }
-  }, [dispatch])
+  }, [])
 
   useEffect(() => {
     if (user && (user.sellerTO?.active === 2 || user.sellerTO?.active === 0)) {

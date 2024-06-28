@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { LineChartOutlined, SwapOutlined, ProductOutlined, EditOutlined, RightOutlined, LogoutOutlined, InboxOutlined } from '@ant-design/icons';
 

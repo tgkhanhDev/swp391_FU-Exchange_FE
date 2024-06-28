@@ -49,3 +49,15 @@ export const getProductByStudentIdThunk = createAsyncThunk(
     }
   }
 );
+
+export const deleteProductWarehouseByIdThunk = createAsyncThunk(
+  "/delete-products-by-id",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const data = await manageProduct.deleteProductId(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

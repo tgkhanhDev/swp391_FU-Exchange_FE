@@ -5,7 +5,7 @@ export interface viewSeller {
 
 export type SellerTo = {
   sellerId: number;
-  // RegisteredStudent: RegisteredStudent;
+  RegisteredStudent: RegisteredStudent;
   student: Student;
   bankingNumber: string;
   bankingName: string;

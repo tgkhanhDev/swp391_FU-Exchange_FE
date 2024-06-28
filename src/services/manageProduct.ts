@@ -14,4 +14,5 @@ export const manageProduct = {
     api.post<utilsResponse<any>>(`/create-product`, payload),
   getProductByStudentId: (payload: filterGetProductById) =>
     api.get<utilsResponse<any>>(`/${payload.current}?name=${payload.name}&studentId=${payload.studentId}`),
+  deleteProductId: (payload: number) => api.put<any>(`/delete-product`, payload),
 };

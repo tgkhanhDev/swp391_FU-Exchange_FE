@@ -41,7 +41,6 @@ export const manageProductSlice = createSlice({
       getProductByVariationDetailThunk.fulfilled,
       (state, { payload }) => {
         state.productView.push(payload.data);
-        // console.log("payload.data:::", payload.data);
       }
     ),
       builder.addCase(getProductByIdThunk.fulfilled, (state, { payload }) => {
@@ -53,8 +52,6 @@ export const manageProductSlice = createSlice({
       });
       builder.addCase(getProductByStudentIdThunk.fulfilled, (state, { payload }) => {
         state.wareHouse = payload.data
-        console.log("payload.data:", state.wareHouse);
-        
       });
   },
 });

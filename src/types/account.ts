@@ -82,3 +82,7 @@ export type filterGetCustomerAccount = {
   current: number,
   name?: string,
 }
+export type deleteSellerPostProductFilter = {
+  postProductId: number;
+  postStatusId: number;
+};

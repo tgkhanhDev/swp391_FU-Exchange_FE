@@ -13,7 +13,7 @@ export const ManageCustomerAccount = () => {
     else if (staffInfor.role !== "Administrator") {
       navigate('/moderator');
     }
-  })
+  }, [])
 
   return (
     <div className="flex justify-center items-center h-full gap-x-20">
