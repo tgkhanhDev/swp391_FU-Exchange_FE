@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Select, Popover } from "antd";
+import { Select, Popover, Button } from "antd";
 import { UserOutlined, ShrinkOutlined, EllipsisOutlined, SendOutlined, PhoneOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import './styles.css';
 import { CSSTransition } from "react-transition-group";
 import { useAppDispatch } from "../../../../store";
-import { getOrderThunk, getOrderDetailThunk } from "../../../../store/orderManager/thunk";
+import { getOrderThunk, getOrderDetailThunk, updateStatusOrderThunk } from "../../../../store/orderManager/thunk";
 import { getPostByIdThunk } from "../../../../store/postManagement/thunk";
 import { viewChatRoom, chatRoomStS, sendMessage, contactSeller } from "../../../../store/chatManager/thunk"
 import { getAccountInfoThunk } from "../../../../store/userManagement/thunk"
@@ -106,7 +106,6 @@ export const OrderTemplate = () => {
       const response = await dispatch(getOrderDetailThunk({
         registeredStudent: item.registeredStudent,
         orderId: item.orderId,
-        orderStatus: { orderStatusId: item.orderStatus.orderStatusId }
       }));
 
       const orderDetail = response.payload;
@@ -203,6 +202,12 @@ export const OrderTemplate = () => {
   const contentRef = useRef("")
   const [transitionKey, setTransitionKey] = useState(Date.now());
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      reloadBoxChat();
+    }
+  };
+
   const reloadBoxChat = () => {
     if (chatDetail && chatroom) {
       dispatch(
@@ -218,6 +223,10 @@ export const OrderTemplate = () => {
       setTransitionKey(Date.now()); // Assuming transitionKey is a state variable in your component
     }
   };
+
+  const handleChangeStatus = (orderId, orderStatusId) => {
+    dispatch(updateStatusOrderThunk({ orderId: orderId, orderStatusId: orderStatusId }))
+  }
 
   return (
     <div>
@@ -247,7 +256,7 @@ export const OrderTemplate = () => {
 
                 <div className="">
                   <div className="text-lg font-bold">Tổng đơn: </div>
-                  <div>{item.totalPrice} VNĐ</div>
+                  <div>{item.totalPrice?.toLocaleString('en-US')} VNĐ</div>
                 </div>
 
                 <div className="">
@@ -290,11 +299,15 @@ export const OrderTemplate = () => {
                       <div className="mt-2">Số lượng: {detail.quantity}</div>
                     </div>
                     <div className="flex justify-between">
-                      <button className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold"
-                        onClick={() => {
-                          navigate(`/detail/${detail.postProduct.postProductId}`);
-                        }}
-                      >Mua lại</button>
+                      {postDetails[detail.postProduct.postProductId]?.product?.image ? (
+                        <button className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold"
+                          onClick={() => {
+                            navigate(`/detail/${detail.postProduct.postProductId}`);
+                          }}
+                        >Mua lại</button>
+                      ) : (
+                        <button className="px-14 py-3 bg-gray-200 text-gray-500 font-bold mr-5">Bài đăng đã bị xóa hoặc vô hiệu hóa</button>
+                      )}
                       <button className="px-8 py-3 border-2 border-current bg-white text-[var(--color-primary)] font-bold" onClick={() => handleChat(postDetails[detail.postProduct.postProductId].product.seller.sellerId, detail.postProduct.product.detail.productName)}>Liên hệ người bán</button>
                     </div>
                   </div>
@@ -302,6 +315,21 @@ export const OrderTemplate = () => {
                     <NavLink to={`/review/${item.orderId}/${detail.postProduct.postProductId}`}>
                       <div className="text-[var(--color-primary)] underline">Đánh giá ngay</div>
                     </NavLink>
+                    {item.orderStatus.orderStatusId === 1 && (
+                      <div>
+                        <Button type="primary" className="flex justify-center items-center px-2 py-4 text-base" onClick={() => handleChangeStatus(item.orderId, 4)}>
+                          Hủy đơn
+                        </Button>
+                      </div>
+                    )}
+
+                    {item.orderStatus.orderStatusId === 3 && (
+                      <div>
+                        <Button type="primary" className="flex justify-center items-center px-2 py-4 text-base" onClick={() => handleChangeStatus(item.orderId, 5)}>
+                          Đã nhận hàng
+                        </Button>
+                      </div>
+                    )}
                     <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: {detail.postProduct.priceBought.toLocaleString('en-US')}VNĐ</div>
                   </div>
                 </div>
@@ -427,7 +455,8 @@ export const OrderTemplate = () => {
                 <div className="flex justify-between items-center border-t-2 border-t-slate-300 py-2 px-4">
                   <input type="text" placeholder="Gửi gì đó đi..." className="w-full focus:outline-none pr-3" onChange={(e) => {
                     contentRef.current = e.target.value;
-                  }} />
+                  }}
+                    onKeyPress={handleKeyPress} />
                   <button onClick={reloadBoxChat}><SendOutlined className="text-[var(--color-primary)]" /></button>
                 </div>
               )}

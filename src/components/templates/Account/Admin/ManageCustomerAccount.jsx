@@ -23,6 +23,9 @@ export const ManageCustomerAccount = () => {
       <button className="m-2 p-2 bg-[var(--color-primary)] text-white rounded hover:bg-white hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] hover:border duration-200 text-lg px-2 py-2" onClick={() => {
         navigate(`/admin/sellerRequestAcc`);
       }}>Duyệt tài khoản bán hàng</button>
+      <button className="m-2 p-2 bg-[var(--color-primary)] text-white rounded hover:bg-white hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] hover:border duration-200 text-lg px-2 py-2" onClick={() => {
+        navigate(`/admin/sellerManagement`);
+      }}>Quản lí người bán</button>
     </div>
   )
 }

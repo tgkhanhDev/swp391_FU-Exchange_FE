@@ -12,7 +12,7 @@ import { getProductByIdThunk, getProductByVariationDetailThunk } from "../../../
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { setProductQuantity, setTest } from "../../../store/productManagement/slice"
 import { addToCartThunk } from "../../../store/cartManager/thunk";
-import { getAccountInfoTypeThunk } from "../../../store/userManagement/thunk";
+import { getAccountInfoTypeThunk, getSellerInfoThunk } from "../../../store/userManagement/thunk";
 import { contactSeller } from "../../../store/chatManager/thunk";
 import { useWishlist } from "../../../hooks/useWishlist"
 import { viewWishlistThunk, createWishlistThunk, updateQuantityWishlistThunk, deleteWishlistThunk } from "../../../store/wishlistManager/thunk"
@@ -45,6 +45,7 @@ export const PostDetail: React.FC<PostType> = () => {
   const { view } = useWishlist();
   const { studentInfo } = useAccount();
   const { review } = useReview();
+  const [userOwn, setUserOwn] = useState();
 
   const handleInputChange = (event) => {
     const value = parseInt(event.target.value);
@@ -57,14 +58,52 @@ export const PostDetail: React.FC<PostType> = () => {
     setShowTable(prevShowTable => !prevShowTable)
   }
 
+  if (studentInfo) {
+    useEffect(() => {
+      dispatch(
+        getSellerInfoThunk({
+          sellerTO: {
+            RegisteredStudent: {
+              Student: {
+                studentId: studentInfo.username
+              }
+            }
+          }
+        })
+      )
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          setUserOwn(data); // Kết hợp userInfo và data thành một đối tượng mới
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
+    }, [])
+  }
 
   const handleCreateWish = () => {
-    dispatch(createWishlistThunk({
-      registeredStudentId: studentInfo.registeredStudentId,
-      postProductId: parseInt(postProductId),
-      quantity: quantity
-    }));
-  }
+    if (!studentInfo) {
+      toast.error("Tặng thất bại! Bạn cần phải đăng nhập trước.");
+      return;
+    }
+
+    if (userOwn?.sellerTO?.sellerId !== postDetail?.product?.seller?.sellerId) {
+      dispatch(createWishlistThunk({
+        registeredStudentId: studentInfo.registeredStudentId,
+        postProductId: parseInt(postProductId),
+        quantity: quantity
+      }))
+        .then(() => {
+          toast.success("Gửi yêu cầu Tặng thành công!");
+        })
+        .catch(() => {
+          toast.error("Tặng thất bại!");
+        });
+    } else {
+      toast.error("Không thể gửi yêu cầu cho chính mình!");
+    }
+  };
 
   useEffect(() => {
     if (postProductId) {
@@ -125,22 +164,27 @@ export const PostDetail: React.FC<PostType> = () => {
   const contentCreate = `Tôi muốn thực hiện trao đổi đối với sản phẩm này: ${postDetail?.product.detail.productName}`
 
   const handleChat = () => {
-    dispatch(contactSeller({
-      registeredStudentId: studentInfo?.registeredStudentId,
-      sellerId: postDetail?.product?.seller?.sellerId,
-      content: contentCreate
-    }))
-      .then((action) => {
-        const { payload } = action;
-        if (payload.status === 200) {
-          toast.success(`Gửi yêu cầu thành công! Liên hệ ${postDetail?.product.seller?.student.firstName} ${postDetail?.product.seller?.student.lastName} để biết thêm chi tiết nhé!`);
-        } else {
-          toast.error(`Gửi Yêu cầu trao đổi thất bại!`);
-        }
-      })
-      .catch((error) => {
-        toast.error("Error contacting seller. Please try again later.");
-      });
+    if (userOwn?.sellerTO?.sellerId !== postDetail?.product?.seller?.sellerId) {
+      dispatch(contactSeller({
+        registeredStudentId: studentInfo?.registeredStudentId,
+        sellerId: postDetail?.product?.seller?.sellerId,
+        content: contentCreate
+      }))
+        .then((action) => {
+          const { payload } = action;
+          if (payload.status === 200) {
+            toast.success(`Gửi yêu cầu thành công! Liên hệ ${postDetail?.product.seller?.student.firstName} ${postDetail?.product.seller?.student.lastName} để biết thêm chi tiết nhé!`);
+          } else {
+            toast.error(`Gửi Yêu cầu trao đổi thất bại!`);
+          }
+        })
+        .catch((error) => {
+          toast.error("Error contacting seller. Please try again later.");
+        });
+    }
+    else {
+      toast.error(`Không thể gửi yêu cầu cho chính mình!`)
+    }
   };
 
   const StarRating = ({ rating }) => {
@@ -276,45 +320,51 @@ export const PostDetail: React.FC<PostType> = () => {
                 const userInfo = localStorage.getItem("userInfo");
                 const student = userInfo ? JSON.parse(userInfo) : null;
                 if (!student) {
-                  alert("Sign in to Continue?")
+                  alert("Sign in to Continue?");
                 } else if (postDetail) {
-                  console.log("studentID:", student.username);
-                  console.log("postProductId:", postDetail?.postProductId);
-                  console.log("variationId:",);
-                  const variationList: number[] = [];
-                  Object.entries(detail).map(([key, values]) => {
-                    variationList.push(values);
-                  });
-                  let prdId = postDetail.product.productId;
-                  dispatch(addToCartThunk({ studentId: student.username, postProductId: prdId, quantity: quantity, variationDetailId: variationList }))
-
+                  if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
+                    toast.error("Bạn không thể đặt vào giỏ hàng sản phẩm của chính mình!");
+                  } else {
+                    console.log("studentID:", student.username);
+                    console.log("postProductId:", postDetail?.postProductId);
+                    console.log("variationId:");
+                    const variationList = [];
+                    Object.entries(detail).forEach(([key, values]) => {
+                      variationList.push(values);
+                    });
+                    let prdId = postDetail.product.productId;
+                    dispatch(addToCartThunk({ studentId: student.username, postProductId: prdId, quantity: quantity, variationDetailId: variationList }));
+                  }
                 }
-
               }}>Thêm vào giỏ hàng</Button>
               <Button
                 onClick={() => {
                   if (
                     postDetail &&
-                    postDetail.product.variation.length >
-                    Object.keys(detail).length
+                    postDetail.product.variation.length > Object.keys(detail).length
                   ) {
                     alert("Chọn đủ đi");
                   } else if (postDetail) {
-                    let prdId = postDetail.product.productId;
-                    const variationList: number[] = [];
-                    Object.entries(detail).map(([key, values]) => {
-                      variationList.push(values);
-                    });
-                    // let paymentItem = [{ productId: prdId, variationList: variationList, quantity: 1 }];
-                    // localStorage.setItem(
-                    //   "paymentItem",
-                    //   JSON.stringify(paymentItem)
-                    // );
-                    // prdId? dispatch(getProductByIdThunk(prdId)): ""
+                    if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
+                      toast.error("Bạn không thể mua sản phẩm của chính mình!");
+                    } else {
+                      let prdId = postDetail.product.productId;
+                      const variationList = [];
+                      Object.entries(detail).forEach(([key, values]) => {
+                        variationList.push(values);
+                      });
 
-                    dispatch(getProductByVariationDetailThunk(variationList));
-                    dispatch(setProductQuantity({ id: prdId, quantity: quantity }));
-                    navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
+                      // let paymentItem = [{ productId: prdId, variationList: variationList, quantity: 1 }];
+                      // localStorage.setItem(
+                      //   "paymentItem",
+                      //   JSON.stringify(paymentItem)
+                      // );
+                      // prdId ? dispatch(getProductByIdThunk(prdId)) : "";
+
+                      dispatch(getProductByVariationDetailThunk(variationList));
+                      dispatch(setProductQuantity({ id: prdId, quantity: quantity }));
+                      navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
+                    }
                   }
                 }}
               >
@@ -339,6 +389,7 @@ export const PostDetail: React.FC<PostType> = () => {
               <div className="flex items-center gap-2 ml-5"><MinusOutlined onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />
                 <input
                   defaultValue={quantity}
+                  value={quantity}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md px-3 py-1 outline-none text-center w-16"
                 />
@@ -400,46 +451,47 @@ export const PostDetail: React.FC<PostType> = () => {
           </table>
         </div>
       )}
-      <div className="my-28 px-4 flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 mb-8 lg:mb-0">
-          <div className="text-3xl font-semibold mb-4">Đánh giá</div>
-          {review ? (
-            <div className="flex items-center mb-6">
-              <StarRating rating={review.totalRating} />
-              <div className="flex justify-center items-center text-xl ml-5">
-                {review.totalReview} Đánh giá
+      {postDetail?.postType.postTypeId === 3 && (
+        <div className="my-28 px-4 flex flex-col lg:flex-row">
+          <div className="w-full lg:w-1/3 mb-8 lg:mb-0">
+            <div className="text-3xl font-semibold mb-4">Đánh giá</div>
+            {review ? (
+              <div className="flex items-center mb-6">
+                <StarRating rating={review.totalRating} />
+                <div className="flex justify-center items-center text-xl ml-5">
+                  {review.totalReview} Đánh giá
+                </div>
               </div>
-            </div>
-          ) : (
-            <div>Chưa có đánh giá nào</div>
-          )}
-        </div>
-
-        <div className="w-full lg:w-2/3 ml-20">
-          <div className="mb-6 mt-12 flex justify-end">
-            <Select
-              value={sortOption}
-              onChange={(value) => setSortOption(value)}
-            >
-              <Option value={1}>Đánh giá mới nhất</Option>
-              <Option value={0}>Đánh giá cũ nhất</Option>
-            </Select>
+            ) : (
+              <div>Chưa có đánh giá nào</div>
+            )}
           </div>
-          {sortedReviews?.map((rev) => (
-            <div key={rev.review} className="mb-8 p-4 border border-gray-300 rounded-lg hover:bg-gray-200 duration-150">
-              <div className="mb-2">
-                <div className="font-semibold">{formatDate(rev.createTime)}</div>
-              </div>
-              <div className="mb-2">
-                <StarDetailRating rating={rev.rating} />
-              </div>
-              <div className="mb-2">
-                <span className="font-semibold">Đánh giá: </span>{rev.description}
-              </div>
+          <div className="w-full lg:w-2/3 ml-20">
+            <div className="mb-6 mt-12 flex justify-end">
+              <Select
+                value={sortOption}
+                onChange={(value) => setSortOption(value)}
+              >
+                <Option value={1}>Đánh giá mới nhất</Option>
+                <Option value={0}>Đánh giá cũ nhất</Option>
+              </Select>
             </div>
-          ))}
+            {sortedReviews?.map((rev) => (
+              <div key={rev.review} className="mb-8 p-4 border border-gray-300 rounded-lg hover:bg-gray-200 duration-150">
+                <div className="mb-2">
+                  <div className="font-semibold">{formatDate(rev.createTime)}</div>
+                </div>
+                <div className="mb-2">
+                  <StarDetailRating rating={rev.rating} />
+                </div>
+                <div className="mb-2">
+                  <span className="font-semibold">Đánh giá: </span>{rev.description}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <Modal
         title="Thay đổi trạng thái"
         visible={isModalVisible}

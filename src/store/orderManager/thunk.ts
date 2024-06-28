@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { PostFilter_API } from "../../types/post";
 import { manageOrder } from "../../services/manageOrder";
-import { PaymentType, Orders } from "../../types/order";
+import { PaymentType, Orders, orderDetailSellerId, updateStatusOrder} from "../../types/order";
 
 export const postPayCodThunk = createAsyncThunk(
   "pay_cod",
@@ -62,3 +62,38 @@ export const getOrderPostProductThunk = createAsyncThunk(
   }
 );
 
+export const getOrderBySellerIdThunk = createAsyncThunk(
+  "orderBuySeller",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const data = await manageOrder.orderBuySeller(payload);
+      return data.data.data; // Truy cập vào mảng bên trong đối tượng data
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getOrderDetailBySellerIdThunk = createAsyncThunk(
+  "orderBuyDetailSeller",
+  async (payload: orderDetailSellerId, { rejectWithValue }) => {
+    try {
+      const data = await manageOrder.orderBuyDetailSeller(payload);
+      return data.data.data; // Truy cập vào mảng bên trong đối tượng data
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const updateStatusOrderThunk = createAsyncThunk(
+  "updateStatusOrder",
+  async (payload: updateStatusOrder, { rejectWithValue }) => {
+    try {
+      const data = await manageOrder.updateStatusOrder(payload);
+      return data.data; // Truy cập vào mảng bên trong đối tượng data
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

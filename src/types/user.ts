@@ -20,6 +20,11 @@ export type RegisteredStudent = {
   deliveryAddress: string;
 };
 
+export type updateDelivery = {
+  registeredStudentId: number,
+  deliveryAddress: string,
+}
+
 export type Role = {
   roleId: number;
   roleName: string;

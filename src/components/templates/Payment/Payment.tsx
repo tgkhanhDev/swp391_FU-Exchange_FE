@@ -199,7 +199,7 @@ export const Payment = () => {
                 return (
                   <div className="flex justify-between items-center">
                     <div>Tổng giá trị sản phẩm ({index + 1})</div>
-                    <div>{product.product.price * productQuantity[product.product.productId] * 1000} VNĐ</div>
+                    <div>{parseInt(product.product.price) * productQuantity[product.product.productId] * 1000} VNĐ</div>
                   </div>
                 )
               })}

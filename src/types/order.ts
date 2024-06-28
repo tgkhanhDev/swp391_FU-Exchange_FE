@@ -101,3 +101,15 @@ export interface orderPostProduct {
   postProductID: number
   totalpriceBought: number
 }
+
+export interface orderDetailSellerId {
+  sellerId: number;
+  orderId: number;
+}
+
+export interface updateStatusOrder {
+  orderId: number,
+  orderStatusId: number,
+} 
+
+//export interface orderStatusUpdate {}

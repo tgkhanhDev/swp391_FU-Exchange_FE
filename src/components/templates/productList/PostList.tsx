@@ -35,14 +35,14 @@ export const PostList = () => {
   const { campus, postType } = useView();
   const [filterCampus, setFilterCampus] = useState<Campus>(() => {
     const campusId = params.get('campusId');
-    
+
     if (campusId) {
-        const foundCampus = campus?.find(item => item.campusId === Number(campusId));
-        return foundCampus ? foundCampus : { campusId: 0, campusName: "Tất cả Campus" };
+      const foundCampus = campus?.find(item => item.campusId === Number(campusId));
+      return foundCampus ? foundCampus : { campusId: 0, campusName: "Tất cả Campus" };
     } else {
-        return { campusId: 0, campusName: "Tất cả Campus" };
+      return { campusId: 0, campusName: "Tất cả Campus" };
     }
-});
+  });
 
   //Get all Campus list
   const campusItem: MenuProps["items"] = [
@@ -110,7 +110,7 @@ export const PostList = () => {
   const handleSearch = (e) => {
     setFilterName(e.target.value);
   };
-  
+
   const clearFilter = () => {
     setFilterCampus({
       campusId: 0,
@@ -203,9 +203,12 @@ export const PostList = () => {
                     </div>
                     <div className="flex w-full justify-between">
                       <div className="italic">Còn lại: {item.quantity}</div>
-                      <div className="font-bold text-xl">
-                        {item.product.price}VND
-                      </div>
+
+                      {item.postType.postTypeId === 3 && (
+                        <div className="font-bold text-xl">
+                          {item.product.price} VND
+                        </div>
+                      )}
                     </div>
                     <div>{item.campus.campusName}</div>
                   </div>

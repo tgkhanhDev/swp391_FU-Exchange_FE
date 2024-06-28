@@ -10,6 +10,7 @@ import {
   UpdateBanking,
   LoginStaffType,
   Staff,
+  updateDelivery,
 } from "../../types/user";
 import { deleteSellerPostProductFilter, filterGetCustomerAccount } from "../../types/account";
 import { managePost } from "../../services/managePost";
@@ -174,7 +175,7 @@ export const getStaffInfoThunk = createAsyncThunk(
 
 export const updateDeliveryAddressThunk = createAsyncThunk(
   "updateDeliveryAddress",
-  async (payload: RegisteredStudent, { rejectWithValue }) => {
+  async (payload: updateDelivery, { rejectWithValue }) => {
     try {
       const data = await manageUsers.updateDeliveryAddress(payload);
       return data.data;
@@ -204,6 +205,18 @@ export const deleteSellerPostProductThunk = createAsyncThunk(
   ) => {
     try {
       const data = await manageUsers.deleteSellerPostProduct(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getAllSellerThunk = createAsyncThunk(
+  "getAllSeller",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const data = await manageUsers.getAllSeller(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);
