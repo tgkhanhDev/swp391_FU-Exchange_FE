@@ -247,7 +247,7 @@ export const OrderTemplate = () => {
 
                 <div className="">
                   <div className="text-lg font-bold">Tổng đơn: </div>
-                  <div>{item.totalPrice.toLocaleString('en-US')} VNĐ</div>
+                  <div>{item.totalPrice} VNĐ</div>
                 </div>
 
                 <div className="">

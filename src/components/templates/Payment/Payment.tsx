@@ -78,7 +78,13 @@ export const Payment = () => {
 
     // console.log("payment:::", payment);
     
-    dispatch(postPayCodThunk(payment))
+    dispatch(postPayCodThunk(payment)).then(item => {
+      if(item.payload.status == 400){
+        toast.error(item.payload.content)
+      }else{
+        toast.success(item.payload.content)
+      }
+    })
   }
 
 
