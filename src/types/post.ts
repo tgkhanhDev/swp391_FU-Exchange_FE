@@ -25,6 +25,8 @@ export interface Post {
   quantity: number;
   createDate: string;
   content: string;
+  totalReview: number;
+  totalRating: number;
 }
 
 // export interface Product {
@@ -50,12 +52,7 @@ export interface Image {
 export interface Category {
   categoryId: number;
   categoryName: string;
-}
-
-export interface Variation {
-  variationId: number;
-  variationName: string;
-  description: string;
+  imageUrl?: string;
 }
 
 export interface PostType {
@@ -66,6 +63,7 @@ export interface PostType {
 export interface Campus {
   campusId: number;
   campusName: string;
+  imageUrl?: string;
 }
 
 export interface PostStatus {
@@ -73,9 +71,30 @@ export interface PostStatus {
   postStatusName: string;
 }
 
-export interface PostFilter_API{
-  current: number,
-  campusId?: number | "",
-  postTypeId?: number | "",
-  name?: string,
+export interface PostFilter_API {
+  current: number;
+  campusId?: number | "";
+  postTypeId?: number | "";
+  name?: string;
+}
+
+export interface CreatePostType {
+  productId: number;
+  postTypeId: number;
+  campusId: number;
+  quantity: number;
+  content: string;
+}
+
+export interface ModeratorGetPostFilter {
+  page: number;
+  sellerName?: string;
+  postTypeId?: number;
+  campusId?: number;
+  postStatus?: number;
+}
+
+export interface ModeratorUpdateStatusPostProductFilter {
+  postProductId: number;
+  postStatusId: number;
 }

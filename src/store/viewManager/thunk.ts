@@ -36,3 +36,15 @@ export const getCategoryThunk = createAsyncThunk(
     }
   }
 );
+
+export const getPostStatusThunk = createAsyncThunk(
+  "post-status",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await manageView.getPostStatus();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

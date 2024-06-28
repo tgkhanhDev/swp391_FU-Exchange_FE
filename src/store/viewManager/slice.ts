@@ -10,7 +10,7 @@ type stateType = {
 
 const initialState: stateType = {
   campus: [],
-  postType:[],
+  postType: [],
   category: [],
 };
 
@@ -20,14 +20,14 @@ export const manageViewSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getCampusThunk.fulfilled, (state, { payload }) => {
-      state.campus = payload;
+      state.campus = payload.data;
     }),
-    builder.addCase(getPostTypeThunk.fulfilled, (state, { payload }) => {
-      state.postType = payload;
-    }),
-    builder.addCase(getCategoryThunk.fulfilled, (state, { payload }) => {
-      state.category = payload;
-    })
+      builder.addCase(getPostTypeThunk.fulfilled, (state, { payload }) => {
+        state.postType = payload.data;
+      }),
+      builder.addCase(getCategoryThunk.fulfilled, (state, { payload }) => {
+        state.category = payload.data;
+      })
   },
 });
 

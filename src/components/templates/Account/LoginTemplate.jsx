@@ -1,5 +1,5 @@
 import { Button, Input } from "antd";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useAppDispatch } from "../../../store";
 import {
@@ -7,40 +7,42 @@ import {
   isRegisteredThunk,
 } from "../../../store/userManagement/thunk";
 import { useAccount } from "../../../hooks/useAccount";
-import { ToastContainer, toast } from "react-toastify";
+import { useNavigate, Navigate } from "react-router-dom";
 import { QuestionCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 
 export const LoginTemplate = () => {
   const mssvRef = useRef("");
-  const { isAccountRegistered, loginRes } = useAccount();
-  const [isChecked, setIsChecked] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
+  const pwdRef = useRef("");
+  const { isAccountRegistered, isAuthorize } = useAccount();
+  const [checkClicked, setCheckClicked] = useState(false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const checked = (e) => {
     e.preventDefault();
+    setCheckClicked(true);
     dispatch(isRegisteredThunk(mssvRef.current));
-    setIsChecked(false);
-    setIsRegistered(isAccountRegistered);
+  };
 
-    if(loginRes.statusCode == 203){
-      toast.error(`${loginRes.content}`);
-    }else{
-      toast.success(`${loginRes.content}`);
-    }
+  const handleSignIn = (e) => {
+    e.preventDefault();
+    dispatch(
+      getLoginThunk({ username: mssvRef.current, password: pwdRef.current })
+    );
+    if (isAuthorize) window.location.href = "/authorize";
   };
 
   return (
     <div>
       <header className="bg-[var(--color-bg-hightlight)] text-[#f6f6f6] w-full min-w-[950px] py-3 px-5 flex justify-between items-center">
-      <NavLink to={"/"}>
+        <NavLink to={"/"}>
           <div className="hover:opacity-80">
-            <div className="text-lg flex justify-center"><ArrowLeftOutlined className="text-xl mr-2"/>Trở về</div>
+            <div className="text-lg flex justify-center"><ArrowLeftOutlined className="text-xl mr-2" />Trở về</div>
           </div>
         </NavLink>
         <NavLink to={"/register"}>
           <div className="hover:opacity-80">
             <div className="text-lg flex justify-center">
-            <QuestionCircleOutlined className="text-xl mr-2"/>
+              <QuestionCircleOutlined className="text-xl mr-2" />
               Lần đầu đăng nhập? Ấn vào đây
             </div>
           </div>
@@ -57,21 +59,26 @@ export const LoginTemplate = () => {
                 <label className="text-[#9f9f9f] mb-2">
                   MSSV (Mã số sinh viên)
                 </label>
-                <Input
-                  className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2"
+                <input
+                  className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
                   type="text"
                   onChange={(e) => {
                     mssvRef.current = e.target.value;
                   }}
-                ></Input>
+                ></input>
               </div>
               {!isAccountRegistered && (
-                <button
-                  className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]"
-                  onClick={checked}
-                >
-                  Kiểm tra
-                </button>
+                <>
+                  <button
+                    className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]"
+                    onClick={checked}
+                  >
+                    Kiểm tra
+                  </button>
+                  {checkClicked && !isAccountRegistered && (
+                    <div className="text-red-500 mt-2 text-center">Bạn mới đăng nhập lần đầu? <NavLink to={"/register"}><span className="underline font-medium">Nhấn vào đây</span></NavLink></div>
+                  )}
+                </>
               )}
             </form>
 
@@ -80,13 +87,17 @@ export const LoginTemplate = () => {
               <form>
                 <div className="mb-6 ">
                   <label className="text-[#9f9f9f] mb-2">Mật khẩu</label>
-                  <Input
-                    className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border mt-2"
-                    type="password"
-                  ></Input>
+                  <Input.Password
+                    className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
+                    
+                    onChange={(e) => (pwdRef.current = e.target.value)}
+                  ></Input.Password>
                 </div>
-                <button className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]">
-                  Kiểm tra
+                <button
+                  className="bg-[var(--color-primary)] text-white w-full py-2 rounded-3xl text-xl duration-200 hover:shadow-[inset_0_0_10px_rgba(255,255,255,0.6)]"
+                  onClick={handleSignIn}
+                >
+                  Đăng nhập
                 </button>
               </form>
             )}
@@ -116,23 +127,11 @@ export const LoginTemplate = () => {
         onClick={() => {
           console.log("Hello");
           dispatch(isRegisteredThunk("DE170001"));
+          dispatch(isRegisteredThunk("DE170001"));
         }}
       >
         aaaaaa
       </Button>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        // transition: Bounce,
-      />
     </div>
   );
 };

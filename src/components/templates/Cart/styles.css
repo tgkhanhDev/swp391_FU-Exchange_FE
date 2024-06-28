@@ -1,0 +1,18 @@
+.custom-checkbox .ant-checkbox {
+  width: 30px;
+  height: 30px;
+}
+
+.custom-checkbox .ant-checkbox-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-checkbox .ant-checkbox-inner::after {
+  margin-left: 1px;
+  height: 16px;
+  width: 8px;
+}

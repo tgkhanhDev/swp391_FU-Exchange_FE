@@ -1,5 +1,12 @@
 import { apiInstance } from "../constants/apiInstance";
-import { Post, PostFilter_API, PostLoadMore } from "../types/post";
+import { PostProduct } from "../types/order";
+import {
+  CreatePostType,
+  Post,
+  PostFilter_API,
+  PostLoadMore,
+} from "../types/post";
+import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({
   baseURL: "http://localhost:8080/post-product",
@@ -10,6 +17,11 @@ export const managePost = {
     api.get<PostLoadMore>(
       `/${payload.current}?campusId=${payload.campusId}&postTypeId=${payload.postTypeId}&name=${payload.name}`
     ),
-  getPostById:(payload: number) => 
-      api.get<Post>(`/detail/${payload}`),
+  getPostById: (payload: number) =>
+    api.get<utilsResponse<Post>>(`/detail/${payload}`),
+  createPost: (payload: CreatePostType) => api.post<any>(`/create`, payload),
+  getPostByRegId: (payload: number) =>
+    api.get<PostProduct>(`/seller-post-product-by-regId/${payload}`),
+  getPostBySellerId: (payload: number) =>
+    api.get<utilsResponse<Post>>(`seller-post-product/${payload}`),
 };
