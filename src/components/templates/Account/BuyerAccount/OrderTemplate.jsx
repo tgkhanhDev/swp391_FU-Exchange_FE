@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Select, Popover } from "antd";
+import { Select, Popover, Button } from "antd";
 import { UserOutlined, ShrinkOutlined, EllipsisOutlined, SendOutlined, PhoneOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import './styles.css';
 import { CSSTransition } from "react-transition-group";
@@ -225,6 +225,11 @@ export const OrderTemplate = () => {
     }
   };
 
+  const handleStatusOrder = (orderId, status) => {
+    console.log(orderId)
+    console.log(status)
+  }
+
   return (
     <div>
       <main className='py-10 mx-6'>
@@ -308,6 +313,21 @@ export const OrderTemplate = () => {
                     <NavLink to={`/review/${item.orderId}/${detail.postProduct.postProductId}`}>
                       <div className="text-[var(--color-primary)] underline">Đánh giá ngay</div>
                     </NavLink>
+                    {item.orderStatus.orderStatusId === 1 && (
+                      <div>
+                        <Button type="primary" className="flex justify-center items-center px-2 py-4 text-base" onClick={() => handleStatusOrder(item.orderId, 4)}>
+                          Hủy đơn
+                        </Button>
+                      </div>
+                    )}
+
+                    {item.orderStatus.orderStatusId === 3 && (
+                      <div>
+                        <Button type="primary" className="flex justify-center items-center px-2 py-4 text-base" onClick={() => handleStatusOrder(item.orderId, 5)}>
+                          Đã nhận hàng
+                        </Button>
+                      </div>
+                    )}
                     <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: {detail.postProduct.priceBought.toLocaleString('en-US')}VNĐ</div>
                   </div>
                 </div>
