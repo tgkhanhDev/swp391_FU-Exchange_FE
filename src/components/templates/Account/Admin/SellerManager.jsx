@@ -2,14 +2,15 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from "../../../../hooks/useAccount";
 import { useAppDispatch } from "../../../../store";
-import { getAllRegisteredStudentThunk } from "../../../../store/userManagement/thunk";
-import { setStatusAccountThunk } from "../../../../store/accountManager/thunk";
+import { getAllSellerThunk } from "../../../../store/userManagement/thunk";
+import { setStatusSellerThunk } from "../../../../store/accountManager/thunk"
+import { getSellerInfoThunk } from "../../../../store/userManagement/thunk";
 import { Modal, Button, Select, Input } from 'antd';
 import { format } from 'date-fns';
 
 const { Option } = Select;
 
-export const AccountManager = () => {
+export const SellerManager = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { staffInfor } = useAccount();
@@ -40,7 +41,7 @@ export const AccountManager = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllRegisteredStudentThunk({name: ""}))
+    dispatch(getAllSellerThunk())
       .then((action) => {
         const { payload } = action;
         const { data } = payload;
@@ -67,17 +68,17 @@ export const AccountManager = () => {
     setIsModalInfoVisible(false);
   };
 
-  const showStatusModal = (registeredStudentId) => {
-    setSelectedAccId(registeredStudentId);
+  const showStatusModal = (studentId) => {
+    setSelectedAccId(studentId);
     setIsModalStatusVisible(true);
   };
 
   const handleOk = () => {
     if (selectedAccId !== null && selectedStatus !== null) {
-      dispatch(setStatusAccountThunk({ registeredStudentId: selectedAccId, isActive: selectedStatus }))
+      dispatch(setStatusSellerThunk({ sellerId: selectedAccId, isActive: selectedStatus }))
         .then(() => {
           // Refetch the user data
-          dispatch(getAllRegisteredStudentThunk({name: ""}))
+          dispatch(getAllSellerThunk())
             .then((action) => {
               const { payload } = action;
               const { data } = payload;
@@ -104,7 +105,7 @@ export const AccountManager = () => {
 
   return (
     <div className="mx-auto p-4">
-      <div className="text-4xl font-semibold text-center py-6">Tài khoản người dùng</div>
+      <div className="text-4xl font-semibold text-center py-6">Tài khoản người bán</div>
       <div className="overflow-x-auto">
         <div className="flex justify-end my-5">
           <Input.Search
@@ -131,15 +132,7 @@ export const AccountManager = () => {
                 <td className="py-5 px-2 text-center">{`${student.student.firstName} ${student.student.lastName}`}</td>
                 <td className="py-5 px-2 text-center">{student.student.identityCard}</td>
                 <td className="py-5 px-2 text-center">{student.student.phoneNumber}</td>
-                <td
-                  className={`py-5 px-2 text-center ${student.role.roleName === 'Buyer' ? 'text-orange-400 font-semibold' :
-                    student.role.roleName === 'Seller' ? 'text-blue-400 font-semibold' :
-                      'text-red-500'
-                    }`}
-                >
-                  {student.role.roleName === 'Buyer' ? 'Người Mua' :
-                    student.role.roleName === 'Seller' ? 'Người Bán' : 'vai trò không xác định'}
-                </td>
+                <td className="py-5 px-2 text-center text-blue-400 font-semibold">Người Bán</td>
                 <td className="py-5 px-2 text-center">
                   <Button type="link" className="font-semibold" onClick={() => showInforModal(student)}>
                     Chi tiết
@@ -153,7 +146,7 @@ export const AccountManager = () => {
                 <td className="py-5 px-2 text-center">
                   <button
                     className="bg-blue-500 px-2 py-1 text-white rounded duration-150 hover:bg-blue-700"
-                    onClick={() => showStatusModal(student.registeredStudentId)}
+                    onClick={() => showStatusModal(student.sellerId)}
                   >
                     Thay đổi
                   </button>
@@ -172,8 +165,8 @@ export const AccountManager = () => {
             Hủy
           </Button>,
           <Button key="submit" type="primary" onClick={handleOk}>
-          Lưu
-        </Button>,
+            Lưu
+          </Button>,
         ]}
       >
         <Select
@@ -210,4 +203,4 @@ export const AccountManager = () => {
   );
 }
 
-export default AccountManager;
+export default SellerManager;

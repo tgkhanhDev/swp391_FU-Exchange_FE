@@ -17,6 +17,7 @@ import {
   getAccountInfoTypeThunk,
   getSellerInfoBySellerIdThunk,
   deleteSellerPostProductThunk,
+  getAllSellerThunk
 } from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -191,6 +192,11 @@ export const manageUsersSlice = createSlice({
       getAllRegisteredStudentThunk.fulfilled,
       (state, { payload }) => {
         state.users = payload.data;
+      }
+    );
+    builder.addCase(
+      getAllSellerThunk.fulfilled,
+      (state, { payload }) => {
       }
     );
   },

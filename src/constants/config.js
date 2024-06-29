@@ -27,6 +27,7 @@ export const PATH = {
   admin: "/admin",
   adminAccManage: "/admin/accountManagement",
   adminSellerRequest: "/admin/sellerRequestAcc",
+  adminSellerManage: "/admin/sellerManagement",
   manageStaffAcc: "/admin/staffManage",
   manageReportAcc: "/admin/reportAccManage",
   profileAdmin: "/admin/profile",

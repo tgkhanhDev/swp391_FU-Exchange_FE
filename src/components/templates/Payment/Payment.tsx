@@ -46,7 +46,7 @@ export const Payment = () => {
   useEffect(() => {
     let price = 0;
     productView.forEach(product => {
-      let prdPrice = (parseInt(product.product.price+"") * productQuantity[product.product.productId]);
+      let prdPrice = (parseInt(product.product.price) * productQuantity[product.product.productId]);
       price += prdPrice
     });
     setTotalPrice(price * 1000);//Db need to * 1000 :D
@@ -64,7 +64,7 @@ export const Payment = () => {
             variationId:  item.variationId,
             variationDetailId: item.variationDetail.variationDetailId,
             quantity: productQuantity[postProductId],
-            price: parseFloat(prd.product.price+"") * 1000 //Db need to * 1000 :D
+            price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
           }
         )
       })
@@ -94,7 +94,7 @@ export const Payment = () => {
             variationId: item.variationId ,
             variationDetailId: item.variationDetail.variationDetailId,
             quantity: productQuantity[postProductId],
-            price: parseFloat(prd.product.price+"") * 1000 //Db need to * 1000 :D
+            price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
           }
         )
       })
@@ -193,7 +193,7 @@ export const Payment = () => {
                 return (
                   <div className="flex justify-between items-center">
                     <div>Tổng giá trị sản phẩm ({index + 1})</div>
-                    <div>{product.product.price * productQuantity[product.product.productId] * 1000} VNĐ</div>
+                    <div>{parseInt(product.product.price) * productQuantity[product.product.productId] * 1000} VNĐ</div>
                   </div>
                 )
               })}

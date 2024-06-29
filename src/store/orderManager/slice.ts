@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Post, PostLoadMore } from "../../types/post";
-import { getOrderThunk, getOrderDetailThunk, getOrderPostProductThunk, postPayCodThunk, postPayVnPayThunk } from "./thunk";
+import { getOrderThunk, getOrderDetailThunk, getOrderPostProductThunk, postPayCodThunk, postPayVnPayThunk, getOrderBySellerIdThunk, getOrderDetailBySellerIdThunk, updateStatusOrderThunk } from "./thunk";
 import { Orders, PostProductInOrder, orderPostProduct } from "../../types/order"
 import { toast } from "react-toastify";
 
@@ -8,12 +8,16 @@ type stateType = {
   order: Orders[];
   orderDetail: PostProductInOrder[];
   orderPostProduct: orderPostProduct[];
+  orderSeller: Orders[];
+  orderDetailSeller: PostProductInOrder[];
 };
 
 const initialState: stateType = {
   order: [],
   orderDetail: [],
   orderPostProduct: [],
+  orderSeller: [],
+  orderDetailSeller: [],
 };
 
 export const manageOrderSlice = createSlice({
@@ -39,8 +43,23 @@ export const manageOrderSlice = createSlice({
       state.orderDetail = payload;
     });
     builder.addCase(getOrderPostProductThunk.fulfilled, (state, { payload }) => {
-      console.log(payload)
       state.orderPostProduct = payload;
+    });
+    builder.addCase(getOrderBySellerIdThunk.fulfilled, (state, { payload }) => {
+      state.orderSeller = payload;
+    });
+    builder.addCase(getOrderDetailBySellerIdThunk.fulfilled, (state, { payload }) => {
+      state.orderDetailSeller = payload;
+    });
+    builder.addCase(updateStatusOrderThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`${payload.content}`);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        toast.error(`${payload.content}`);
+      }
     });
   },
 });

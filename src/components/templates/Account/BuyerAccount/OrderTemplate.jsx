@@ -5,7 +5,7 @@ import { UserOutlined, ShrinkOutlined, EllipsisOutlined, SendOutlined, PhoneOutl
 import './styles.css';
 import { CSSTransition } from "react-transition-group";
 import { useAppDispatch } from "../../../../store";
-import { getOrderThunk, getOrderDetailThunk } from "../../../../store/orderManager/thunk";
+import { getOrderThunk, getOrderDetailThunk, updateStatusOrderThunk } from "../../../../store/orderManager/thunk";
 import { getPostByIdThunk } from "../../../../store/postManagement/thunk";
 import { viewChatRoom, chatRoomStS, sendMessage, contactSeller } from "../../../../store/chatManager/thunk"
 import { getAccountInfoThunk } from "../../../../store/userManagement/thunk"
@@ -106,7 +106,6 @@ export const OrderTemplate = () => {
       const response = await dispatch(getOrderDetailThunk({
         registeredStudent: item.registeredStudent,
         orderId: item.orderId,
-        orderStatus: { orderStatusId: item.orderStatus.orderStatusId }
       }));
 
       const orderDetail = response.payload;
@@ -225,9 +224,8 @@ export const OrderTemplate = () => {
     }
   };
 
-  const handleStatusOrder = (orderId, status) => {
-    console.log(orderId)
-    console.log(status)
+  const handleChangeStatus = (orderId, orderStatusId) => {
+    dispatch(updateStatusOrderThunk({ orderId: orderId, orderStatusId: orderStatusId }))
   }
 
   return (
@@ -301,11 +299,15 @@ export const OrderTemplate = () => {
                       <div className="mt-2">Số lượng: {detail.quantity}</div>
                     </div>
                     <div className="flex justify-between">
-                      <button className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold"
-                        onClick={() => {
-                          navigate(`/detail/${detail.postProduct.postProductId}`);
-                        }}
-                      >Mua lại</button>
+                      {postDetails[detail.postProduct.postProductId]?.product?.image ? (
+                        <button className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold"
+                          onClick={() => {
+                            navigate(`/detail/${detail.postProduct.postProductId}`);
+                          }}
+                        >Mua lại</button>
+                      ) : (
+                        <button className="px-14 py-3 bg-gray-200 text-gray-500 font-bold mr-5">Bài đăng đã bị xóa hoặc vô hiệu hóa</button>
+                      )}
                       <button className="px-8 py-3 border-2 border-current bg-white text-[var(--color-primary)] font-bold" onClick={() => handleChat(postDetails[detail.postProduct.postProductId].product.seller.sellerId, detail.postProduct.product.detail.productName)}>Liên hệ người bán</button>
                     </div>
                   </div>
@@ -315,7 +317,7 @@ export const OrderTemplate = () => {
                     </NavLink>
                     {item.orderStatus.orderStatusId === 1 && (
                       <div>
-                        <Button type="primary" className="flex justify-center items-center px-2 py-4 text-base" onClick={() => handleStatusOrder(item.orderId, 4)}>
+                        <Button type="primary" className="flex justify-center items-center px-2 py-4 text-base" onClick={() => handleChangeStatus(item.orderId, 4)}>
                           Hủy đơn
                         </Button>
                       </div>
@@ -323,7 +325,7 @@ export const OrderTemplate = () => {
 
                     {item.orderStatus.orderStatusId === 3 && (
                       <div>
-                        <Button type="primary" className="flex justify-center items-center px-2 py-4 text-base" onClick={() => handleStatusOrder(item.orderId, 5)}>
+                        <Button type="primary" className="flex justify-center items-center px-2 py-4 text-base" onClick={() => handleChangeStatus(item.orderId, 5)}>
                           Đã nhận hàng
                         </Button>
                       </div>

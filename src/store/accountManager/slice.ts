@@ -57,7 +57,13 @@ export const manageAccountSlice = createSlice({
     }
     );
 
-    builder.addCase(setStatusAccountThunk.fulfilled, (state, { payload }) => { });
+    builder.addCase(setStatusAccountThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`${payload.content}`);
+      } else {
+        toast.error(`${payload.content}`);
+      }
+    });
   },
 });
 

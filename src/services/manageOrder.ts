@@ -1,5 +1,5 @@
 import { apiInstance } from "../constants/apiInstance";
-import { PaymentType, Orders, PostProductInOrder } from "../types/order";
+import { PaymentType, Orders, PostProductInOrder, orderDetailSellerId, updateStatusOrder } from "../types/order";
 import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
@@ -14,6 +14,10 @@ const apiOrder = apiInstance({
 const apiB = apiInstance({
   baseURL: "http://localhost:8080/orderPostProduct",
 });
+
+const apiC = apiInstance({
+  baseURL: "http://localhost:8080/seller",
+})
 
 export const manageOrder = {
   pay_cod: (payload: PaymentType) =>
@@ -32,4 +36,13 @@ export const manageOrder = {
     return apiB.get<utilsResponse<any>>(`${payload}`);
   },
   //registerStudentId/orderId
+
+  orderBuySeller: (payload: number) =>
+    apiC.get<utilsResponse<Orders[]>>(`order/${payload}`),
+
+  orderBuyDetailSeller: (payload: orderDetailSellerId) =>
+    apiC.get<utilsResponse<PostProductInOrder[]>>(`order-detail/${payload.sellerId}/${payload.orderId}`),
+
+  updateStatusOrder: (payload: updateStatusOrder) =>
+    apiPayment.put<utilsResponse<PostProductInOrder[]>>(`update`, payload),
 };

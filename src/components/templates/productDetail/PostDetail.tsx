@@ -87,19 +87,19 @@ export const PostDetail: React.FC<PostType> = () => {
       toast.error("Tặng thất bại! Bạn cần phải đăng nhập trước.");
       return;
     }
-  
+
     if (userOwn?.sellerTO?.sellerId !== postDetail?.product?.seller?.sellerId) {
       dispatch(createWishlistThunk({
         registeredStudentId: studentInfo.registeredStudentId,
         postProductId: parseInt(postProductId),
         quantity: quantity
       }))
-      .then(() => {
-        toast.success("Gửi yêu cầu Tặng thành công!");
-      })
-      .catch(() => {
-        toast.error("Tặng thất bại!");
-      });
+        .then(() => {
+          toast.success("Gửi yêu cầu Tặng thành công!");
+        })
+        .catch(() => {
+          toast.error("Tặng thất bại!");
+        });
     } else {
       toast.error("Không thể gửi yêu cầu cho chính mình!");
     }
@@ -451,46 +451,47 @@ export const PostDetail: React.FC<PostType> = () => {
           </table>
         </div>
       )}
-      <div className="my-28 px-4 flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 mb-8 lg:mb-0">
-          <div className="text-3xl font-semibold mb-4">Đánh giá</div>
-          {review ? (
-            <div className="flex items-center mb-6">
-              <StarRating rating={review.totalRating} />
-              <div className="flex justify-center items-center text-xl ml-5">
-                {review.totalReview} Đánh giá
+      {postDetail?.postType.postTypeId === 3 && (
+        <div className="my-28 px-4 flex flex-col lg:flex-row">
+          <div className="w-full lg:w-1/3 mb-8 lg:mb-0">
+            <div className="text-3xl font-semibold mb-4">Đánh giá</div>
+            {review ? (
+              <div className="flex items-center mb-6">
+                <StarRating rating={review.totalRating} />
+                <div className="flex justify-center items-center text-xl ml-5">
+                  {review.totalReview} Đánh giá
+                </div>
               </div>
-            </div>
-          ) : (
-            <div>Chưa có đánh giá nào</div>
-          )}
-        </div>
-
-        <div className="w-full lg:w-2/3 ml-20">
-          <div className="mb-6 mt-12 flex justify-end">
-            <Select
-              value={sortOption}
-              onChange={(value) => setSortOption(value)}
-            >
-              <Option value={1}>Đánh giá mới nhất</Option>
-              <Option value={0}>Đánh giá cũ nhất</Option>
-            </Select>
+            ) : (
+              <div>Chưa có đánh giá nào</div>
+            )}
           </div>
-          {sortedReviews?.map((rev) => (
-            <div key={rev.review} className="mb-8 p-4 border border-gray-300 rounded-lg hover:bg-gray-200 duration-150">
-              <div className="mb-2">
-                <div className="font-semibold">{formatDate(rev.createTime)}</div>
-              </div>
-              <div className="mb-2">
-                <StarDetailRating rating={rev.rating} />
-              </div>
-              <div className="mb-2">
-                <span className="font-semibold">Đánh giá: </span>{rev.description}
-              </div>
+          <div className="w-full lg:w-2/3 ml-20">
+            <div className="mb-6 mt-12 flex justify-end">
+              <Select
+                value={sortOption}
+                onChange={(value) => setSortOption(value)}
+              >
+                <Option value={1}>Đánh giá mới nhất</Option>
+                <Option value={0}>Đánh giá cũ nhất</Option>
+              </Select>
             </div>
-          ))}
+            {sortedReviews?.map((rev) => (
+              <div key={rev.review} className="mb-8 p-4 border border-gray-300 rounded-lg hover:bg-gray-200 duration-150">
+                <div className="mb-2">
+                  <div className="font-semibold">{formatDate(rev.createTime)}</div>
+                </div>
+                <div className="mb-2">
+                  <StarDetailRating rating={rev.rating} />
+                </div>
+                <div className="mb-2">
+                  <span className="font-semibold">Đánh giá: </span>{rev.description}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <Modal
         title="Thay đổi trạng thái"
         visible={isModalVisible}
