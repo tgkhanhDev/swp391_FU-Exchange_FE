@@ -12,9 +12,9 @@ export const manageWishlist = {
   createWishlist: (payload: createWishlist) =>
     api.post<utilsResponse<any>>(`create`, payload),
   updateStatusWishlist: (payload: updateStatusWishlist) =>
-    api.post<utilsResponse<any>>(`${payload.wishListId}/update-status?active=${payload.active}`),
+    api.put<utilsResponse<any>>(`${payload.wishListId}/update-status?active=${payload.active}`),
   updateQuantityWishlist: (payload: updateQuantityWishlist) =>
-    api.post<utilsResponse<any>>(`${payload.wishListId}/update-quantity?quantity=${payload.quantity}`),
+    api.put<utilsResponse<any>>(`${payload.wishListId}/update-quantity?quantity=${payload.quantity}`),
   deleteWishlist : (payload: number) => 
     api.delete<utilsResponse<any>>(`${payload}`),
 };

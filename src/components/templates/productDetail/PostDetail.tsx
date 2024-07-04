@@ -1,4 +1,4 @@
-import { Button, Select, Modal, Input, Form } from "antd";
+import { Button, Select, Modal, Input, Form, } from "antd";
 import React, { useEffect, useState, useRef } from "react";
 import { usePost } from "../../../hooks/usePost";
 import { useAppDispatch } from "../../../store";
@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { log } from "console";
 import { PATH } from "../../../constants/config";
 import { getProductByIdThunk, getProductByVariationDetailThunk } from "../../../store/productManagement/thunk";
-import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { MinusOutlined, PlusOutlined, WarningOutlined } from "@ant-design/icons";
 import { setProductQuantity, setTest } from "../../../store/productManagement/slice"
 import { addToCartThunk } from "../../../store/cartManager/thunk";
 import { getAccountInfoTypeThunk, getSellerInfoThunk } from "../../../store/userManagement/thunk";
@@ -23,6 +23,8 @@ import { viewAllReviewThunk } from "../../../store/reviewManager/thunk"
 import { useReview } from "../../../hooks/useReview"
 import Rating from 'react-rating';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { useReport } from "../../../hooks/useReport";
+import { getPostTypeReportThunk, sendReportThunk } from "../../../store/reportManager/thunk"
 
 type PostType = {
   postId: number;
@@ -46,6 +48,7 @@ export const PostDetail: React.FC<PostType> = () => {
   const { studentInfo } = useAccount();
   const { review } = useReview();
   const [userOwn, setUserOwn] = useState();
+  const { reportPostType } = useReport();
 
   const handleInputChange = (event) => {
     const value = parseInt(event.target.value);
@@ -94,12 +97,6 @@ export const PostDetail: React.FC<PostType> = () => {
         postProductId: parseInt(postProductId),
         quantity: quantity
       }))
-        .then(() => {
-          toast.success("Gửi yêu cầu Tặng thành công!");
-        })
-        .catch(() => {
-          toast.error("Tặng thất bại!");
-        });
     } else {
       toast.error("Không thể gửi yêu cầu cho chính mình!");
     }
@@ -226,16 +223,50 @@ export const PostDetail: React.FC<PostType> = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedWishlist, setSelectedWishlist] = useState();
 
+  const [isModalReport, setIsModalReport] = useState(false);
+
   const showModal = (wishlistiId) => {
     setSelectedWishlist(wishlistiId);
     setIsModalVisible(true);
   };
 
+  useEffect(() => {
+    dispatch(getPostTypeReportThunk());
+  }, [dispatch])
+
+  const [selectedReportType, setSelectedReportType] = useState(null);
+  const [reportTypeId, setReportTypeId] = useState();
+
+  const handleSelectChange = (value) => {
+    const selectedType = reportPostType.find((type) => type.reportProductTypeId === value);
+    setSelectedReportType(selectedType);
+    setReportTypeId(value)
+  };
+
+  const showReportModal = () => {
+    setIsModalReport(true);
+  };
+
+
+  const reportContent = useRef("");
+
+  const handleReportOk = () => {
+    if (reportTypeId && reportContent) {
+      dispatch(sendReportThunk({ registeredStudentId: studentInfo?.registeredStudentId, postProductId: parseInt(postProductId), reportProductTypeId: reportTypeId, content: reportContent.current  }))
+      setIsModalReport(false);
+    }
+  };
+
+  const handleReportCancel = () => {
+    setIsModalReport(false);
+  };
+
+
   const updateQuantityRef = useRef("");
 
   const handleOk = () => {
     if (selectedWishlist && updateQuantityRef) {
-      dispatch(updateQuantityWishlistThunk({ wishListId: selectedWishlist, quantity: updateQuantityRef.current }))
+      dispatch(updateQuantityWishlistThunk({ wishListId: selectedWishlist, quantity: parseInt(updateQuantityRef.current) }))
       setIsModalVisible(false);
     }
   };
@@ -260,9 +291,12 @@ export const PostDetail: React.FC<PostType> = () => {
         </div>
         <div className="w-[60%] flex flex-col">
           {/* title & report  */}
-          <div className="flex">
+          <div className="flex items-center gap-x-8">
             <div className="font-bold text-4xl">
               {postDetail?.product.detail.productName}
+            </div>
+            <div onClick={showReportModal} className="cursor-pointer">
+              <WarningOutlined className="text-2xl" />
             </div>
           </div>
           {/* end title  */}
@@ -522,6 +556,56 @@ export const PostDetail: React.FC<PostType> = () => {
             <Button type="primary" onClick={handleDeleteWishlist}>
               Hủy đăng kí tặng
             </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="Báo cáo bài đăng"
+        visible={isModalReport}
+        onOk={handleReportOk}
+        onCancel={handleReportCancel}
+        footer={[
+          <Button key="back" onClick={handleReportCancel}>
+            Hủy
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleReportOk}>
+            Lưu
+          </Button>,
+        ]}
+      >
+        <Form>
+          <Form.Item>
+            <div className="mt-2">
+              <div className="mb-2">Loại báo cáo:</div>
+              <Select
+                className="w-full"
+                placeholder="Chọn loại báo cáo"
+                onChange={handleSelectChange}
+              >
+                {reportPostType.map((type) => (
+                  <Option key={type.reportProductTypeId} value={type.reportProductTypeId}>
+                    {type.reportProductTypeName}
+                  </Option>
+                ))}
+              </Select>
+              {selectedReportType && (
+                <div className="mt-4">
+                  <div>Mô tả: {selectedReportType.description}</div>
+                </div>
+              )}
+            </div>
+          </Form.Item>
+          <Form.Item>
+            <div className="mt-2">
+              <div className="mb-2">Nội dung: </div>
+              <Input.TextArea
+                className="h-8 rounded-md px-4"
+                onChange={(e) => {
+                  reportContent.current = e.target.value;
+                }}
+              />
+            </div>
           </Form.Item>
         </Form>
       </Modal>

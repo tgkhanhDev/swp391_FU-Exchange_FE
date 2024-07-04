@@ -10,6 +10,7 @@ import { manageAccountReducer } from "./accountManager/slice"
 import { manageManagerReducer } from "./moderatorManager/slice";
 import { manageReviewReducer } from "./reviewManager/slice"
 import { manageWishlistReducer } from "./wishlistManager/slice"
+import { manageReportReducer } from "./reportManager/slice"
 
 export const rootReducer = combineReducers({
   manageProduct: manageProductReducer,
@@ -23,4 +24,5 @@ export const rootReducer = combineReducers({
   manageManager: manageManagerReducer,
   manageReview: manageReviewReducer,
   manageWishlist: manageWishlistReducer,
+  manageReport: manageReportReducer,
 });

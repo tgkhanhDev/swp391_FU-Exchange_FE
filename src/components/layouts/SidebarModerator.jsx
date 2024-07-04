@@ -19,8 +19,8 @@ export const SidebarModerator = () => {
             </div>
           </NavLink> */}
 
-          <NavLink to={'/moderator/post'}>
-            <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname === '/moderator/post' ? 'bg-[var(--color-primary)]' : ''} `}>
+          <NavLink to={'/moderator'}>
+            <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname === '/moderator' ? 'bg-[var(--color-primary)]' : ''} `}>
               <ShopOutlined className="text-2xl" />
               <div>Quản lí bài đăng</div>
             </div>

@@ -34,7 +34,6 @@ export const PATH = {
   profileAdminUpdate: "/admin/profile/update",
 
   moderator: "/moderator",
-  managePost: "/moderator/post",
   manageReportPost: "/moderator/reportPost",
   profileModerator: "/moderator/profile",
   profileModeratorUpdate: "/moderator/profile/update",
