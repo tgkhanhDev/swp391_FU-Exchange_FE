@@ -94,12 +94,6 @@ export const PostDetail: React.FC<PostType> = () => {
         postProductId: parseInt(postProductId),
         quantity: quantity
       }))
-        .then(() => {
-          toast.success("Gửi yêu cầu Tặng thành công!");
-        })
-        .catch(() => {
-          toast.error("Tặng thất bại!");
-        });
     } else {
       toast.error("Không thể gửi yêu cầu cho chính mình!");
     }
@@ -235,7 +229,7 @@ export const PostDetail: React.FC<PostType> = () => {
 
   const handleOk = () => {
     if (selectedWishlist && updateQuantityRef) {
-      dispatch(updateQuantityWishlistThunk({ wishListId: selectedWishlist, quantity: updateQuantityRef.current }))
+      dispatch(updateQuantityWishlistThunk({ wishListId: selectedWishlist, quantity: parseInt(updateQuantityRef.current) }))
       setIsModalVisible(false);
     }
   };
@@ -361,8 +355,11 @@ export const PostDetail: React.FC<PostType> = () => {
                       // );
                       // prdId ? dispatch(getProductByIdThunk(prdId)) : "";
 
+                      console.log("dbug:::", postDetail);
+                      
+
                       dispatch(getProductByVariationDetailThunk(variationList));
-                      dispatch(setProductQuantity({ id: prdId, quantity: quantity }));
+                      dispatch(setProductQuantity({ id: parseInt(postProductId+''), quantity: quantity }));
                       navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
                     }
                   }

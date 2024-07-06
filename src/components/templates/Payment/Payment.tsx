@@ -38,7 +38,7 @@ export const Payment = () => {
 
     window.addEventListener('unload', (e) => {
       e.preventDefault()
-      navigate("/abc")
+      navigate(-1)
     });
 
   }, [studentInfo, productView])
@@ -54,7 +54,8 @@ export const Payment = () => {
 
   const onPurchase = () => {
     const postProductToBuyRequests: PostProductToBuyRequestType[] = []
-
+    console.log("productQUantity:::", productQuantity);
+    
     productView.map(prd => {
       prd.variation.map((item, index) => {
         postProductToBuyRequests.push(
@@ -76,15 +77,9 @@ export const Payment = () => {
       description: (document.getElementById("description") as HTMLInputElement).value,
     }
 
-    // console.log("payment:::", payment);
+    console.log("payment:::", payment);
     
-    dispatch(postPayCodThunk(payment)).then(item => {
-      if(item.payload.status == 400){
-        toast.error(item.payload.content)
-      }else{
-        toast.success(item.payload.content)
-      }
-    })
+    dispatch(postPayCodThunk(payment))
   }
 
 
@@ -114,11 +109,11 @@ export const Payment = () => {
       paymentMethodId: 2,
       description: (document.getElementById("description") as HTMLInputElement).value
     }
-    // console.log("payment:::", payment);
 
-    dispatch(postPayVnPayThunk(payment)).then((response) => {
-      window.location.href = response.payload.paymentUrl;
-    });
+    console.log("payment:::", payment);
+    // dispatch(postPayVnPayThunk(payment)).then((response) => {
+    //   window.location.href = response.payload.paymentUrl; //redirect sandbox
+    // });
 
   }
 
