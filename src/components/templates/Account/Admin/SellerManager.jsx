@@ -196,6 +196,9 @@ export const SellerManager = () => {
             <div className="my-2">Địa chỉ: {selectedAcc.student.address}</div>
             <div className="my-2">Ngày sinh: {formatDay(selectedAcc.student.dob)}</div>
             <div className="my-2">Giới tính: {selectedAcc.student.gender}</div>
+            <div className="my-2">MSSV: {selectedAcc.student.studentId}</div>
+            <div className="my-2">Tên ngân hàng: {selectedAcc.bankingName}</div>
+            <div className="my-2">Mã số ngân hàng: {selectedAcc.bankingNumber}</div>
           </div>
         )}
       </Modal>

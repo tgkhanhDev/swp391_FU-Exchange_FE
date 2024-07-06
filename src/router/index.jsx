@@ -10,7 +10,7 @@ import { LoginStaff } from "../components/templates/Account";
 import OrderTemplate from "../components/templates/Account/BuyerAccount/OrderTemplate";
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize, ModeratorAuthorize } from "../page/account";
 import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate, AccountManager, SellerAccountManager, SellerManager } from "../components/templates/Account/Admin";
-import { ManageOrder, ManagePostProduct, ManageReportPost, ProfileTemplateModerator, ProfileModeratorUpdate } from "../components/templates/Account/Moderator";
+import { ManagePostProduct, ManageReportPost, ProfileTemplateModerator, ProfileModeratorUpdate } from "../components/templates/Account/Moderator";
 import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post, ProductDetailById, Wishlist, UpdateWishlist } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
@@ -154,12 +154,8 @@ export const router = [
     path: PATH.moderator,
     children: [
       {
-        element: <ManageOrder />,
-        index: true,
-      },
-      {
         element: <ManagePostProduct />,
-        path: PATH.managePost,
+        index: true,
       },
       {
         element: <ManageReportPost />,

@@ -62,7 +62,7 @@ export const Payment = () => {
           {
             sttOrder: index + 1,
             postProductId: postProductId,
-            variationId:  item.variationId,
+            variationId: item.variationId,
             variationDetailId: item.variationDetail.variationDetailId,
             quantity: productQuantity[postProductId],
             price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
@@ -77,9 +77,14 @@ export const Payment = () => {
       description: (document.getElementById("description") as HTMLInputElement).value,
     }
 
-    console.log("payment:::", payment);
-    
-    dispatch(postPayCodThunk(payment))
+    dispatch(postPayCodThunk(payment)).then(item => {
+      if (item.payload.status == 400) {
+        toast.error(item.payload.content)
+      } else {
+        toast.success(item.payload.content)
+      }
+    })
+
   }
 
 
@@ -92,7 +97,7 @@ export const Payment = () => {
           {
             sttOrder: index + 1,
             postProductId: postProductId,
-            variationId: item.variationId ,
+            variationId: item.variationId,
             variationDetailId: item.variationDetail.variationDetailId,
             quantity: productQuantity[postProductId],
             price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
@@ -109,12 +114,9 @@ export const Payment = () => {
       paymentMethodId: 2,
       description: (document.getElementById("description") as HTMLInputElement).value
     }
-
-    console.log("payment:::", payment);
-    // dispatch(postPayVnPayThunk(payment)).then((response) => {
-    //   window.location.href = response.payload.paymentUrl; //redirect sandbox
-    // });
-
+    dispatch(postPayVnPayThunk(payment)).then((response) => {
+      window.location.href = response.payload.paymentUrl;
+    });
   }
 
   return (

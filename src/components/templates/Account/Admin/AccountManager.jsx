@@ -23,8 +23,6 @@ export const AccountManager = () => {
   const [selectedAccId, setSelectedAccId] = useState();
   const [isModalStatusVisible, setIsModalStatusVisible] = useState(false);
 
-  console.log(selectedStatus)
-
   const formatDay = (dateString) => {
     const day = new Date(dateString);
     return format(day, 'dd/MM/yyyy');
