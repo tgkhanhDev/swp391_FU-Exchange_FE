@@ -98,3 +98,16 @@ export const updateStatusOrderThunk = createAsyncThunk(
     }
   }
 );
+
+export const getTotalOrderPostThunk = createAsyncThunk(
+  "getTotalOrderPost",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const data = await manageOrder.getPriceOrderPost(payload);
+      return data.data; // Truy cập vào mảng bên trong đối tượng data
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+

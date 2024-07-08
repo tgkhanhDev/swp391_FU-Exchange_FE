@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Post, PostLoadMore } from "../../types/post";
-import { getOrderThunk, getOrderDetailThunk, getOrderPostProductThunk, postPayCodThunk, postPayVnPayThunk, getOrderBySellerIdThunk, getOrderDetailBySellerIdThunk, updateStatusOrderThunk } from "./thunk";
-import { Orders, PostProductInOrder, orderPostProduct } from "../../types/order"
+import { getOrderThunk, getOrderDetailThunk, getOrderPostProductThunk, postPayCodThunk, postPayVnPayThunk, getOrderBySellerIdThunk, getOrderDetailBySellerIdThunk, updateStatusOrderThunk, getTotalOrderPostThunk } from "./thunk";
+import { Orders, PostProductInOrder, orderPostProduct, TotalOrderPost} from "../../types/order"
 import { toast } from "react-toastify";
 
 type stateType = {
@@ -10,6 +10,7 @@ type stateType = {
   orderPostProduct: orderPostProduct[];
   orderSeller: Orders[];
   orderDetailSeller: PostProductInOrder[];
+  orderTotal: TotalOrderPost[];
 };
 
 const initialState: stateType = {
@@ -18,6 +19,7 @@ const initialState: stateType = {
   orderPostProduct: [],
   orderSeller: [],
   orderDetailSeller: [],
+  orderTotal: [],
 };
 
 export const manageOrderSlice = createSlice({
@@ -60,6 +62,9 @@ export const manageOrderSlice = createSlice({
       } else {
         toast.error(`${payload.content}`);
       }
+    });
+    builder.addCase(getTotalOrderPostThunk.fulfilled, (state, { payload }) => {
+      state.orderTotal = payload.data;
     });
   },
 });

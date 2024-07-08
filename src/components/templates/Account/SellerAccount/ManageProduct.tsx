@@ -90,7 +90,7 @@ export const ManageProduct = () => {
             </NavLink>
           </div>
 
-          <div className="flex flex-col gap-3 mt-3">
+          <div className="flex flex-col gap-3 mt-3 mr-5">
             <Input onChange={handleSearch} placeholder="Search Products..." />
           </div>
 
@@ -118,7 +118,7 @@ export const ManageProduct = () => {
                   </div>
 
                   <div className='col-span-2 flex justify-center items-center'>
-                    <div>{product.detail.productName}</div>
+                    <div className="mx-2 text-center">{product.detail.productName}</div>
                   </div>
                   <div className='col-span-2 flex justify-center items-center'>
                     <div>{product.category.categoryName}</div>

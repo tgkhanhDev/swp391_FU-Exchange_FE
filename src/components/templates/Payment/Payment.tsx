@@ -70,6 +70,7 @@ export const Payment = () => {
         )
       })
     })
+    console.log(postProductToBuyRequests)
     const payment: PaymentType = {
       registeredStudentId: studentInfo.registeredStudentId,
       postProductToBuyRequests: postProductToBuyRequests,
@@ -84,7 +85,6 @@ export const Payment = () => {
         toast.success(item.payload.content)
       }
     })
-
   }
 
 
@@ -226,7 +226,7 @@ export const Payment = () => {
             </button>
             <div className="text-with-lines">HOẶC</div>
             <button onClick={onPurchaseVnPay} className="px-12 py-3 font-medium bg-white flex my-4 gap-5 justify-between items-center hover:bg-slate-50 w-full duration-200">
-              Trả bằng QR VNPAY <img src="/images/logos/VNPAY.png" />
+              Trả bằng VNPAY <img src="/images/logos/VNPAY.png" />
             </button>
           </div>
         </div>

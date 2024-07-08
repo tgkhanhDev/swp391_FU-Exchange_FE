@@ -1,5 +1,5 @@
 import { apiInstance } from "../constants/apiInstance";
-import { PaymentType, Orders, PostProductInOrder, orderDetailSellerId, updateStatusOrder } from "../types/order";
+import { PaymentType, Orders, PostProductInOrder, orderDetailSellerId, updateStatusOrder, TotalOrderPost} from "../types/order";
 import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
@@ -45,4 +45,7 @@ export const manageOrder = {
 
   updateStatusOrder: (payload: updateStatusOrder) =>
     apiPayment.put<utilsResponse<PostProductInOrder[]>>(`update`, payload),
+
+  getPriceOrderPost: (payload: number) =>
+    apiB.get<utilsResponse<TotalOrderPost[]>>(`${payload}`),
 };

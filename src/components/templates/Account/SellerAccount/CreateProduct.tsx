@@ -68,24 +68,17 @@ export const CreateProduct = () => {
     const newImages = files.slice(0, 4 - images.length); // Giới hạn tối đa 4 hình ảnh
     const imageUrls = newImages.map(file => URL.createObjectURL(file));
     setImages(prevImages => [...prevImages, ...imageUrls]); // Thêm các URL mới vào mảng images
-    
+
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    const files: any = Array.from(e.dataTransfer.files);
-    if (files.length + images.length > 4) {
-      toast.warning('Chỉ được phép tải lên tối đa 4 hình ảnh');
-      return;
-    }
-
-    const newImages = files.slice(0, 4 - images.length); // Giới hạn tối đa 4 hình ảnh
-    const imageUrls = newImages.map(file => URL.createObjectURL(file));
-    setImages(prevImages => [...prevImages, ...imageUrls]); // Thêm các URL mới vào mảng images
+    const files = Array.from(e.dataTransfer.files); // Lấy danh sách các tệp đã thả
+    setImgRender(files); // Cập nhật giá trị imgRender với danh sách tệp mới
   };
 
   const handleDragOver = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Ngăn chặn hành vi mặc định của trình duyệt
   };
 
   useEffect(() => {
@@ -159,7 +152,7 @@ export const CreateProduct = () => {
   };
 
   //!============================Submit
-  
+
 
   const onFinish: FormProps<createProductType>['onFinish'] = async (values) => {
     values.studentId = studentInfo.username;
@@ -168,11 +161,11 @@ export const CreateProduct = () => {
 
     values.productImageRequestsList = [];
     urls.map(imgUrl => {
-      values.productImageRequestsList.push({imageUrl: imgUrl})
+      values.productImageRequestsList.push({ imageUrl: imgUrl })
     })
 
     // console.log('Success:', values);
-    dispatch(createProductThunk(values)).then(()=> {
+    dispatch(createProductThunk(values)).then(() => {
       navigate(-1)
       toast.success("Tạo sản phẩm thành công!")
     });
@@ -321,12 +314,12 @@ export const CreateProduct = () => {
                     </div>
                     <div className="mb-5">
                       <label className='font-semibold'>Phân loại sản phẩm</label>
-                      <div className="grid grid-cols-3 gap-10 items-center w-full">
+                      <div className="grid grid-cols-3 gap-10">
                         {group.categories.map((category, categoryIndex) => (
                           <div key={categoryIndex} className="flex items-center">
                             <Form.Item
                               name={['variationList', groupIndex, 'variationDetailRequestList', categoryIndex, 'description']}
-                              className="!w-full flex justify-center items-center"
+                              className="w-full"
                               rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
                             >
                               <Input
@@ -337,29 +330,38 @@ export const CreateProduct = () => {
                                 className="border p-2 w-full px-4 py-2 border-slate-400 focus:outline-none rounded-md my-2"
                               />
                             </Form.Item>
-                            <div className="grid grid-cols-2">
-                              {categoryIndex == group.categories.length - 1 && (
-                                <button
-                                  className="flex items-center justify-center bg-[var(--color-primary)] text-white px-4 rounded "
-                                  onClick={() => handleAddCategory(groupIndex)}
-                                >
-                                  <span className="flex items-start">Thêm</span> <PlusOutlined />
-                                </button>
-                              )}
-
-                              {(group.categories.length > 1 && categoryIndex == group.categories.length - 1) && (
-                                <button
-                                  className="flex bg-white text-[var(--color-primary)] px-4 py-2 rounded "
-                                  onClick={() => handleRemoveCategory(groupIndex, categoryIndex)}
-                                >
-                                  Xóa &nbsp;<DeleteOutlined />
-                                </button>
-                              )}
-                            </div>
                           </div>
                         ))}
 
+                        <div className="grid grid-cols-2 items-start my-2">
+                          {group.categories.length === 1 ? (
+                            <button
+                              className="flex items-center justify-center bg-[var(--color-primary)] text-white py-2 px-4 rounded w-full"
+                              onClick={() => handleAddCategory(groupIndex)}
+                              style={{ gridColumn: '1 / 3' }} // Spanning first two columns
+                            >
+                              Thêm &nbsp;<PlusOutlined />
+                            </button>
+                          ) : (
+                            <div className="flex items-center justify-between w-full col-span-2">
+                              <button
+                                className="flex items-center justify-center bg-[var(--color-primary)] text-white py-2 px-4 rounded mr-2 w-full"
+                                onClick={() => handleAddCategory(groupIndex)}
+                              >
+                                Thêm &nbsp;<PlusOutlined />
+                              </button>
+
+                              <button
+                                className="flex items-center justify-center bg-white text-[var(--color-primary)] px-4 py-2 rounded ml-2 w-full"
+                                onClick={() => handleRemoveCategory(groupIndex, group.categories.length - 1)} // Only one "Xóa" button for the last category
+                              >
+                                Xóa &nbsp;<DeleteOutlined />
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
+
                     </div>
                     {groups.length > 1 && (
                       <button
@@ -435,7 +437,8 @@ export const CreateProduct = () => {
                 <label className='font-semibold'>Hình ảnh (tối thiểu 1 hình, tối đa 4 hình)</label>
                 <div
                   className="border-dashed border-4 border-slate-400 text-black mt-4 px-4 py-8 rounded-md flex items-center justify-center flex-col gap-y-2 text-lg"
-                // onDragOver={handleDragOver}
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
                 >
                   <label htmlFor="fileInput" style={{ display: 'block', cursor: 'pointer' }} className="block cursor-pointer px-5 py-2 bg-[var(--color-primary)] rounded-sm text-white">
                     Tải ảnh lên
@@ -459,14 +462,17 @@ export const CreateProduct = () => {
                   ))}
                 </div>
 
-
               </div>
             </div>
 
-            <div className="flex items-center justify-end mt-5 gap-x-5">
-              <Button onClick={()=>{navigate(-1)}} className="px-5 py-2 flex justify-center items-center text-lg">Hủy</Button>
-              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button htmlType="submit" type="primary" className="px-5 py-2 flex justify-center items-center text-lg">Tạo sản phẩm</Button>
+            <div className="flex justify-end mt-5 gap-x-5">
+              <Button onClick={() => { navigate(-1) }} className="px-5 py-2 flex justify-center items-center text-lg">
+                Hủy
+              </Button>
+              <Form.Item wrapperCol={{ offset: 0, span: 16 }} className="m-0">
+                <Button htmlType="submit" type="primary" className="px-5 py-2 flex justify-center items-center text-lg">
+                  Tạo sản phẩm
+                </Button>
               </Form.Item>
             </div>
           </div>
