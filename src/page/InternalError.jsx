@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
-export const NotFound = () => {
+export const InternalError = () => {
   return (
     <div>
       <div className='flex flex-col justify-center items-center bg-gradient-to-b from-[#EFF2F6] to-[#393E46] fixed top-0 left-0 w-full h-full text-white space-y-5'>
@@ -12,7 +12,7 @@ export const NotFound = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
-          404
+          500
         </motion.div>
         <motion.div 
           className='text-4xl font-bold'
@@ -20,7 +20,7 @@ export const NotFound = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Oops! Trang này không tồn tại!
+          Oops! Trang này không hoạt động.
         </motion.div>
         <motion.div 
           className='text-xl font-normal'
@@ -28,7 +28,7 @@ export const NotFound = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          Trang bạn yêu cầu không tồn tại!
+          Có lỗi máy chủ nội bộ với trang này.
         </motion.div>
         <NavLink to={"/"}>
           <motion.button 
@@ -43,4 +43,4 @@ export const NotFound = () => {
   )
 }
 
-export default NotFound
+export default InternalError

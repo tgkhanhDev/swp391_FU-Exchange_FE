@@ -12,7 +12,7 @@ import "./styles.css";
 import { useChat } from "../../hooks/useChat"
 import { viewChatRoom, sendMessage, chatRoomStS } from "../../store/chatManager/thunk"
 import { useAccount } from "../../hooks/useAccount"
-import { format } from 'date-fns';
+import { Tooltip } from 'react-tooltip'
 
 export const Header = () => {
   const [user, setUser] = useState();
@@ -89,9 +89,6 @@ export const Header = () => {
       {userInfo && userInfo.role === "Seller" && user?.sellerTO?.active !== 2 ? (
         <Menu.SubMenu key="seller" title="Quản lý bán hàng">
           <Menu.Item key="/dashboard" className="custome-font-child">
-            Thống kê
-          </Menu.Item>
-          <Menu.Item key="/dashboard/transaction" className="custome-font-child">
             Giao dịch
           </Menu.Item>
           <Menu.Item key="/dashboard/wishlist" className="custome-font-child">
@@ -251,8 +248,14 @@ export const Header = () => {
       </div>
       <div className="py-3 pl-5 pr-20 flex justify-between bg-white border-b-2 border-b-slate-300 ">
         <NavLink to={"/"}>
-          <img className="h-10" src="/images/logos/fu_Ex_logo.png" />
+          <img className="h-10" src="/images/logos/fu_Ex_logo.png" data-tooltip-id="my-tooltip-1" />
         </NavLink>
+        <Tooltip
+          id="my-tooltip-1"
+          place="bottom"
+          content="Trang chủ"
+          style={{ backgroundColor: "#fd7014", color: "#fff" }}
+        />
 
         <div className="flex justify-center items-center">
           <button
@@ -276,8 +279,14 @@ export const Header = () => {
 
         <div className="flex justify-center items-center">
           <NavLink to={"/cart"}>
-            <ShoppingCartOutlined className="mr-10 cursor-pointer text-3xl" />
+            <ShoppingCartOutlined className="mr-10 cursor-pointer text-3xl" data-tooltip-id="my-tooltip-3" />
           </NavLink>
+          <Tooltip
+            id="my-tooltip-3"
+            place="bottom"
+            content="Giỏ hàng"
+            style={{ backgroundColor: "#fd7014", color: "#fff" }}
+          />
           {!user && (
             <NavLink to={"/login"}>
               <button className="font-semibold">Đăng nhập</button>
@@ -305,8 +314,16 @@ export const Header = () => {
             </Dropdown>
           )}
           {user && (
-            <div onClick={handleChat}>
-              <MessageOutlined className="ml-10 cursor-pointer text-xl" />
+            <div>
+              <div onClick={handleChat}>
+                <MessageOutlined className="ml-10 cursor-pointer text-xl" data-tooltip-id="my-tooltip-2" />
+              </div>
+              <Tooltip
+                id="my-tooltip-2"
+                place="bottom"
+                content="Trò chuyện"
+                style={{ backgroundColor: "#fd7014", color: "#fff" }}
+              />
             </div>
           )}
         </div>

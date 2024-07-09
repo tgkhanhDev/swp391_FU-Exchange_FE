@@ -112,4 +112,9 @@ export interface updateStatusOrder {
   orderStatusId: number,
 } 
 
+export interface TotalOrderPost {
+  postProductID: number,
+  totalpriceBought: number,
+}
+
 //export interface orderStatusUpdate {}

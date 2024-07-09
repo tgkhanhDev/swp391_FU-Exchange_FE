@@ -159,6 +159,11 @@ export const UpdateWishlist = () => {
               </tbody>
             )}
           </table>
+
+          <div className="mt-4">
+            <Button type="primary" onClick={() => navigate(`/dashboard/wishlist`)}>Trở về</Button>
+          </div>
+
         </div>
       </main>
       <Modal

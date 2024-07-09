@@ -1,7 +1,6 @@
 import { Button, Select, Modal, Input, Form, } from "antd";
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { UserOutlined, WarningOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../store";
 import { getPostBySellerIdThunk } from "../../../store/postManagement/thunk";
@@ -15,7 +14,7 @@ export const ShopId = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { postView } = usePost();
-  const { sellerId } = useParams();
+  const { sellerId, postProductId } = useParams();
   const [user, setUser] = useState();
   const { studentInfo } = useAccount();
   const { reportSellerType } = useReport();
@@ -68,6 +67,7 @@ export const ShopId = () => {
 
   return (
     <div>
+      <button className="w-24 hover:w-28 duration-500 fixed z-10 bg-[var(--color-primary)] text-white rounded-r-full px-2 py-2 bottom-5" onClick={() => navigate(`/detail/${postProductId}`)}>Trở về</button>
       <div class="relative h-48 w-full bg-gradient-to-t from-white to-[#FD7014] animate-gradient">
         <div class="absolute bottom-0 left-0 transform translate-x-1/2 translate-y-2/3">
           <div class="ml-10 w-40 h-40 bg-[#F59E0B] rounded-full -translate-x-1/2">

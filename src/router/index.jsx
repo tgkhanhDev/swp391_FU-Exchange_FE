@@ -1,17 +1,20 @@
 import ProductList from "../components/templates/productList/ProductList";
 import NotFound from "../page/NotFound";
+import InternalError from "../page/InternalError";
+import CancelPayment from "../page/CancelPayment";
 import { PATH } from "../constants/config";
 import ProductPage from "../page/ProductPage";
 import PostDetail from "../components/templates/productDetail/PostDetail";
 import PostList from "../components/templates/productList/PostList";
 import Cart from "../components/templates/Cart/Cart";
+
 import ProfileTemplate from "../components/templates/Account/BuyerAccount/ProfileTemplate";
 import { LoginStaff } from "../components/templates/Account";
 import OrderTemplate from "../components/templates/Account/BuyerAccount/OrderTemplate";
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize, ModeratorAuthorize } from "../page/account";
 import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate, AccountManager, SellerAccountManager, SellerManager } from "../components/templates/Account/Admin";
 import { ManagePostProduct, ManageReportPost, ProfileTemplateModerator, ProfileModeratorUpdate } from "../components/templates/Account/Moderator";
-import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post, ProductDetailById, Wishlist, UpdateWishlist } from "../components/templates/Account/SellerAccount";
+import { UpdateProduct, ManageProduct, CreateProduct, Transaction, Post, ProductDetailById, Wishlist, UpdateWishlist } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 import { Payment } from "../components/templates/Payment";
@@ -72,7 +75,7 @@ export const router = [
     path: PATH.dashboard,
     children: [
       {
-        element: <Dashboard />,
+        element: <Transaction />,
         index: true,
       },
       {
@@ -86,10 +89,6 @@ export const router = [
       {
         element: <CreateProduct />,
         path: PATH.createProduct,
-      },
-      {
-        element: <Transaction />,
-        path: PATH.transaction,
       },
       {
         element: <Post />,
@@ -191,5 +190,13 @@ export const router = [
   {
     element: <NotFound />,
     path: "*",
+  },
+  {
+    element: <InternalError />,
+    path: "/500",
+  },
+  {
+    element: <CancelPayment />,
+    path: "/cancel",
   },
 ];
