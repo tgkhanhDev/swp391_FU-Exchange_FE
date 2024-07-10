@@ -1,24 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Checkbox, InputNumber, Button } from "antd"
 import './styles.css'
 import { useAppDispatch } from '../../../store'
-import { viewCartThunk } from '../../../store/cartManager/thunk'
+import { deleteItemCartThunk, viewCartThunk } from '../../../store/cartManager/thunk'
 import { useAccount } from "../../../hooks/useAccount";
 import { useCart } from "../../../hooks/useCart";
+import { deleteItemCartType } from '../../../types/cart'
 
 export const Cart = () => {
 
   const [allChecked, setAllChecked] = useState(false);
   const [checkedItems, setCheckedItems] = useState([false, false]); // Initialize the state for the two checkboxes
   const { studentInfo } = useAccount();
-  const { cartList } = useCart();
+  const { cartListFilter } = useCart();
+  //STT post
+  const sttOrder = useRef<number>(0)
 
   const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(viewCartThunk(studentInfo.registeredStudentId))
   }, [])
+
+  useEffect(() => {
+    console.log("cartList:::", cartListFilter);
+
+  }, [cartListFilter])
 
   // Function to handle the change of the first checkbox
   const handleAllCheck = (e) => {
@@ -61,6 +69,10 @@ export const Cart = () => {
                 </button>
               </NavLink>
 
+              <button onClick={() => { console.log("Update") }} className='px-10 py-2 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] bg-white font-semibold hover:border-white duration-300'>
+                Cập nhập
+              </button>
+
             </div>
 
           </div>
@@ -85,40 +97,62 @@ export const Cart = () => {
 
           {/*Card */}
 
-          {cartList.map(item => {
-            return (
-              <div className='bg-white rounded-md h-40 w-full grid grid-cols-12 gap-2 mb-2'>
+          {cartListFilter.map(item => {
+            if (item.sttPostInCart)
+              return (
+                <div className='bg-white rounded-md h-40 w-full grid grid-cols-12 gap-2 mb-2'>
+                  <div className='col-span-1 flex justify-center items-center'><Checkbox
+                    className="custom-checkbox"
+                    checked={checkedItems[0]}
+                    onChange={handleItemCheck(0)}
+                  ></Checkbox></div>
 
-                <div className='col-span-1 flex justify-center items-center'><Checkbox
-                  className="custom-checkbox"
-                  checked={checkedItems[0]}
-                  onChange={handleItemCheck(0)}
-                ></Checkbox></div>
+                  <div className='col-span-4 flex items-center'>
+                    <div className='flex gap-2'>
+                      <img src={item.postProduct.product.image[0].imageUrl} className='h-32 w-32 border-2'></img>
+                      <div className='flex items-center'>{item.postProduct.content}</div>
+                    </div>
+                  </div>
+                  <div className='col-span-2 flex flex-col justify-center items-center'>
+                    {/* <div>Kích thước: </div>
+                  <div>12cm</div> */}
+                    {item.variationDetail.map(variation => {
+                      return (
+                        <div>
+                          {variation.variation.variationName}: {variation.description}
+                        </div>
+                      )
+                    })}
+                  </div>
+                  <div className='col-span-1 flex justify-center items-center'>
+                    <div>{item.postProduct.product.price} VNĐ</div>
+                  </div>
+                  <div className='col-span-2 flex justify-center items-center'>
+                    <InputNumber min={1} max={10} defaultValue={item.quantity}></InputNumber>
+                  </div>
+                  <div className='col-span-1 flex justify-center items-center'>
+                    <div>{item.postProduct.product.price * item.quantity * 1000} VNĐ</div>
+                  </div>
+                  <div className='col-span-1 flex justify-center items-center'>
+                    <Button onClick={()=>{
 
-                <div className='col-span-4 flex items-center'>
-                  <div className='flex gap-2'>
-                    <img src={item.postProduct.product.image[0].imageUrl} className='h-32 w-32 border-2'></img>
-                    <div className='flex items-center'>{item.postProduct.content}</div>
+                      const variationDetailIds: number[] =[]
+                      item.variationDetail.map(variation => {
+                        variationDetailIds.push(variation.variationDetailId)
+                      })
+
+                      const delItem = {
+                        postProductId: item.postProduct.postProductId,
+                        registeredStudentId: studentInfo.registeredStudentId,
+                        variationDetailId: variationDetailIds
+                      }
+                      // console.log("delItem:", delItem);
+                      dispatch(deleteItemCartThunk(delItem))
+                      
+                    }} type="link">Delete</Button>
                   </div>
                 </div>
-                <div className='col-span-2 flex flex-col justify-center items-center'>
-                  <div>Kích thước: </div>
-                  <div>12cm</div>
-                </div>
-                <div className='col-span-1 flex justify-center items-center'>
-                  <div>{item.postProduct.product.price} VNĐ</div>
-                </div>
-                <div className='col-span-2 flex justify-center items-center'>
-                  <InputNumber min={1} max={10} defaultValue={item.postProduct.quantity}></InputNumber>
-                </div>
-                <div className='col-span-1 flex justify-center items-center'>
-                  <div>{item.postProduct.product.price * item.postProduct.quantity * 1000} VNĐ</div>
-                </div>
-                <div className='col-span-1 flex justify-center items-center'>
-                  <Button type="link">Delete</Button>
-                </div>
-              </div>
-            )
+              )
           })}
 
         </div>

@@ -12,10 +12,10 @@ export interface updateItemCartType extends deleteItemCartType {
 }
 
 export interface addCartItem {
-  studentId: string ;
+  registeredStudentId: string;
   postProductId: number;
   variationDetailId: number[];
-  quantity: number;
+  quantity?: number;
 }
 
 export interface cartItem {
@@ -23,4 +23,14 @@ export interface cartItem {
   postProduct: Post;
   quantity: number;
   variationDetail: VaritationDetail;
+  sttPostInCart: number;
+}
+
+
+export interface cartItemFilter {
+  cartPostId: deleteItemCartType;
+  postProduct: Post;
+  quantity: number;
+  variationDetail: VaritationDetail[];
+  sttPostInCart: number;
 }

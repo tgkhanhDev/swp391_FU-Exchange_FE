@@ -248,7 +248,6 @@ export const OrderTemplate = () => {
             <div className="flex justify-center items-center text-red-500 text-2xl font-semibold">Chưa có đơn hàng</div>
           ) : (orders.map(item =>
            {
-            console.log("item:::", order)
             return (
               <div key={item.orderId} className='bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300'>
               <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">

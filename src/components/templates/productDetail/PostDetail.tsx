@@ -25,6 +25,7 @@ import Rating from 'react-rating';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useReport } from "../../../hooks/useReport";
 import { getPostTypeReportThunk, sendReportThunk } from "../../../store/reportManager/thunk"
+import { addCartItem } from "../../../types/cart";
 
 type PostType = {
   postId: number;
@@ -382,16 +383,22 @@ export const PostDetail: React.FC<PostType> = () => {
                       // );
                       // prdId ? dispatch(getProductByIdThunk(prdId)) : "";
 
-                      console.log("dbug:::", postDetail);
 
 
-                      dispatch(getProductByVariationDetailThunk(variationList));
-                      dispatch(setProductQuantity({ id: parseInt(postProductId + ''), quantity: quantity }));
-                      navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
+                      // dispatch(getProductByVariationDetailThunk(variationList));
+                      // dispatch(setProductQuantity({ id: parseInt(postProductId + ''), quantity: quantity }));
+                      // navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
 
-                      // let prdId = postDetail.product.productId;
-                      // dispatch(addToCartThunk({ studentId: student.username, postProductId: prdId, quantity: quantity, variationDetailId: variationList }));
-
+                      let prdId = postDetail.product.productId;
+                      const cartProduct: addCartItem = { registeredStudentId: student.registeredStudentId, postProductId: prdId, quantity: quantity, variationDetailId: variationList }
+                      if (
+                        postDetail &&
+                        postDetail.product.variation.length > Object.keys(detail).length
+                      ) {
+                        toast.error("Vui lòng hoàn thiện sản phẩm")
+                      } else {
+                        dispatch(addToCartThunk(cartProduct))
+                      }
                     }
                   }
                 }}>Thêm vào giỏ hàng</Button>
@@ -401,7 +408,7 @@ export const PostDetail: React.FC<PostType> = () => {
                       postDetail &&
                       postDetail.product.variation.length > Object.keys(detail).length
                     ) {
-                      alert("Chọn đủ đi");
+                      toast.error("Vui lòng hoàn thiện sản phẩm");
                     } else if (postDetail) {
                       if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
                         toast.error("Bạn không thể mua sản phẩm của chính mình!");
