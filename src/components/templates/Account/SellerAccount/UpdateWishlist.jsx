@@ -80,7 +80,7 @@ export const UpdateWishlist = () => {
           });
       });
     }
-  }, [view, dispatch]);
+  }, [dispatch]);
 
   const handleStatusChange = (value) => {
     setSelectedStatus(value);
@@ -104,6 +104,7 @@ export const UpdateWishlist = () => {
       let content = '';
       if (selectedStatus === 1) {
         content = `Tôi tặng cho bạn sản phẩm này: ${contentTemp}`;
+        dispatch(updateStatusWishlistThunk({active: 1, wishListId: selectedId}));
         dispatch(contactStudent({ registeredStudentId: selectedStudent, sellerId: userDetail.sellerTO.sellerId, content }));
       } else if (selectedStatus === 0) {
         content = `Tôi không muốn tặng cho bạn sản phẩm này nữa: ${contentTemp}`;
