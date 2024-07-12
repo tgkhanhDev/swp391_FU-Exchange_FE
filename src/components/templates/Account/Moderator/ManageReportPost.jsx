@@ -38,7 +38,6 @@ export const ManageReportPost = () => {
     if (reportPostProductId) {
       dispatch(updateStatusReportPostThunk({ reportPostProductId: reportPostProductId, reportStatusId: 2 }));
     }
-    setIsModalStatusVisible(false)
   };
 
   const showInforModal = (report) => {
@@ -180,7 +179,9 @@ export const ManageReportPost = () => {
             <div className="my-2">Người báo cáo: {selectedReport.buyerName}</div>
             <div className="my-2">Tên sản phẩm: {selectedReport.postProductName}</div>
             <div className="my-2">Loại báo cáo: {selectedReport.reportProductType.reportProductTypeName}</div>
-            <div className="my-2">Nội dung: {selectedReport.content}</div>
+            {selectedReport.content === "" ? (
+              <div className="my-2">Nội dung: Không có</div>
+            ) : (<div className="my-2">Nội dung: {selectedReport.content}</div>)}
             <div className="my-2">Trạng thái đơn báo cáo: {selectedReport.reportStatus.reportStatusName}</div>
           </div>
         )}

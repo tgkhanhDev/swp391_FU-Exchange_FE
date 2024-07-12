@@ -10,10 +10,6 @@ export function CarouselDefault() {
     <img src="/images/banners/advertisement/banner-4.png" alt="Image 4" className="h-[550px] w-full object-cover"/>,
     <img src="/images/banners/advertisement/banner-5.png" alt="Image 5" className="h-[550px] w-full object-cover"/>,
     <img src="/images/banners/advertisement/banner-6.png" alt="Image 6" className="h-[550px] w-full object-cover"/>,
-    <img src="/images/banners/advertisement/banner-7.png" alt="Image 7" className="h-[550px] w-full object-cover"/>,
-    <img src="/images/banners/advertisement/banner-8.png" alt="Image 8" className="h-[550px] w-full object-cover"/>,
-    <img src="/images/banners/advertisement/banner-9.png" alt="Image 9" className="h-[550px] w-full object-cover"/>,
-    <img src="/images/banners/advertisement/banner-10.png" alt="Image 10" className="h-[550px] w-full object-cover"/>,
   ];
 
   return (
@@ -21,10 +17,10 @@ export function CarouselDefault() {
       <AliceCarousel
         autoPlay
         infinite
-        autoPlayInterval={3000} // Thời gian chờ giữa các slide (đơn vị: ms)
+        autoPlayInterval={3000}
         items={items}
-        style={{
-        }}
+        renderPrevButton={() => <button className="alice-carousel__prev-btn">‹</button>}
+        renderNextButton={() => <button className="alice-carousel__next-btn">›</button>}
       />
     </div>
   );

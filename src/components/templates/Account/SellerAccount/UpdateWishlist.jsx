@@ -99,16 +99,21 @@ export const UpdateWishlist = () => {
     setSelectedStudent(registeredStudentId)
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
     if (userDetail?.sellerTO?.sellerId) {
       let content = '';
       if (selectedStatus === 1) {
         content = `Tôi tặng cho bạn sản phẩm này: ${contentTemp}`;
-        dispatch(updateStatusWishlistThunk({active: 1, wishListId: selectedId}));
-        dispatch(contactStudent({ registeredStudentId: selectedStudent, sellerId: userDetail.sellerTO.sellerId, content }));
+        const result = await dispatch(updateStatusWishlistThunk({ active: 1, wishListId: selectedId }));
+        if (result.payload.status === 200) {
+          dispatch(contactStudent({ registeredStudentId: selectedStudent, sellerId: userDetail.sellerTO.sellerId, content }));
+        }
       } else if (selectedStatus === 0) {
         content = `Tôi không muốn tặng cho bạn sản phẩm này nữa: ${contentTemp}`;
-        dispatch(contactStudent({ registeredStudentId: selectedStudent, sellerId: userDetail.sellerTO.sellerId, content }));
+        const result = await dispatch(updateStatusWishlistThunk({ active: 0, wishListId: selectedId }));
+        if (result.payload.status === 200) {
+          dispatch(contactStudent({ registeredStudentId: selectedStudent, sellerId: userDetail.sellerTO.sellerId, content }));
+        }
       }
     }
   };

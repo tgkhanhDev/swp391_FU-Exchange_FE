@@ -51,10 +51,18 @@ export const PostDetail: React.FC<PostType> = () => {
   const [userOwn, setUserOwn] = useState();
   const { reportPostType } = useReport();
 
-  const handleInputChange = (event) => {
-    const value = parseInt(event.target.value);
+  const handleInputChange = (e) => {
+    const value = e.target.value;
     if (!isNaN(value) && value >= 1) {
-      setQuantity(value);
+      setQuantity(parseInt(value));
+    } else if (value === '') {
+      setQuantity('');
+    }
+  };
+
+  const handleInputBlur = () => {
+    if (quantity === '') {
+      setQuantity(1);
     }
   };
 
@@ -253,11 +261,12 @@ export const PostDetail: React.FC<PostType> = () => {
   };
 
 
-  const reportContent = useRef("");
+  const reportContent = useRef('');
 
   const handleReportOk = () => {
     if (reportTypeId && reportContent) {
       dispatch(sendReportThunk({ registeredStudentId: studentInfo?.registeredStudentId, postProductId: parseInt(postProductId), reportProductTypeId: reportTypeId, content: reportContent.current }))
+      console.log(reportContent.current);
       setIsModalReport(false);
     }
   };
@@ -267,7 +276,7 @@ export const PostDetail: React.FC<PostType> = () => {
   };
 
 
-  const updateQuantityRef = useRef("");
+  const updateQuantityRef = useRef(1);
 
   const handleOk = () => {
     if (selectedWishlist && updateQuantityRef) {
@@ -435,7 +444,15 @@ export const PostDetail: React.FC<PostType> = () => {
                 >
                   Mua ngay
                 </Button>
-                <div className="flex items-center gap-2"><MinusOutlined onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />{quantity}<PlusOutlined onClick={() => setQuantity(quantity + 1)} /></div>
+                <div className="flex items-center gap-2"><MinusOutlined
+                  onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />
+                  <input
+                    value={quantity}
+                    onChange={handleInputChange}
+                    onBlur={handleInputBlur}
+                    className="border border-gray-300 rounded-md px-3 py-1 outline-none text-center w-16"
+                  />
+                  <PlusOutlined onClick={() => setQuantity(quantity + 1)} /></div>
               </div>
             )}
             {postDetail?.postType.postTypeId === 2 && (
@@ -453,9 +470,9 @@ export const PostDetail: React.FC<PostType> = () => {
                 >Tôi muốn được tặng</Button>
                 <div className="flex items-center gap-2 ml-5"><MinusOutlined onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />
                   <input
-                    defaultValue={quantity}
                     value={quantity}
                     onChange={handleInputChange}
+                    onBlur={handleInputBlur}
                     className="border border-gray-300 rounded-md px-3 py-1 outline-none text-center w-16"
                   />
                   <PlusOutlined onClick={() => setQuantity(quantity + 1)} />
@@ -489,7 +506,7 @@ export const PostDetail: React.FC<PostType> = () => {
                   <th className="py-5 px-2 text-center">Thời gian đăng kí</th>
                   <th className="py-5 px-2 text-center">Số lượng</th>
                   <th className="py-5 px-2 text-center">Trạng thái hiện tại</th>
-                  <th className="py-5 px-2 text-center">Cập nhật số lượng</th>
+                  <th className="py-5 px-2 text-center">Cập nhật</th>
                 </tr>
               </thead>
               {view && view.length > 0 && (
@@ -504,7 +521,7 @@ export const PostDetail: React.FC<PostType> = () => {
                       ) : (
                         <td className="py-5 text-red-500 font-semibold text-center">Đang chờ được tặng</td>
                       )}
-                      {studentInfo.registeredStudentId === item.registeredStudentId && (
+                      {studentInfo?.registeredStudentId === item.registeredStudentId && (
                         <td className="py-5 px-2 flex justify-center items-center">
                           <Button onClick={() => showModal(item.wishListId)}>Cập nhật</Button>
                         </td>
@@ -577,9 +594,15 @@ export const PostDetail: React.FC<PostType> = () => {
                 <div className="mb-2 mr-5">Cập nhật số lượng: </div>
                 <input
                   type="number"
+                  min="1"
                   className="h-8 rounded-md px-4 border border-gray-300 w-20"
                   onChange={(e) => {
-                    updateQuantityRef.current = e.target.value;
+                    const value = parseInt(e.target.value);
+                    if (!isNaN(value) && value >= 1) {
+                      updateQuantityRef.current = value;
+                    } else {
+                      updateQuantityRef.current = 1; // Đặt giá trị mặc định là 1 nếu không hợp lệ
+                    }
                   }}
                 />
               </div>
@@ -632,6 +655,7 @@ export const PostDetail: React.FC<PostType> = () => {
                 <div className="mb-2">Nội dung: </div>
                 <Input.TextArea
                   className="h-8 rounded-md px-4"
+                  defaultValue=""
                   onChange={(e) => {
                     reportContent.current = e.target.value;
                   }}

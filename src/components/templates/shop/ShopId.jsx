@@ -161,6 +161,7 @@ export const ShopId = () => {
               <div className="mb-2">Nội dung: </div>
               <Input.TextArea
                 className="h-8 rounded-md px-4"
+                defaultValue=""
                 onChange={(e) => {
                   reportContent.current = e.target.value;
                 }}

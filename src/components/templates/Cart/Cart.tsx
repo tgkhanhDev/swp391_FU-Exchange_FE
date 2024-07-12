@@ -20,7 +20,7 @@ export const Cart = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(viewCartThunk(studentInfo.registeredStudentId))
+    dispatch(viewCartThunk(studentInfo?.registeredStudentId))
   }, [])
 
   useEffect(() => {

@@ -174,7 +174,9 @@ export const ManageReportAccount = () => {
             <div className="my-2">Người báo cáo: {selectedReport.buyerName}</div>
             <div className="my-2">Người bị báo cáo: {selectedReport.sellerName}</div>
             <div className="my-2">Loại báo cáo: {selectedReport.reportSellerType.reportTypeName}</div>
-            <div className="my-2">Nội dung: {selectedReport.content}</div>
+            {selectedReport.content === "" ? (
+              <div className="my-2">Nội dung: Không có</div>
+            ) : (<div className="my-2">Nội dung: {selectedReport.content}</div>)}
             <div className="my-2">Trạng thái đơn báo cáo: {selectedReport.reportStatus.reportStatusName}</div>
           </div>
         )}
