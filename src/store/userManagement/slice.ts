@@ -132,6 +132,9 @@ export const manageUsersSlice = createSlice({
     builder.addCase(registerSellerThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
         toast.success(`${payload.content}`);
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
       } else {
         toast.info(`${payload.content}`);
       }

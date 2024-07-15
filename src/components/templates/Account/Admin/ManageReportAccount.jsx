@@ -73,7 +73,7 @@ export const ManageReportAccount = () => {
 
   useEffect(() => {
     dispatch(viewFilterReportSellerThunk({ sellerName: filterName, reportSellerTypeId: filterReportType, reportStatusId: filterStatus }))
-  }, [filterName, filterReportType, filterStatus, handleOk])
+  }, [filterName, filterReportType, filterStatus])
 
   return (
     <div className="mx-auto p-4">

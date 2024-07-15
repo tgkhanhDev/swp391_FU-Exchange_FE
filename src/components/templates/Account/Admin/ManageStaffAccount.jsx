@@ -32,7 +32,7 @@ export const ManageStaffAccount = () => {
       navigate('/moderator');
     }
     dispatch(getAllStaffAccountThunk({ current: 5, identityCard: "" }));
-  }, [staffInfor, navigate, dispatch]);
+  }, [dispatch]);
 
   const staffInfoList = account && Array.isArray(account.staffInforResponseList) ? account.staffInforResponseList : [];
 

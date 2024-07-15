@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { NavLink, useParams } from 'react-router-dom'
+import { NavLink, useParams, useNavigate } from 'react-router-dom'
 import { Input, Button, Rate } from "antd";
 import { getPostByIdThunk } from "../../../store/postManagement/thunk";
 import { createReviewThunk } from "../../../store/reviewManager/thunk"
 import { useAppDispatch } from "../../../store";
 import { usePost } from "../../../hooks/usePost";
+import { useAccount } from "../../../hooks/useAccount"
 import './styles.css'
 
 export const ReviewProduct = () => {
@@ -15,6 +16,8 @@ export const ReviewProduct = () => {
   const dispatch = useAppDispatch();
   const { postDetail } = usePost();
   const [post, setPost] = useState();
+  const { studentInfo } = useAccount()
+  const navigate = useNavigate();
 
   const postProductIdRef = postProductId;
   const orderIdRef = orderId;
@@ -31,6 +34,12 @@ export const ReviewProduct = () => {
       setPost(postDetail);
     }
   }, [postDetail]);
+
+  useEffect(() => {
+    if (!studentInfo) {
+      navigate("/*");
+    }
+  }, []);
 
   const hanldeClick = () => {
     dispatch(

@@ -6,7 +6,7 @@ import './styles.css';
 import { CSSTransition } from "react-transition-group";
 import { useAppDispatch } from "../../../../store";
 import { getOrderThunk, updateStatusOrderThunk } from "../../../../store/orderManager/thunk";
-import { viewChatRoom, chatRoomStS, sendMessage, contactSeller } from "../../../../store/chatManager/thunk"
+import { viewChatRoom, chatRoomStS, sendMessage, contactSeller, deleteChatRoom } from "../../../../store/chatManager/thunk"
 import { getAccountInfoThunk } from "../../../../store/userManagement/thunk"
 import { useOrder } from "../../../../hooks/useOrder";
 import { useAccount } from "../../../../hooks/useAccount";
@@ -27,6 +27,7 @@ export const OrderTemplate = () => {
   const [userDetail, setUserDetail] = useState();
   const [sellerId, setSellerId] = useState();
   const [content, setContent] = useState();
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
   const formatDay = (dateTimeString) => {
     if (!dateTimeString) return '';
@@ -74,18 +75,21 @@ export const OrderTemplate = () => {
   useEffect(() => {
     // Đảm bảo chatroom không rỗng và có ít nhất một phòng chat
     if (chatroom && chatroom.length > 0) {
-      // Lặp qua các phòng chat để lấy thông tin người dùng từ studentReceiveId
-      chatroom.forEach(room => {
-        const registeredId = room.chatMessage[0].studentReceiveId;
 
-        // Dispatch Thunk để lấy dữ liệu người dùng dựa trên registeredId
-        dispatch(getAccountInfoThunk({ registeredStudentId: registeredId }))
+      chatroom.forEach(room => {
+        // Kiểm tra xem room.chatMessage[0].studentSendId có bằng registeredId hay không
+        const studentIdToFetch = (room.chatMessage[0].studentSendId === registeredId)
+          ? room.chatMessage[0].studentReceiveId
+          : room.chatMessage[0].studentSendId;
+
+        // Dispatch Thunk để lấy dữ liệu người dùng dựa trên studentIdToFetch
+        dispatch(getAccountInfoThunk({ registeredStudentId: studentIdToFetch }))
           .then((action) => {
             const { payload } = action;
             const { data } = payload;
             setUser((prevUser) => ({
               ...prevUser,
-              [registeredId]: data  // Lưu trữ thông tin người dùng dựa trên registeredId
+              [studentIdToFetch]: data  // Lưu trữ thông tin người dùng dựa trên studentIdToFetch
             }));
           })
           .catch((error) => {
@@ -95,7 +99,7 @@ export const OrderTemplate = () => {
     }
   }, [chatroom, dispatch]);
 
-  const registeredId = studentInfo.registeredStudentId;
+  const registeredId = studentInfo?.registeredStudentId;
 
   const handleChat = (sellerId, content) => {
     setShowBoxChat(true); // Mở box chat khi nhấn vào nút
@@ -123,16 +127,32 @@ export const OrderTemplate = () => {
   }, [dispatch, sellerId, registeredId, showBoxChat, contentCreate]);
 
   const handleSelectChat = (studentSendId, studentReceiveId) => {
-    dispatch(chatRoomStS({ studentSendId: studentSendId, studentReceiveId: studentReceiveId }))
-    dispatch(getAccountInfoThunk({ registeredStudentId: studentReceiveId }))
-      .then((action) => {
-        const { payload } = action;
-        const { data } = payload;
-        setUserDetail(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching account information:", error);
-      });
+    dispatch(chatRoomStS({ studentSendId: studentSendId, studentReceiveId: studentReceiveId }));
+    if (studentReceiveId !== userInfo?.registeredStudentId) {
+      dispatch(getAccountInfoThunk({ registeredStudentId: studentReceiveId }))
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          setUserDetail(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
+    } else if (studentSendId !== userInfo?.registeredStudentId) {
+      dispatch(getAccountInfoThunk({ registeredStudentId: studentSendId }))
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          setUserDetail(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
+    }
+  }
+
+  const handleDeleteChat = (chatRoomId) => {
+    dispatch(deleteChatRoom(chatRoomId));
   }
 
   const isEmptyChatDetail = !chatDetail || Object.keys(chatDetail).length === 0 ||
@@ -169,8 +189,6 @@ export const OrderTemplate = () => {
   const handleChangeStatus = (orderId, orderStatusId) => {
     dispatch(updateStatusOrderThunk({ orderId: orderId, orderStatusId: orderStatusId }))
   }
-
-  console.log(order.postProductInOrder)
 
   return (
     <div>
@@ -278,7 +296,7 @@ export const OrderTemplate = () => {
               )
             }
             ))
-          ) : (<div className="text-lg">Loading...</div>)}
+          ) : (<div className="text-2xl font-semibold text-red-500 text-center">Not Found</div>)}
         </div>
       </main>
 
@@ -305,33 +323,40 @@ export const OrderTemplate = () => {
                     {chatroom.map(room => (
                       room?.active === true && (
                         <div onClick={() => handleSelectChat(room.chatMessage[0].studentSendId, room.chatMessage[0].studentReceiveId)}>
-                          <div key={room.chatRoomId} className="hover:bg-gray-100 cursor-pointer duration-200 w-full">
-                            <div className="flex items-center mb-4 px-2">
-                              <div className="rounded-full bg-white border border-slate-300 w-12 h-12 flex justify-center items-center">
-                                <UserOutlined className="text-3xl" />
-                              </div>
-                              {room.chatMessage && room.chatMessage.length > 0 && (
-                                <div key={room.chatMessage[0].messageId} className="flex flex-grow items-center justify-between ml-2">
-                                  <div>
-                                    <div className="text-base font-semibold">{truncateContent(`${user?.[room.chatMessage[0].studentReceiveId]?.student?.firstName} ${user?.[room.chatMessage[0].studentReceiveId]?.student?.lastName}`, 8)}</div>
-                                    <div>{truncateContent(room.chatMessage.slice(-1)[0].content, 14)}</div>
-                                  </div>
-                                  <div className="text-right text-sm">
-                                    <div>{formatDay(room.chatMessage[0].timeSend)}</div>
-                                    <Popover
-                                      placement="bottomRight"
-                                      content={(
-                                        <button className="rounded flex justify-center items-center">
-                                          <DeleteOutlined className="text-xl mr-2" />Delete
-                                        </button>
-                                      )}
-                                      trigger="click"
-                                    >
-                                      <button><EllipsisOutlined className="text-3xl" /></button>
-                                    </Popover>
-                                  </div>
+                          <div>
+                            <div key={room.chatRoomId} className="hover:bg-gray-100 cursor-pointer duration-200 w-full">
+                              <div className="flex items-center mb-4 px-2">
+                                <div className="rounded-full bg-white border border-slate-300 w-12 h-12 flex justify-center items-center">
+                                  <UserOutlined className="text-3xl" />
                                 </div>
-                              )}
+                                {room.chatMessage && room.chatMessage.length > 0 && (
+                                  <div key={room.chatMessage[0].messageId} className="flex flex-grow items-center justify-between ml-2">
+                                    <div>
+                                      <div className="text-base font-semibold">{truncateContent(
+                                        (room.chatMessage[0].studentSendId === registeredId)
+                                          ? `${user?.[room.chatMessage[0].studentReceiveId]?.student?.firstName || ''} ${user?.[room.chatMessage[0].studentReceiveId]?.student?.lastName || ''}`
+                                          : `${user?.[room.chatMessage[0].studentSendId]?.student?.firstName || ''} ${user?.[room.chatMessage[0].studentSendId]?.student?.lastName || ''}`,
+                                        8
+                                      )}</div>
+                                      <div>{truncateContent(room.chatMessage.slice(-1)[0].content, 14)}</div>
+                                    </div>
+                                    <div className="text-right text-sm">
+                                      <div>{formatDay(room.chatMessage[0].timeSend)}</div>
+                                      <Popover
+                                        placement="bottomRight"
+                                        content={(
+                                          <button className="rounded flex justify-center items-center" onClick={() => handleDeleteChat(room.chatRoomId)}>
+                                            <DeleteOutlined className="text-xl mr-2" />Delete
+                                          </button>
+                                        )}
+                                        trigger="click"
+                                      >
+                                        <button><EllipsisOutlined className="text-3xl" /></button>
+                                      </Popover>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -364,25 +389,50 @@ export const OrderTemplate = () => {
                         <div key={roomId}>
                           {chatDetail[roomId].length > 0 && (
                             chatDetail[roomId].map(message => (
-                              studentReceiveId = message.studentSendId,
-                              message.studentSendId !== registeredId ? (
-                                <div key={message.messageId} className="flex items-center my-4">
-                                  <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
-                                    <UserOutlined className="text-lg" />
+                              userInfo && userInfo.role === "Seller" ? (
+                                message.studentSendId !== registeredId ? (
+                                  studentReceiveId = message.studentSendId,
+                                  <div key={message.chatMessageId} className="flex items-center my-4">
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
+                                    <div className="bg-slate-200 max-w-[52%] ml-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
                                   </div>
-                                  <div className="bg-slate-200 max-w-[52%] ml-2 rounded-lg px-2 py-1">
-                                    {message.content}
+                                ) : (
+                                  studentReceiveId = message.studentReceiveId,
+                                  <div key={message.chatMessageId} className="flex justify-end items-center my-4">
+                                    <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
                                   </div>
-                                </div>
+                                )
                               ) : (
-                                <div key={message.messageId} className="flex justify-end items-center my-4">
-                                  <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
-                                    {message.content}
+                                message.studentSendId !== registeredId ? (
+                                  studentReceiveId = message.studentSendId,
+                                  <div key={message.chatMessageId} className="flex items-center my-4">
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
+                                    <div className="bg-slate-200 max-w-[52%] ml-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
                                   </div>
-                                  <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
-                                    <UserOutlined className="text-lg" />
+                                ) : (
+                                  studentReceiveId = message.studentReceiveId,
+                                  <div key={message.chatMessageId} className="flex justify-end items-center my-4">
+                                    <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
                                   </div>
-                                </div>
+                                )
                               )
                             ))
                           )}

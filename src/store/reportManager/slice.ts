@@ -48,6 +48,9 @@ export const manageReportSlice = createSlice({
       builder.addCase(updateStatusReportSellerThunk.fulfilled, (state, { payload }) => {
         if (payload.status == 200) {
           toast.success(`${payload.content}`);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         } else {
           toast.error(`${payload.content}`);
         }
@@ -58,6 +61,9 @@ export const manageReportSlice = createSlice({
       builder.addCase(updateStatusReportPostThunk.fulfilled, (state, { payload }) => {
         if (payload.status == 200) {
           toast.success(`${payload.content}`);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         } else {
           toast.error(`${payload.content}`);
         }

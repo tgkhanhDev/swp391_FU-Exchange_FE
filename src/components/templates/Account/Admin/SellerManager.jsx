@@ -127,32 +127,33 @@ export const SellerManager = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers?.map((student) => (
-              <tr key={student.registeredStudentId} className="hover:bg-gray-50 duration-150">
-                <td className="py-5 px-2 text-center">{`${student.student.firstName} ${student.student.lastName}`}</td>
-                <td className="py-5 px-2 text-center">{student.student.identityCard}</td>
-                <td className="py-5 px-2 text-center">{student.student.phoneNumber}</td>
-                <td className="py-5 px-2 text-center text-blue-400 font-semibold">Người Bán</td>
-                <td className="py-5 px-2 text-center">
-                  <Button type="link" className="font-semibold" onClick={() => showInforModal(student)}>
-                    Chi tiết
-                  </Button>
-                </td>
-                {student.active ? (
-                  <td className="py-5 text-green-500 font-semibold text-center">Hoạt động</td>
-                ) : (
-                  <td className="py-5 px-2 text-red-500 font-semibold text-center">Không hoạt động</td>
-                )}
-                <td className="py-5 px-2 text-center">
-                  <button
-                    className="bg-blue-500 px-2 py-1 text-white rounded duration-150 hover:bg-blue-700"
-                    onClick={() => showStatusModal(student.sellerId)}
-                  >
-                    Thay đổi
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {filteredUsers
+              ?.filter((student) => student.active !== 2).map((student) => (
+                <tr key={student.registeredStudentId} className="hover:bg-gray-50 duration-150">
+                  <td className="py-5 px-2 text-center">{`${student.student.firstName} ${student.student.lastName}`}</td>
+                  <td className="py-5 px-2 text-center">{student.student.identityCard}</td>
+                  <td className="py-5 px-2 text-center">{student.student.phoneNumber}</td>
+                  <td className="py-5 px-2 text-center text-blue-400 font-semibold">Người Bán</td>
+                  <td className="py-5 px-2 text-center">
+                    <Button type="link" className="font-semibold" onClick={() => showInforModal(student)}>
+                      Chi tiết
+                    </Button>
+                  </td>
+                  {student.active ? (
+                    <td className="py-5 text-green-500 font-semibold text-center">Hoạt động</td>
+                  ) : (
+                    <td className="py-5 px-2 text-red-500 font-semibold text-center">Không hoạt động</td>
+                  )}
+                  <td className="py-5 px-2 text-center">
+                    <button
+                      className="bg-blue-500 px-2 py-1 text-white rounded duration-150 hover:bg-blue-700"
+                      onClick={() => showStatusModal(student.sellerId)}
+                    >
+                      Thay đổi
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

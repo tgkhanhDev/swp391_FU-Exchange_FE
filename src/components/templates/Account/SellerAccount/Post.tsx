@@ -16,7 +16,7 @@ export const Post = () => {
   const dispatch = useAppDispatch();
 
   const fetchPostList = () => {
-    dispatch(getPostByIdRegIdThunk(studentInfo.registeredStudentId)).then((post: any) => {
+    dispatch(getPostByIdRegIdThunk(studentInfo?.registeredStudentId)).then((post: any) => {
       // console.log("post:::", post.payload.data);
       setPostList(post.payload.data);
     })
@@ -53,7 +53,7 @@ export const Post = () => {
                         description={
                           <div className="block">
                             <div className="mb-2">{post.product.detail.description}</div>
-                            <div className="mb-2"><span className="font-bold">Giá: </span>{post.product.price}</div>
+                            <div className="mb-2"><span className="font-bold">Giá: </span>{post.product.price} VNĐ</div>
                             <div className="mb-4"><span className="font-bold">Số lượng: </span>{post.quantity}</div>
                             <div className="flex gap-2">
                               <Button

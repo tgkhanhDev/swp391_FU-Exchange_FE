@@ -10,7 +10,7 @@ import { CSSTransition } from "react-transition-group";
 import { Dropdown, Menu, Popover } from "antd";
 import "./styles.css";
 import { useChat } from "../../hooks/useChat"
-import { viewChatRoom, sendMessage, chatRoomStS } from "../../store/chatManager/thunk"
+import { viewChatRoom, sendMessage, chatRoomStS, deleteChatRoom } from "../../store/chatManager/thunk"
 import { useAccount } from "../../hooks/useAccount"
 import { Tooltip } from 'react-tooltip'
 
@@ -86,7 +86,7 @@ export const Header = () => {
     <Menu onClick={handleMenuClick} className="w-44 custome-font">
       <Menu.Item key="/authorize">Tài khoản</Menu.Item>
       <Menu.Item key="/authorize/order">Đơn hàng</Menu.Item>
-      {userInfo && userInfo.role === "Seller" && user?.sellerTO?.active !== 2 ? (
+      {userInfo && userInfo.role === "Seller" && user?.sellerTO?.active === 1 ? (
         <Menu.SubMenu key="seller" title="Quản lý bán hàng">
           <Menu.Item key="/dashboard" className="custome-font-child">
             Giao dịch
@@ -213,6 +213,10 @@ export const Header = () => {
     }
   }
 
+  const handleDeleteChat = (chatRoomId) => {
+    dispatch(deleteChatRoom(chatRoomId));
+  }
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       reloadBoxChat();
@@ -221,9 +225,6 @@ export const Header = () => {
 
   const reloadBoxChat = () => {
     if (chatDetail && chatroom) {
-      console.log(studentReceiveId),
-        console.log(chatRoomId),
-        console.log(studentSendIdRef)
       dispatch(
         sendMessage({
           studentSendId: studentSendIdRef, // Assuming studentSendIdRef is correctly defined elsewhere
@@ -375,7 +376,7 @@ export const Header = () => {
                                       <Popover
                                         placement="bottomRight"
                                         content={(
-                                          <button className="rounded flex justify-center items-center">
+                                          <button className="rounded flex justify-center items-center" onClick={() => handleDeleteChat(room.chatRoomId)}>
                                             <DeleteOutlined className="text-xl mr-2" />Delete
                                           </button>
                                         )}

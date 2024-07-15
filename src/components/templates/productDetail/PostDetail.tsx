@@ -94,13 +94,10 @@ export const PostDetail: React.FC<PostType> = () => {
     }, [])
   }
 
-  console.log(userOwn)
-
-  console.log(studentInfo)
 
   const handleCreateWish = () => {
     if (!studentInfo) {
-      toast.error("Tặng thất bại! Bạn cần phải đăng nhập trước.");
+      toast.error("Tặng thất bại! Vui lòng đăng nhập để tiếp tục!");
       return;
     }
 
@@ -174,6 +171,11 @@ export const PostDetail: React.FC<PostType> = () => {
   const contentCreate = `Tôi muốn thực hiện trao đổi đối với sản phẩm này: ${postDetail?.product.detail.productName}`
 
   const handleChat = () => {
+    if (!studentInfo) {
+      toast.error("Trao đổi thất bại! Vui lòng đăng nhập trước để tiếp tục!");
+      return;
+    }
+
     if (userOwn?.sellerTO?.sellerId !== postDetail?.product?.seller?.sellerId) {
       dispatch(contactSeller({
         registeredStudentId: studentInfo?.registeredStudentId,
@@ -368,50 +370,53 @@ export const PostDetail: React.FC<PostType> = () => {
 
             {postDetail?.postType.postTypeId === 3 && (
               <div className="flex my-3 gap-3">
-                <Button onClick={() => {
-                  const userInfo = localStorage.getItem("userInfo");
-                  const student = userInfo ? JSON.parse(userInfo) : null;
-                  if (!student) {
-                    alert("Sign in to Continue?");
-                  } else if (postDetail) {
-                    if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
-                      toast.error("Bạn không thể đặt vào giỏ hàng sản phẩm của chính mình!");
-                    } else {
-                      console.log("studentID:", student.username);
-                      console.log("postProductId:", postDetail?.postProductId);
-                      console.log("variationId:");
-                      const variationList = [];
-                      Object.entries(detail).forEach(([key, values]) => {
-                        variationList.push(values);
-                      });
-
-                      // let paymentItem = [{ productId: prdId, variationList: variationList, quantity: 1 }];
-                      // localStorage.setItem(
-                      //   "paymentItem",
-                      //   JSON.stringify(paymentItem)
-                      // );
-                      // prdId ? dispatch(getProductByIdThunk(prdId)) : "";
-
-
-
-                      // dispatch(getProductByVariationDetailThunk(variationList));
-                      // dispatch(setProductQuantity({ id: parseInt(postProductId + ''), quantity: quantity }));
-                      // navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
-
-                      let prdId = postDetail.product.productId;
-                      const cartProduct: addCartItem = { registeredStudentId: student.registeredStudentId, postProductId: prdId, quantity: quantity, variationDetailId: variationList }
-                      if (
-                        postDetail &&
-                        postDetail.product.variation.length > Object.keys(detail).length
-                      ) {
-                        toast.error("Vui lòng hoàn thiện sản phẩm")
+                <Button
+                  className="flex justify-center items-center text-base py-4 px-6"
+                  onClick={() => {
+                    const userInfo = localStorage.getItem("userInfo");
+                    const student = userInfo ? JSON.parse(userInfo) : null;
+                    if (!student) {
+                      toast.error("Vui lòng đăng nhập để tiếp tục!");
+                    } else if (postDetail) {
+                      if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
+                        toast.error("Bạn không thể đặt vào giỏ hàng sản phẩm của chính mình!");
                       } else {
-                        dispatch(addToCartThunk(cartProduct))
+                        console.log("studentID:", student.username);
+                        console.log("postProductId:", postDetail?.postProductId);
+                        console.log("variationId:");
+                        const variationList = [];
+                        Object.entries(detail).forEach(([key, values]) => {
+                          variationList.push(values);
+                        });
+
+                        // let paymentItem = [{ productId: prdId, variationList: variationList, quantity: 1 }];
+                        // localStorage.setItem(
+                        //   "paymentItem",
+                        //   JSON.stringify(paymentItem)
+                        // );
+                        // prdId ? dispatch(getProductByIdThunk(prdId)) : "";
+
+
+
+                        // dispatch(getProductByVariationDetailThunk(variationList));
+                        // dispatch(setProductQuantity({ id: parseInt(postProductId + ''), quantity: quantity }));
+                        // navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
+
+                        let prdId = postDetail.product.productId;
+                        const cartProduct: addCartItem = { registeredStudentId: student.registeredStudentId, postProductId: prdId, quantity: quantity, variationDetailId: variationList }
+                        if (
+                          postDetail &&
+                          postDetail.product.variation.length > Object.keys(detail).length
+                        ) {
+                          toast.error("Vui lòng hoàn thiện sản phẩm")
+                        } else {
+                          dispatch(addToCartThunk(cartProduct))
+                        }
                       }
                     }
-                  }
-                }}>Thêm vào giỏ hàng</Button>
-                <Button
+                  }}>Thêm vào giỏ hàng</Button>
+                <Button type="primary"
+                  className="flex justify-center items-center text-base py-4 px-6"
                   onClick={() => {
                     if (
                       postDetail &&

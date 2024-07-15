@@ -27,7 +27,7 @@ export const Transaction = () => {
         sellerTO: {
           RegisteredStudent: {
             Student: {
-              studentId: studentInfo.username
+              studentId: studentInfo?.username
             }
           }
         }
@@ -61,8 +61,6 @@ export const Transaction = () => {
       navigate('/*');
     }
   }, [user, navigate]);
-
-  console.log(orderSeller)
 
   const handleChangeStatus = (orderId, orderStatusId) => {
     dispatch(updateStatusOrderThunk({ orderId: orderId, orderStatusId: orderStatusId }))
@@ -105,7 +103,7 @@ export const Transaction = () => {
                   {order.orderStatus.orderStatusName}
                 </div>
                 <div className="col-span-1">
-                  <Button type="link" className="text-base font-medium">Chi tiết</Button>
+                  <Button type="link" className="text-base font-medium" onClick={() => navigate(`/dashboard/detail/${order.orderId}`)}>Chi tiết</Button>
                 </div>
                 <div className="col-span-2">
                   {order.orderStatus.orderStatusId === 1 && (

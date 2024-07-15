@@ -80,7 +80,7 @@ export const UpdateWishlist = () => {
           });
       });
     }
-  }, [dispatch]);
+  }, [view]);
 
   const handleStatusChange = (value) => {
     setSelectedStatus(value);

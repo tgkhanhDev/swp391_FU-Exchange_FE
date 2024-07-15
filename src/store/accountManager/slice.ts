@@ -22,7 +22,13 @@ export const manageAccountSlice = createSlice({
       state.account = payload.data;
     });
 
-    builder.addCase(setStatusStaffThunk.fulfilled, (state, { payload }) => { });
+    builder.addCase(setStatusStaffThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`${payload.content}`);
+      } else {
+        toast.error(`${payload.content}`);
+      }
+    });
 
     builder.addCase(updateAProfileThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {

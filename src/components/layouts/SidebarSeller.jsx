@@ -13,7 +13,7 @@ const SidebarCustomer = () => {
 
       {/* My order */}
       <NavLink to={'/dashboard'}>
-        <button className={`rounded-r-[30px] h-16 grid grid-cols-[1fr_auto] items-center mb-2 w-52 hover:bg-slate-200 ${location.pathname === '/dashboard' ? 'bg-slate-300 w-64' : ''} duration-500`}>
+        <button className={`rounded-r-[30px] h-16 grid grid-cols-[1fr_auto] items-center mb-2 w-52 hover:bg-slate-200 ${location.pathname === '/dashboard' || location.pathname.includes('/dashboard/detail') ? 'bg-slate-300 w-64' : ''} duration-500`}>
           <div className='flex justify-center items-center pl-5'>
             <div className='ml-1 text-xl'><SwapOutlined className="mr-2" />Giao dịch</div>
           </div>
