@@ -13,7 +13,7 @@ export const Cart = () => {
   const [allChecked, setAllChecked] = useState(false);
   const [checkedItems, setCheckedItems] = useState([false, false]); // Initialize the state for the two checkboxes
   const { studentInfo } = useAccount();
-  const { cartListFilter } = useCart();
+  const { cartListFilter, cartList } = useCart();
   //STT post
   const sttOrder = useRef<number>(0)
 
@@ -26,7 +26,7 @@ export const Cart = () => {
   useEffect(() => {
     console.log("cartList:::", cartListFilter);
 
-  }, [cartListFilter])
+  }, [cartList])
 
   // Function to handle the change of the first checkbox
   const handleAllCheck = (e) => {
@@ -147,10 +147,12 @@ export const Cart = () => {
                         variationDetailId: variationDetailIds
                       }
                       // console.log("delItem:", delItem);
-                      dispatch(deleteItemCartThunk(delItem))
+                      dispatch(deleteItemCartThunk(delItem)).then(()=>{
+                        dispatch(viewCartThunk(studentInfo.registeredStudentId))
+                      })
                       //view cart
                       // dispatch(viewCartThunk());
-                      dispatch(viewCartThunk(studentInfo.registeredStudentId))
+                      // dispatch(viewCartThunk(studentInfo.registeredStudentId))
 
                     }} type="link">Delete</Button>
                   </div>

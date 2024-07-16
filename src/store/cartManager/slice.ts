@@ -23,28 +23,32 @@ export const manageCartSlice = createSlice({
       toast.success("Thêm sản phẩm vào giỏ hàng thành công");
     });
     builder.addCase(viewCartThunk.fulfilled, (state, { payload }) => {
-      state.cartList = payload.data;
+      const cartList = payload.data;
+      const cartListFilter: cartItemFilter[] = [];
 
-      payload.data.forEach((item) => {
-        let existingItem = state.cartListFilter.find(
-          (filterItem: cartItemFilter) =>
-            item.sttPostInCart === filterItem.sttPostInCart
+      cartList.forEach((item: cartItem) => {
+        let existingItem: any = cartListFilter.find(
+          (filterItem: cartItemFilter) => item.sttPostInCart === filterItem.sttPostInCart
         );
 
         if (existingItem) {
           existingItem.variationDetail.push(item.variationDetail);
         } else {
-          const sth = {
-            // sttId: item.sttId,
+          const newItem = {
             ...item,
             variationDetail: [item.variationDetail],
-            // variation: [item.variation],
           };
-          // console.log(":::",sth)
-          state.cartListFilter.push(sth);
+          cartListFilter.push(newItem);
         }
       });
-    });
+
+      return {
+        ...state,
+        cartList,
+        cartListFilter,
+      };
+
+    }),
     builder.addCase(deleteItemCartThunk.fulfilled, (state, { payload }) => {
       toast.success("Xóa sản phẩm thành công");
     });
