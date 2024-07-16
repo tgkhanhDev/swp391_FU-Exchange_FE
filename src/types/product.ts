@@ -47,9 +47,9 @@ export type ProductDetail = {
 export type Variation = {
   variationId: number;
   variationName: string;
-  variationDetail: Omit<VaritationDetail[], "variation">;
+  variationDetail: Omit<VariationDetail[], "variation">;
 };
-export type VaritationDetail = {
+export type VariationDetail = {
   variationDetailId: number;
   variation: {
     variationId: number;

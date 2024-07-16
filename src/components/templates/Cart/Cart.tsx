@@ -20,7 +20,7 @@ export const Cart = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(viewCartThunk(studentInfo.registeredStudentId))
+    dispatch(viewCartThunk(studentInfo.registeredStudentId))    
   }, [])
 
   useEffect(() => {
@@ -148,7 +148,10 @@ export const Cart = () => {
                       }
                       // console.log("delItem:", delItem);
                       dispatch(deleteItemCartThunk(delItem))
-                      
+                      //view cart
+                      // dispatch(viewCartThunk());
+                      dispatch(viewCartThunk(studentInfo.registeredStudentId))
+
                     }} type="link">Delete</Button>
                   </div>
                 </div>

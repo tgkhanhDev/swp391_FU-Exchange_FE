@@ -1,5 +1,5 @@
 import { Post } from "./post";
-import { VaritationDetail } from "./product";
+import { VariationDetail } from "./product";
 
 export interface deleteItemCartType {
   cartId: number;
@@ -22,7 +22,7 @@ export interface cartItem {
   cartPostId: deleteItemCartType;
   postProduct: Post;
   quantity: number;
-  variationDetail: VaritationDetail;
+  variationDetail: VariationDetail;
   sttPostInCart: number;
 }
 
@@ -31,6 +31,6 @@ export interface cartItemFilter {
   cartPostId: deleteItemCartType;
   postProduct: Post;
   quantity: number;
-  variationDetail: VaritationDetail[];
+  variationDetail: VariationDetail[];
   sttPostInCart: number;
 }
