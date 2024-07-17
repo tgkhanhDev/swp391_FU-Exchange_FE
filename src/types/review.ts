@@ -8,10 +8,10 @@ export interface Review {
 export interface viewReview {
   totalReview: number
   totalRating: number
-  reviews: Review[]
+  reviews: ReviewList[]
 }
 
-export interface Review {
+export interface ReviewList {
   review: number
   postProductId: number
   orderId: number

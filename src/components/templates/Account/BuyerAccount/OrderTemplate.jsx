@@ -63,6 +63,11 @@ export const OrderTemplate = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    if (!Array.isArray(order)) {
+      console.error('Order is not an array:', order);
+      return;
+    }
+
     let sortedOrders = [...order];
 
     if (sortBy === '2') {
@@ -202,8 +207,6 @@ export const OrderTemplate = () => {
     dispatch(updateStatusOrderThunk({ orderId: orderId, orderStatusId: orderStatusId }))
   }
 
-  console.log(orders)
-
   return (
     <div>
       <main className='py-10 mx-6'>
@@ -286,12 +289,15 @@ export const OrderTemplate = () => {
                         <div className="pb-4">
                           <div className="font-semibold text-lg">{product.productName}</div>
                           <div className="flex justify-between items-center">
-                            <div>{product.firstVariation}</div>
+                            <div className="flex-1 truncate">
+                              {product.firstVariation}
+                            </div>
                             {product.secondVariation && (
-                              <>
-                                <div>&#x2022;</div>
-                                <div>{product.secondVariation}</div>
-                              </>
+                              <div className="flex items-center ml-2">
+                                <div className="flex-1 truncate">
+                                  {product.secondVariation}
+                                </div>
+                              </div>
                             )}
                           </div>
                           <div className="mt-2">Số lượng: {product.quantity}</div>
@@ -314,7 +320,7 @@ export const OrderTemplate = () => {
                           <button
                             className="px-8 py-3 border-2 border-current bg-white text-[var(--color-primary)] font-bold"
                             onClick={() =>
-                              handleChat(item.order.registeredStudent, product.productName)
+                              handleChat(product.sellerId, product.productName)
                             }
                           >
                             Liên hệ người bán
@@ -330,31 +336,29 @@ export const OrderTemplate = () => {
                           </div>
                         </NavLink>
                         <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: {(product.priceBought * product.quantity * 1000).toLocaleString("en-EN")} VNĐ</div>
-                        {item.order.orderStatus.orderStatusId === 1 && (
-                          <div>
-                            <Button
-                              type="primary"
-                              className="flex justify-center items-center px-2 py-4 text-base"
-                              onClick={() => handleChangeStatus(item.order.orderId, 4)}
-                            >
-                              Hủy đơn
-                            </Button>
-                          </div>
-                        )}
-                        {item.order.orderStatus.orderStatusId === 3 && (
-                          <div>
-                            <Button
-                              type="primary"
-                              className="flex justify-center items-center px-2 py-4 text-base"
-                              onClick={() => handleChangeStatus(item.order.orderId, 5)}
-                            >
-                              Đã nhận hàng
-                            </Button>
-                          </div>
-                        )}
                       </div>
                     </div>
                   ))}
+                  {item.order.orderStatus.orderStatusId === 1 && (
+                    <div className="flex justify-end mx-4">
+                      <button
+                        className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold mr-12"
+                        onClick={() => handleChangeStatus(item.order.orderId, 4)}
+                      >
+                        Hủy đơn
+                      </button>
+                    </div>
+                  )}
+                  {item.order.orderStatus.orderStatusId === 3 && (
+                    <div>
+                      <button
+                        className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold mr-12"
+                        onClick={() => handleChangeStatus(item.order.orderId, 5)}
+                      >
+                        Đã nhận hàng
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))
             )

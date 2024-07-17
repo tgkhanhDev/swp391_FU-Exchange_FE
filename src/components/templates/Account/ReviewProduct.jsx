@@ -19,8 +19,8 @@ export const ReviewProduct = () => {
   const { studentInfo } = useAccount()
   const navigate = useNavigate();
 
-  const postProductIdRef = postProductId;
-  const orderIdRef = orderId;
+  const postProductIdRef = parseInt(postProductId);
+  const orderIdRef = parseInt(orderId);
   const ratingRef = value;
   const descripRef = useRef("");
 
@@ -51,6 +51,11 @@ export const ReviewProduct = () => {
       })
     );
   }
+
+  console.log(postProductIdRef)
+  console.log(orderIdRef)
+  console.log(ratingRef)
+  console.log(descripRef.current)
 
   return (
     <div className="py-6 px-28">
