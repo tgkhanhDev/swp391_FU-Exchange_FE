@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import { useAccount } from "../../../../hooks/useAccount";
 import { useOrder } from "../../../../hooks/useOrder";
 import { useAppDispatch } from "../../../../store";
 import { getOrderBySellerIdThunk, updateStatusOrderThunk } from "../../../../store/orderManager/thunk";
 import { getSellerInfoThunk } from "../../../../store/userManagement/thunk";
-import { Button } from "antd"
+import { Button, Select } from "antd";
 import { format } from 'date-fns';
+
+const { Option } = Select;
 
 export const Transaction = () => {
   const navigate = useNavigate();
@@ -14,14 +16,31 @@ export const Transaction = () => {
   const { studentInfo } = useAccount();
   const { orderSeller } = useOrder();
   const [user, setUser] = useState('');
+  const [sortOrder, setSortOrder] = useState('newest');
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return format(date, 'dd-MM-yyyy HH:mm:ss');
   };
 
-  useEffect(() => {
+  const handleSortChange = (value) => {
+    setSortOrder(value);
+  };
 
+  const sortOrders = (orders) => {
+    const ordersCopy = [...orders]; // Create a copy of the array
+    return ordersCopy.sort((a, b) => {
+      const dateA = new Date(a.createDate);
+      const dateB = new Date(b.createDate);
+      if (sortOrder === 'newest') {
+        return dateB - dateA;
+      } else {
+        return dateA - dateB;
+      }
+    });
+  };
+
+  useEffect(() => {
     dispatch(
       getSellerInfoThunk({
         sellerTO: {
@@ -36,7 +55,7 @@ export const Transaction = () => {
       .then((action) => {
         const { payload } = action;
         const { data } = payload;
-        setUser(data); // Kết hợp userInfo và data thành một đối tượng mới
+        setUser(data); // Combine userInfo and data into a new object
       })
       .catch((error) => {
         console.error("Error fetching account information:", error);
@@ -48,7 +67,7 @@ export const Transaction = () => {
     else if (studentInfo.role !== "Seller") {
       navigate('/authorize');
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (user.sellerTO && user.sellerTO.sellerId) {
@@ -63,19 +82,27 @@ export const Transaction = () => {
   }, [user, navigate]);
 
   const handleChangeStatus = (orderId, orderStatusId) => {
-    dispatch(updateStatusOrderThunk({ orderId: orderId, orderStatusId: orderStatusId }))
-  }
+    dispatch(updateStatusOrderThunk({ orderId: orderId, orderStatusId: orderStatusId }));
+  };
 
+  const sortedOrders = sortOrders(orderSeller);
 
   return (
     <div>
       <main className='py-10'>
         <div className='pl-14'>
           <div className='font-bold text-4xl'>Giao dịch</div>
-
           <div className="py-10 pr-6">
 
-            {/*Header*/}
+            {/* Sorting Filter */}
+            <div className="mb-4 flex justify-end">
+              <Select defaultValue="newest" onChange={handleSortChange}>
+                <Option value="newest">Ngày gần nhất</Option>
+                <Option value="oldest">Ngày xa nhất</Option>
+              </Select>
+            </div>
+
+            {/* Header */}
             <div className="grid grid-cols-12 text-center text-lg bg-white py-5 rounded-t-md mb-5 sticky top-32 z-10 shadow-md">
               <div className="col-span-1">Mã đơn</div>
               <div className="col-span-1">Payment</div>
@@ -86,8 +113,8 @@ export const Transaction = () => {
               <div className="col-span-2">Thao tác</div>
             </div>
 
-            {/*Body */}
-            {orderSeller.map(order => (
+            {/* Body */}
+            {sortedOrders.map(order => (
               <div key={order.orderId} className="grid grid-cols-12 text-center bg-white py-5 rounded-md mt-5">
                 <div className="col-span-1">{order.orderId}</div>
                 <div className="col-span-1">{order.paymentId}</div>
@@ -119,7 +146,7 @@ export const Transaction = () => {
                     </div>
                   )}
                   {(order.orderStatus.orderStatusId === 3 || order.orderStatus.orderStatusId === 4 || order.orderStatus.orderStatusId === 5) && (
-                    null // Không hiển thị bất kỳ nút nào
+                    null // Do not display any buttons
                   )}
                 </div>
               </div>
@@ -128,8 +155,7 @@ export const Transaction = () => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-
-export default Transaction
+export default Transaction;

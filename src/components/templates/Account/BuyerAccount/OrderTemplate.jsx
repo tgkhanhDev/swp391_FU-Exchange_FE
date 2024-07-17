@@ -22,7 +22,7 @@ export const OrderTemplate = () => {
   const { studentInfo } = useAccount();
   const [showBoxChat, setShowBoxChat] = useState(false);
   const messageEndRef = useRef(null);
-  const [sortBy, setSortBy] = useState();
+  const [sortBy, setSortBy] = useState('1');
   const [user, setUser] = useState();
   const [userDetail, setUserDetail] = useState();
   const [sellerId, setSellerId] = useState();
@@ -62,9 +62,21 @@ export const OrderTemplate = () => {
     }
   }, [dispatch]);
 
+  useEffect(() => {
+    let sortedOrders = [...order];
+
+    if (sortBy === '2') {
+      sortedOrders = sortedOrders.sort((a, b) => new Date(a.order.createDate) - new Date(b.order.createDate));
+    } else {
+      sortedOrders = sortedOrders.sort((a, b) => new Date(b.order.createDate) - new Date(a.order.createDate));
+    }
+
+    setOrders(sortedOrders);
+  }, [order, sortBy]);
+
   const options = [
-    { value: '1', label: 'Giảm dần theo ngày' },
-    { value: '2', label: 'Tăng dần theo ngày' },
+    { value: '1', label: 'Ngày gần nhất' },
+    { value: '2', label: 'Ngày xa nhất' },
   ];
 
   const formatDate = (dateString) => {
@@ -190,6 +202,8 @@ export const OrderTemplate = () => {
     dispatch(updateStatusOrderThunk({ orderId: orderId, orderStatusId: orderStatusId }))
   }
 
+  console.log(orders)
+
   return (
     <div>
       <main className='py-10 mx-6'>
@@ -199,104 +213,157 @@ export const OrderTemplate = () => {
             <div className="w-60">
               <Select
                 className="w-60"
-                defaultValue={'Giảm dần theo ngày'}
+                defaultValue={'1'}
                 options={options}
                 onChange={(value) => setSortBy(value)}
               />
             </div>
           </div>
 
-          {order && order.postProductInOrder ? (
-            order.postProductInOrder.length === 0 ? (
-              <div className="flex justify-center items-center text-red-500 text-2xl font-semibold">Chưa có đơn hàng</div>
-            ) : (order.postProductInOrder.map(item => {
-              return (
-                <div key={item.order.orderId} className='bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300'>
+          {orders ? (
+            orders.length === 0 ? (
+              <div className="flex justify-center items-center text-red-500 text-2xl font-semibold">
+                Chưa có đơn hàng
+              </div>
+            ) : (
+              orders.map((item) => (
+                <div
+                  key={item.order.orderId}
+                  className="bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300"
+                >
                   <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">
-                    <div className="">
+                    <div>
                       <div className="text-lg font-bold">Ngày đặt đơn:</div>
                       <div>{formatDate(item.order.createDate)}</div>
                     </div>
-                    <div className="">
-                      <div className="text-lg font-bold">Tổng đơn: </div>
-                      <div> VNĐ</div>
+                    <div>
+                      <div className="text-lg font-bold">Ngày cập nhật mới:</div>
+                      <div>{formatDate(item.order.completeDate)}</div>
                     </div>
-                    <div className="">
+                    <div>
+                      <div className="text-lg font-bold">Tổng đơn:</div>
+                      <div>
+                        {item.postProductInOrder
+                          .reduce(
+                            (total, product) => total + product.priceBought * product.quantity * 1000,
+                            0
+                          )
+                          .toLocaleString("en-EN")}{" "}
+                        VNĐ
+                      </div>
+                    </div>
+                    <div>
                       <div className="text-lg font-bold">Trạng thái đơn hàng:</div>
                       <div>{item.order.orderStatus.orderStatusName}</div>
                     </div>
-                    <div className="">
+                    <div>
                       <div className="text-lg font-bold">Payment:</div>
                       <div>{item.order.paymentId}</div>
                     </div>
-                    <div className="">
-                      <div className="text-lg font-bold">Mã đơn: </div>
+                    <div>
+                      <div className="text-lg font-bold">Mã đơn:</div>
                       <div className="text-center">{item.order.orderId}</div>
                     </div>
                   </div>
 
-                  <div key={item.postProduct.postProductId} className="py-5 px-5 flex flex-row gap-4">
-                    <div className='h-32 w-32'>
-                      {item.postProduct ? (
-                        <img src={item.imageUrlProduct} className="h-32 w-32" />
-                      ) : (
-                        <div>No Image</div>
-                      )}
-                    </div>
-                    <div className="w-[40%]">
-                      <div className="pb-4">
-                        <div className="font-semibold text-lg">{item.postProduct.product.detail.productName}</div>
-                        <div className="flex justify-between items-center">
-                          <div>{item.firstVariation}</div>
-                          {item.secondVariation && (
-                            <>
-                              <div>&#x2022;</div>
-                              <div>{item.secondVariation}</div>
-                            </>
-                          )}
-                        </div>
-                        <div className="mt-2">Số lượng: {item.quantity}</div>
-                      </div>
-                      <div className="flex justify-between">
-                        {item.postProduct ? (
-                          <button className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold"
-                            onClick={() => {
-                              navigate(`/detail/${item.postProduct.postProductId}`);
-                            }}
-                          >Mua lại</button>
+                  {item.postProductInOrder.map((product) => (
+                    <div
+                      key={product.postProductId}
+                      className="py-5 px-5 flex flex-row gap-4"
+                    >
+                      <div className="h-32 w-32">
+                        {product.imageUrlProduct ? (
+                          <img
+                            src={product.imageUrlProduct}
+                            className="h-32 w-32"
+                            alt={product.productName}
+                          />
                         ) : (
-                          <button className="px-14 py-3 bg-gray-200 text-gray-500 font-bold mr-5">Bài đăng đã bị xóa hoặc vô hiệu hóa</button>
+                          <div>No Image</div>
                         )}
-                        <button className="px-8 py-3 border-2 border-current bg-white text-[var(--color-primary)] font-bold" onClick={() => handleChat(item.postProduct.sellerId, item.postProduct.product.detail.productName)}>Liên hệ người bán</button>
+                      </div>
+                      <div className="w-[40%]">
+                        <div className="pb-4">
+                          <div className="font-semibold text-lg">{product.productName}</div>
+                          <div className="flex justify-between items-center">
+                            <div>{product.firstVariation}</div>
+                            {product.secondVariation && (
+                              <>
+                                <div>&#x2022;</div>
+                                <div>{product.secondVariation}</div>
+                              </>
+                            )}
+                          </div>
+                          <div className="mt-2">Số lượng: {product.quantity}</div>
+                        </div>
+                        <div className="flex justify-between">
+                          {product.postStatusDTO.postStatusId === 4 ? (
+                            <button
+                              className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold"
+                              onClick={() => {
+                                navigate(`/detail/${product.postProductId}`);
+                              }}
+                            >
+                              Mua lại
+                            </button>
+                          ) : (
+                            <button className="px-14 py-3 bg-gray-200 text-gray-500 font-bold mr-5">
+                              Bài đăng đã bị xóa hoặc vô hiệu hóa
+                            </button>
+                          )}
+                          <button
+                            className="px-8 py-3 border-2 border-current bg-white text-[var(--color-primary)] font-bold"
+                            onClick={() =>
+                              handleChat(item.order.registeredStudent, product.productName)
+                            }
+                          >
+                            Liên hệ người bán
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex flex-col justify-between items-end flex-grow text-lg font-medium">
+                        <NavLink
+                          to={`/review/${item.order.orderId}/${product.postProductId}`}
+                        >
+                          <div className="text-[var(--color-primary)] underline">
+                            Đánh giá ngay
+                          </div>
+                        </NavLink>
+                        <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: {(product.priceBought * product.quantity * 1000).toLocaleString("en-EN")} VNĐ</div>
+                        {item.order.orderStatus.orderStatusId === 1 && (
+                          <div>
+                            <Button
+                              type="primary"
+                              className="flex justify-center items-center px-2 py-4 text-base"
+                              onClick={() => handleChangeStatus(item.order.orderId, 4)}
+                            >
+                              Hủy đơn
+                            </Button>
+                          </div>
+                        )}
+                        {item.order.orderStatus.orderStatusId === 3 && (
+                          <div>
+                            <Button
+                              type="primary"
+                              className="flex justify-center items-center px-2 py-4 text-base"
+                              onClick={() => handleChangeStatus(item.order.orderId, 5)}
+                            >
+                              Đã nhận hàng
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div className="flex flex-col justify-between items-end flex-grow text-lg font-medium">
-                      <NavLink to={`/review/${item.order.orderId}/${item.postProduct.postProductId}`}>
-                        <div className="text-[var(--color-primary)] underline">Đánh giá ngay</div>
-                      </NavLink>
-                      {item.order.orderStatus.orderStatusId === 1 && (
-                        <div>
-                          <Button type="primary" className="flex justify-center items-center px-2 py-4 text-base" onClick={() => handleChangeStatus(item.order.orderId, 4)}>
-                            Hủy đơn
-                          </Button>
-                        </div>
-                      )}
-                      {item.order.orderStatus.orderStatusId === 3 && (
-                        <div>
-                          <Button type="primary" className="flex justify-center items-center px-2 py-4 text-base" onClick={() => handleChangeStatus(item.order.orderId, 5)}>
-                            Đã nhận hàng
-                          </Button>
-                        </div>
-                      )}
-                      <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm:VNĐ</div>
-                    </div>
-                  </div>
-
+                  ))}
                 </div>
-              )
-            }
-            ))
-          ) : (<div className="text-2xl font-semibold text-red-500 text-center">Not Found</div>)}
+              ))
+            )
+          ) : (
+            <div className="text-2xl font-semibold text-orange-500 text-center">
+              Loading...
+            </div>
+          )}
+
         </div>
       </main>
 
