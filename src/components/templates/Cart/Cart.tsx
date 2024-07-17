@@ -14,6 +14,7 @@ export const Cart = () => {
   const [checkedItems, setCheckedItems] = useState([false, false]); // Initialize the state for the two checkboxes
   const { studentInfo } = useAccount();
   const { cartListFilter, cartList } = useCart();
+  const [totalPrice, setTotalPrice] = useState<number>(0);
   //STT post
   const sttOrder = useRef<number>(0)
 
@@ -65,7 +66,7 @@ export const Cart = () => {
 
               <NavLink to={'/payment'}>
                 <button onClick={handleBuyAll} className='px-14 py-3 text-base hover:text-[var(--color-secondary)] hover:bg-white font-semibold text-white bg-[var(--color-primary)] duration-300 hover:shadow-[inset_0_0_0_2px_var(--color-secondary)]'>
-                  Mua tất cả - 23,000VNĐ
+                  Mua tất cả - {totalPrice}VNĐ
                 </button>
               </NavLink>
 
@@ -98,7 +99,11 @@ export const Cart = () => {
           {/*Card */}
 
           {cartListFilter.map(item => {
-            if (item.sttPostInCart)
+            if (item.sttPostInCart){
+              let price = item.postProduct.quantity * item.postProduct.product.price + totalPrice;
+              console.log("price: ", price);
+              
+              // setTotalPrice(price);
               return (
                 <div className='bg-white rounded-md h-40 w-full grid grid-cols-12 gap-2 mb-2'>
                   <div className='col-span-1 flex justify-center items-center'><Checkbox
@@ -158,6 +163,7 @@ export const Cart = () => {
                   </div>
                 </div>
               )
+            }
           })}
 
         </div>
