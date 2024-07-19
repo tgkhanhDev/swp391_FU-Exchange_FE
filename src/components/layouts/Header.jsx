@@ -10,9 +10,9 @@ import { CSSTransition } from "react-transition-group";
 import { Dropdown, Menu, Popover } from "antd";
 import "./styles.css";
 import { useChat } from "../../hooks/useChat"
-import { viewChatRoom, sendMessage, chatRoomStS } from "../../store/chatManager/thunk"
+import { viewChatRoom, sendMessage, chatRoomStS, deleteChatRoom } from "../../store/chatManager/thunk"
 import { useAccount } from "../../hooks/useAccount"
-import { format } from 'date-fns';
+import { Tooltip } from 'react-tooltip'
 
 export const Header = () => {
   const [user, setUser] = useState();
@@ -53,21 +53,26 @@ export const Header = () => {
     }
   };
 
+  const registeredId = studentInfo?.registeredStudentId;
+
   useEffect(() => {
     // Đảm bảo chatroom không rỗng và có ít nhất một phòng chat
     if (chatroom && chatroom.length > 0) {
-      // Lặp qua các phòng chat để lấy thông tin người dùng từ studentReceiveId
-      chatroom.forEach(room => {
-        const registeredId = room.chatMessage[0].studentReceiveId;
 
-        // Dispatch Thunk để lấy dữ liệu người dùng dựa trên registeredId
-        dispatch(getAccountInfoThunk({ registeredStudentId: registeredId }))
+      chatroom.forEach(room => {
+        // Kiểm tra xem room.chatMessage[0].studentSendId có bằng registeredId hay không
+        const studentIdToFetch = (room.chatMessage[0].studentSendId === registeredId)
+          ? room.chatMessage[0].studentReceiveId
+          : room.chatMessage[0].studentSendId;
+
+        // Dispatch Thunk để lấy dữ liệu người dùng dựa trên studentIdToFetch
+        dispatch(getAccountInfoThunk({ registeredStudentId: studentIdToFetch }))
           .then((action) => {
             const { payload } = action;
             const { data } = payload;
             setUser((prevUser) => ({
               ...prevUser,
-              [registeredId]: data  // Lưu trữ thông tin người dùng dựa trên registeredId
+              [studentIdToFetch]: data  // Lưu trữ thông tin người dùng dựa trên studentIdToFetch
             }));
           })
           .catch((error) => {
@@ -81,13 +86,13 @@ export const Header = () => {
     <Menu onClick={handleMenuClick} className="w-44 custome-font">
       <Menu.Item key="/authorize">Tài khoản</Menu.Item>
       <Menu.Item key="/authorize/order">Đơn hàng</Menu.Item>
-      {userInfo && userInfo.role === "Seller" && user?.sellerTO?.active !== 2 ? (
+      {userInfo && userInfo.role === "Seller" && user?.sellerTO?.active === 1 ? (
         <Menu.SubMenu key="seller" title="Quản lý bán hàng">
           <Menu.Item key="/dashboard" className="custome-font-child">
-            Thống kê
-          </Menu.Item>
-          <Menu.Item key="/dashboard/transaction" className="custome-font-child">
             Giao dịch
+          </Menu.Item>
+          <Menu.Item key="/dashboard/wishlist" className="custome-font-child">
+            Chờ tặng
           </Menu.Item>
           <Menu.Item key="/dashboard/product" className="custome-font-child">
             Sản phẩm
@@ -156,8 +161,6 @@ export const Header = () => {
   const isEmptyChatDetail = !chatDetail || Object.keys(chatDetail).length === 0 ||
     Object.keys(chatDetail).every(roomId => chatDetail[roomId].length === 0);
 
-  const registeredId = studentInfo?.registeredStudentId;
-
   const handleChat = () => {
     setShowChat(prevShowChat => !prevShowChat)
   }
@@ -210,11 +213,18 @@ export const Header = () => {
     }
   }
 
+  const handleDeleteChat = (chatRoomId) => {
+    dispatch(deleteChatRoom(chatRoomId));
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      reloadBoxChat();
+    }
+  };
+
   const reloadBoxChat = () => {
     if (chatDetail && chatroom) {
-      console.log(studentReceiveId),
-        console.log(chatRoomId),
-        console.log(studentSendIdRef)
       dispatch(
         sendMessage({
           studentSendId: studentSendIdRef, // Assuming studentSendIdRef is correctly defined elsewhere
@@ -239,8 +249,14 @@ export const Header = () => {
       </div>
       <div className="py-3 pl-5 pr-20 flex justify-between bg-white border-b-2 border-b-slate-300 ">
         <NavLink to={"/"}>
-          <img className="h-10" src="/images/logos/fu_Ex_logo.png" />
+          <img className="h-10" src="/images/logos/fu_Ex_logo.png" data-tooltip-id="my-tooltip-1" />
         </NavLink>
+        <Tooltip
+          id="my-tooltip-1"
+          place="bottom"
+          content="Trang chủ"
+          style={{ backgroundColor: "#fd7014", color: "#fff" }}
+        />
 
         <div className="flex justify-center items-center">
           <button
@@ -264,8 +280,14 @@ export const Header = () => {
 
         <div className="flex justify-center items-center">
           <NavLink to={"/cart"}>
-            <ShoppingCartOutlined className="mr-10 cursor-pointer text-3xl" />
+            <ShoppingCartOutlined className="mr-10 cursor-pointer text-3xl" data-tooltip-id="my-tooltip-3" />
           </NavLink>
+          <Tooltip
+            id="my-tooltip-3"
+            place="bottom"
+            content="Giỏ hàng"
+            style={{ backgroundColor: "#fd7014", color: "#fff" }}
+          />
           {!user && (
             <NavLink to={"/login"}>
               <button className="font-semibold">Đăng nhập</button>
@@ -293,8 +315,16 @@ export const Header = () => {
             </Dropdown>
           )}
           {user && (
-            <div onClick={handleChat}>
-              <MessageOutlined className="ml-10 cursor-pointer text-xl" />
+            <div>
+              <div onClick={handleChat}>
+                <MessageOutlined className="ml-10 cursor-pointer text-xl" data-tooltip-id="my-tooltip-2" />
+              </div>
+              <Tooltip
+                id="my-tooltip-2"
+                place="bottom"
+                content="Trò chuyện"
+                style={{ backgroundColor: "#fd7014", color: "#fff" }}
+              />
             </div>
           )}
         </div>
@@ -331,7 +361,14 @@ export const Header = () => {
                                 {room.chatMessage && room.chatMessage.length > 0 && (
                                   <div key={room.chatMessage[0].messageId} className="flex flex-grow items-center justify-between ml-2">
                                     <div>
-                                      <div className="text-base font-semibold">{truncateContent(`${user?.[room.chatMessage[0].studentReceiveId]?.student?.firstName} ${user?.[room.chatMessage[0].studentReceiveId]?.student?.lastName}`, 8)}</div>
+                                      <div className="text-base font-semibold">
+                                        {truncateContent(
+                                          (room.chatMessage[0].studentSendId === registeredId)
+                                            ? `${user?.[room.chatMessage[0].studentReceiveId]?.student?.firstName || ''} ${user?.[room.chatMessage[0].studentReceiveId]?.student?.lastName || ''}`
+                                            : `${user?.[room.chatMessage[0].studentSendId]?.student?.firstName || ''} ${user?.[room.chatMessage[0].studentSendId]?.student?.lastName || ''}`,
+                                          8
+                                        )}
+                                      </div>
                                       <div>{truncateContent(room.chatMessage.slice(-1)[0].content, 14)}</div>
                                     </div>
                                     <div className="text-right text-sm">
@@ -339,7 +376,7 @@ export const Header = () => {
                                       <Popover
                                         placement="bottomRight"
                                         content={(
-                                          <button className="rounded flex justify-center items-center">
+                                          <button className="rounded flex justify-center items-center" onClick={() => handleDeleteChat(room.chatRoomId)}>
                                             <DeleteOutlined className="text-xl mr-2" />Delete
                                           </button>
                                         )}
@@ -407,6 +444,7 @@ export const Header = () => {
                                 )
                               ) : (
                                 message.studentSendId !== registeredId ? (
+                                  studentReceiveId = message.studentSendId,
                                   <div key={message.chatMessageId} className="flex items-center my-4">
                                     <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
                                       <UserOutlined className="text-lg" />
@@ -416,6 +454,7 @@ export const Header = () => {
                                     </div>
                                   </div>
                                 ) : (
+                                  studentReceiveId = message.studentReceiveId,
                                   <div key={message.chatMessageId} className="flex justify-end items-center my-4">
                                     <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
                                       {message.content}
@@ -442,7 +481,8 @@ export const Header = () => {
                 <div className="flex justify-between items-center border-t-2 border-t-slate-300 py-2 px-4">
                   <input type="text" placeholder="Gửi gì đó đi..." className="w-full focus:outline-none pr-3" onChange={(e) => {
                     contentRef.current = e.target.value;
-                  }} />
+                  }}
+                    onKeyPress={handleKeyPress} />
                   <button onClick={reloadBoxChat}><SendOutlined className="text-[var(--color-primary)]" /></button>
                 </div>
               )}

@@ -8,28 +8,28 @@ export const SidebarModerator = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[var(--color-bg-hightlight)] rounded-tl-lg h-full pr-3 fixed top-0 left-0 bottom-0 overflow-y-auto w-1/4">
+    <div className="bg-[var(--color-bg-hightlight)] h-full pr-3 fixed top-0 left-0 bottom-0 overflow-y-auto w-1/4">
       <div className="text-lg text-white pt-[20px]">
         <div className="mt-8">
-
+ 
           <NavLink to={'/admin'}>
-            <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname === '/admin' || location.pathname === '/admin/accountManagement' || location.pathname === '/admin/sellerRequestAcc' ? 'bg-[var(--color-primary)]' : ''} `}>
+            <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname === '/admin' || location.pathname === '/admin/accountManagement' || location.pathname === '/admin/sellerRequestAcc' || location.pathname === '/admin/sellerManagement' ? 'bg-[var(--color-primary)]' : ''} `}>
               <UserOutlined className="text-2xl" />
-              <div>Manage Customer Account</div>
+              <div>Quản lí tài khoản khách</div>
             </div>
           </NavLink>
 
           <NavLink to={'/admin/staffManage'}>
             <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname.includes('/admin/staffManage') ? 'bg-[var(--color-primary)]' : ''} `}>
               <TeamOutlined className="text-2xl" />
-              <div>Manage Staff Account</div>
+              <div>Quản lí tài khoản nhân viên</div>
             </div>
           </NavLink>
 
           <NavLink to={'/admin/reportAccManage'}>
             <div className={`pl-[20px] pt-[18px] pb-[18px] flex flex-row rounded-r-full gap-4 duration-200 hover:opacity-85 ${location.pathname.includes('/admin/reportAccManage') ? 'bg-[var(--color-primary)]' : ''} `}>
               <FileOutlined className="text-2xl" />
-              <div>Manage Report Account</div>
+              <div>Quản lí báo cáo tài khoản</div>
             </div>
           </NavLink>
 
@@ -40,7 +40,7 @@ export const SidebarModerator = () => {
             }}
             >
               <LogoutOutlined className="text-2xl" />
-              <div>Logout</div>
+              <div>Đăng xuất</div>
             </button>
 
         </div>

@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Input, Select } from "antd";
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { registerSellerThunk } from '../../../store/userManagement/thunk';
 import { useAppDispatch } from "../../../store";
+import { useAccount } from "../../../hooks/useAccount"
 import './styles.css'
 
 export const RegisterSeller = () => {
@@ -12,6 +13,8 @@ export const RegisterSeller = () => {
   const pwdRef = useRef("");
   const bankNumRef = useRef("");
   const bankNameRef = useRef("");
+  const { studentInfo } = useAccount();
+  const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
 
@@ -25,6 +28,12 @@ export const RegisterSeller = () => {
       if (userObject.registeredStudentId) {
         mssvRef.current = userObject.registeredStudentId;
       }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!studentInfo) {
+      navigate("/login");
     }
   }, []);
 

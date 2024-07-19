@@ -38,7 +38,7 @@ export const Payment = () => {
 
     window.addEventListener('unload', (e) => {
       e.preventDefault()
-      navigate("/abc")
+      navigate(-1)
     });
 
   }, [studentInfo, productView])
@@ -54,14 +54,15 @@ export const Payment = () => {
 
   const onPurchase = () => {
     const postProductToBuyRequests: PostProductToBuyRequestType[] = []
-
+    console.log("productQUantity:::", productQuantity);
+    
     productView.map(prd => {
       prd.variation.map((item, index) => {
         postProductToBuyRequests.push(
           {
             sttOrder: index + 1,
             postProductId: postProductId,
-            variationId:  item.variationId,
+            variationId: item.variationId,
             variationDetailId: item.variationDetail.variationDetailId,
             quantity: productQuantity[postProductId],
             price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
@@ -69,6 +70,7 @@ export const Payment = () => {
         )
       })
     })
+    console.log(postProductToBuyRequests)
     const payment: PaymentType = {
       registeredStudentId: studentInfo.registeredStudentId,
       postProductToBuyRequests: postProductToBuyRequests,
@@ -76,9 +78,13 @@ export const Payment = () => {
       description: (document.getElementById("description") as HTMLInputElement).value,
     }
 
-    // console.log("payment:::", payment);
-    
-    dispatch(postPayCodThunk(payment))
+    dispatch(postPayCodThunk(payment)).then(item => {
+      if (item.payload.status == 400) {
+        toast.error(item.payload.content)
+      } else {
+        toast.success(item.payload.content)
+      }
+    })
   }
 
 
@@ -91,7 +97,7 @@ export const Payment = () => {
           {
             sttOrder: index + 1,
             postProductId: postProductId,
-            variationId: item.variationId ,
+            variationId: item.variationId,
             variationDetailId: item.variationDetail.variationDetailId,
             quantity: productQuantity[postProductId],
             price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
@@ -108,12 +114,9 @@ export const Payment = () => {
       paymentMethodId: 2,
       description: (document.getElementById("description") as HTMLInputElement).value
     }
-    // console.log("payment:::", payment);
-
     dispatch(postPayVnPayThunk(payment)).then((response) => {
       window.location.href = response.payload.paymentUrl;
     });
-
   }
 
   return (
@@ -193,7 +196,7 @@ export const Payment = () => {
                 return (
                   <div className="flex justify-between items-center">
                     <div>Tổng giá trị sản phẩm ({index + 1})</div>
-                    <div>{product.product.price * productQuantity[product.product.productId] * 1000} VNĐ</div>
+                    <div>{parseInt(product.product.price) * productQuantity[product.product.productId] * 1000} VNĐ</div>
                   </div>
                 )
               })}
@@ -223,7 +226,7 @@ export const Payment = () => {
             </button>
             <div className="text-with-lines">HOẶC</div>
             <button onClick={onPurchaseVnPay} className="px-12 py-3 font-medium bg-white flex my-4 gap-5 justify-between items-center hover:bg-slate-50 w-full duration-200">
-              Trả bằng QR VNPAY <img src="/images/logos/VNPAY.png" />
+              Trả bằng VNPAY <img src="/images/logos/VNPAY.png" />
             </button>
           </div>
         </div>

@@ -38,7 +38,12 @@ export type setStatus = {
 
 export type setStatusAcc = {
   registeredStudentId: number,
-  active: number,
+  isActive: number,
+}
+
+export type setStatusSeller = {
+  sellerId: number,
+  isActive: number,
 }
 
 export interface UpdateProfile {
@@ -79,9 +84,9 @@ export interface Student {
 };
 
 export type filterGetCustomerAccount = {
-  current: number,
-  name?: string,
+  name?: number | "";
 }
+
 export type deleteSellerPostProductFilter = {
   postProductId: number;
   postStatusId: number;

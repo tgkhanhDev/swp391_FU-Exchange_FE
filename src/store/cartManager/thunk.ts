@@ -25,3 +25,15 @@ export const viewCartThunk = createAsyncThunk(
     }
   }
 );
+
+export const deleteItemCartThunk = createAsyncThunk(
+  "deleteToCart",
+  async (payload: addCartItem, { rejectWithValue }) => {
+    try {
+      const data = await manageCart.deleteItemCart(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

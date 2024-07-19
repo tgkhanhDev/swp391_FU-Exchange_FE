@@ -17,7 +17,7 @@ const { Option } = Select;
 export const ManagePostProduct = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate();
-  const { studentInfo } = useAccount();
+  const { staffInfor } = useAccount();
   const { postStatus } = useView();
 
   const [postStt, setPostStt] = useState<PostStatus>({
@@ -70,12 +70,11 @@ export const ManagePostProduct = () => {
 
 
   useEffect(() => {
-    // if (!studentInfo) {
-    //   navigate('/login');
-    // }
-    // else if (studentInfo.role !== "Seller") {
-    //   navigate('/authorize');
-    // }    
+    if (!staffInfor) {
+      navigate('/*');
+    } else if (staffInfor.role !== "Moderator") {
+      navigate('/admin');
+    }
     dispatch(getAllPostByModeratorThunk({ page: page, sellerName: filterName, postStatus: postStt.postStatusId })).then((item: any) => {
       setPostList(item.payload.data)
     })
@@ -111,7 +110,7 @@ export const ManagePostProduct = () => {
       </div>
       {/* filter  */}
       <Input onChange={handleSearch} placeholder="Tìm kiếm theo tên..." />
-      <div className="flex justify-end mr-10">
+      <div className="flex justify-end my-2">
         <Dropdown menu={{ items: postStatusList }} placement="bottom" arrow>
           <Button>Lọc theo: {postStt?.postStatusName} </Button>
         </Dropdown>

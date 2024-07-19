@@ -9,10 +9,9 @@ const api = apiInstance({
 
 export const manageCart = {
   viewCart: (payload: string) => api.get(`/${payload}`),
-  addToCart: (payload: addCartItem) => api.post(``, payload),
+  addToCart: (payload: addCartItem) => api.post(`/add-to-cart`, payload),
   updateQuantity: (payload) => api.put(`/cart-update`, payload),
-  // deleteItemCart: (payload: deleteItemCartType) =>
-  //   api.delete(`/cart-delete`, payload),
+  deleteItemCart: (payload: deleteItemCartType) =>
+    api.delete(`/cart-delete`, { data: payload }),
   // pay_vnpay: (payload: string) => api.get(`/vn-pay?amount=${payload}`),
-
 };

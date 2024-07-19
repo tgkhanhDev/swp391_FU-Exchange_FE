@@ -80,7 +80,7 @@ export const UpdateWishlist = () => {
           });
       });
     }
-  }, [view, dispatch]);
+  }, [view]);
 
   const handleStatusChange = (value) => {
     setSelectedStatus(value);
@@ -99,15 +99,21 @@ export const UpdateWishlist = () => {
     setSelectedStudent(registeredStudentId)
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
     if (userDetail?.sellerTO?.sellerId) {
       let content = '';
       if (selectedStatus === 1) {
         content = `Tôi tặng cho bạn sản phẩm này: ${contentTemp}`;
-        dispatch(contactStudent({ registeredStudentId: selectedStudent, sellerId: userDetail.sellerTO.sellerId, content }));
+        const result = await dispatch(updateStatusWishlistThunk({ active: 1, wishListId: selectedId }));
+        if (result.payload.status === 200) {
+          dispatch(contactStudent({ registeredStudentId: selectedStudent, sellerId: userDetail.sellerTO.sellerId, content }));
+        }
       } else if (selectedStatus === 0) {
         content = `Tôi không muốn tặng cho bạn sản phẩm này nữa: ${contentTemp}`;
-        dispatch(contactStudent({ registeredStudentId: selectedStudent, sellerId: userDetail.sellerTO.sellerId, content }));
+        const result = await dispatch(updateStatusWishlistThunk({ active: 0, wishListId: selectedId }));
+        if (result.payload.status === 200) {
+          dispatch(contactStudent({ registeredStudentId: selectedStudent, sellerId: userDetail.sellerTO.sellerId, content }));
+        }
       }
     }
   };
@@ -159,6 +165,11 @@ export const UpdateWishlist = () => {
               </tbody>
             )}
           </table>
+
+          <div className="mt-4">
+            <Button type="primary" onClick={() => navigate(`/dashboard/wishlist`)}>Trở về</Button>
+          </div>
+
         </div>
       </main>
       <Modal

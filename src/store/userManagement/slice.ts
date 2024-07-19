@@ -17,6 +17,7 @@ import {
   getAccountInfoTypeThunk,
   getSellerInfoBySellerIdThunk,
   deleteSellerPostProductThunk,
+  getAllSellerThunk
 } from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -61,7 +62,7 @@ export const manageUsersSlice = createSlice({
         toast.success(`${payload.content}`);
         //!redirect here
         state.isAuthorize = true;
-        window.location.href = "/authorize";
+        window.location.href = "/";
 
         localStorage.setItem("userInfo", JSON.stringify(payload.data));
       } else {
@@ -131,7 +132,9 @@ export const manageUsersSlice = createSlice({
     builder.addCase(registerSellerThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
         toast.success(`${payload.content}`);
-        window.location.href = "/login";
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
       } else {
         toast.info(`${payload.content}`);
       }
@@ -192,6 +195,11 @@ export const manageUsersSlice = createSlice({
       getAllRegisteredStudentThunk.fulfilled,
       (state, { payload }) => {
         state.users = payload.data;
+      }
+    );
+    builder.addCase(
+      getAllSellerThunk.fulfilled,
+      (state, { payload }) => {
       }
     );
   },

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from "../../../../hooks/useAccount";
 import { useAppDispatch } from "../../../../store";
@@ -15,13 +15,12 @@ export const AccountManager = () => {
   const { staffInfor } = useAccount();
   const [user, setUser] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const [selectedAcc, setSelectedAcc] = useState(null);
   const [isModalInfoVisible, setIsModalInfoVisible] = useState(false);
 
-  const [selectedStatus, setSelectedStatus] = useState(null);
-  const [selectedAccId, setSelectedAccId] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState();
+  const [selectedAccId, setSelectedAccId] = useState();
   const [isModalStatusVisible, setIsModalStatusVisible] = useState(false);
 
   const formatDay = (dateString) => {
@@ -31,18 +30,15 @@ export const AccountManager = () => {
 
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
     const filteredData = user.filter((student) => {
-      const fullName = `${student.firstName} ${student.lastName}`.toLowerCase();
+      const fullName = `${student.student.firstName} ${student.student.lastName}`.toLowerCase();
       return fullName.includes(query);
     });
     setFilteredUsers(filteredData);
   };
 
   useEffect(() => {
-    dispatch(getAllRegisteredStudentThunk(
-      { current: 20, name: "" }
-    ))
+    dispatch(getAllRegisteredStudentThunk({name: ""}))
       .then((action) => {
         const { payload } = action;
         const { data } = payload;
@@ -76,10 +72,10 @@ export const AccountManager = () => {
 
   const handleOk = () => {
     if (selectedAccId !== null && selectedStatus !== null) {
-      dispatch(setStatusAccountThunk({ registeredStudentId: selectedAccId, active: selectedStatus }))
+      dispatch(setStatusAccountThunk({ registeredStudentId: selectedAccId, isActive: selectedStatus }))
         .then(() => {
           // Refetch the user data
-          dispatch(getAllRegisteredStudentThunk({ current: 20, name: "" }))
+          dispatch(getAllRegisteredStudentThunk({name: ""}))
             .then((action) => {
               const { payload } = action;
               const { data } = payload;
@@ -130,17 +126,17 @@ export const AccountManager = () => {
           <tbody>
             {filteredUsers?.map((student) => (
               <tr key={student.registeredStudentId} className="hover:bg-gray-50 duration-150">
-                <td className="py-5 px-2 text-center">{`${student.firstName} ${student.lastName}`}</td>
-                <td className="py-5 px-2 text-center">{student.identityCard}</td>
-                <td className="py-5 px-2 text-center">{student.phoneNumber}</td>
+                <td className="py-5 px-2 text-center">{`${student.student.firstName} ${student.student.lastName}`}</td>
+                <td className="py-5 px-2 text-center">{student.student.identityCard}</td>
+                <td className="py-5 px-2 text-center">{student.student.phoneNumber}</td>
                 <td
-                  className={`py-5 px-2 text-center ${student.roleId.roleName === 'Buyer' ? 'text-orange-400 font-semibold' :
-                    student.roleId.roleName === 'Seller' ? 'text-blue-400 font-semibold' :
+                  className={`py-5 px-2 text-center ${student.role.roleName === 'Buyer' ? 'text-orange-400 font-semibold' :
+                    student.role.roleName === 'Seller' ? 'text-blue-400 font-semibold' :
                       'text-red-500'
                     }`}
                 >
-                  {student.roleId.roleName === 'Buyer' ? 'Người Mua' :
-                    student.roleId.roleName === 'Seller' ? 'Người Bán' : 'vai trò không xác định'}
+                  {student.role.roleName === 'Buyer' ? 'Người Mua' :
+                    student.role.roleName === 'Seller' ? 'Người Bán' : 'vai trò không xác định'}
                 </td>
                 <td className="py-5 px-2 text-center">
                   <Button type="link" className="font-semibold" onClick={() => showInforModal(student)}>
@@ -168,7 +164,7 @@ export const AccountManager = () => {
       <Modal
         title="Thay đổi trạng thái"
         visible={isModalStatusVisible}
-        onCancel={handleInfoCancel}
+        onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
             Hủy
@@ -184,8 +180,8 @@ export const AccountManager = () => {
           onChange={handleStatusChange}
           value={selectedStatus}
         >
-          <Option value="1">Hoạt động</Option>
-          <Option value="0">Không hoạt động</Option>
+          <Option value={1}>Hoạt động</Option>
+          <Option value={0}>Không hoạt động</Option>
         </Select>
       </Modal>
 
@@ -201,10 +197,10 @@ export const AccountManager = () => {
       >
         {selectedAcc && (
           <div>
-            <div className="my-2">Họ và tên: {`${selectedAcc.firstName} ${selectedAcc.lastName}`}</div>
-            <div className="my-2">Địa chỉ: {selectedAcc.address}</div>
-            <div className="my-2">Ngày sinh: {formatDay(selectedAcc.dob)}</div>
-            <div className="my-2">Giới tính: {selectedAcc.gender}</div>
+            <div className="my-2">Họ và tên: {`${selectedAcc.student.firstName} ${selectedAcc.student.lastName}`}</div>
+            <div className="my-2">Địa chỉ: {selectedAcc.student.address}</div>
+            <div className="my-2">Ngày sinh: {formatDay(selectedAcc.student.dob)}</div>
+            <div className="my-2">Giới tính: {selectedAcc.student.gender}</div>
           </div>
         )}
       </Modal>

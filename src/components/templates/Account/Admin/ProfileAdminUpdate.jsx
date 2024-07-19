@@ -44,7 +44,7 @@ export const ProfileAdminUpdate = () => {
 
   useEffect(() => {
     if (!staffInfor) {
-      navigate('/');
+      navigate('/*');
     } else if (staffInfor.role !== "Administrator") {
       navigate('/moderator');
     }
@@ -78,7 +78,7 @@ export const ProfileAdminUpdate = () => {
           console.error("Error fetching account information:", error);
         });
     }
-  }, [dispatch, staffInfor]);
+  }, [dispatch]);
 
   const handleUpdate = () => {
     dispatch(
