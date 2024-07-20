@@ -8,7 +8,7 @@ export const SidebarModerator = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[var(--color-bg-hightlight)] rounded-tl-lg h-full pr-3 fixed top-0 left-0 bottom-0 overflow-y-auto w-1/4">
+    <div className="bg-[var(--color-bg-hightlight)] h-full pr-3 fixed top-0 left-0 bottom-0 overflow-y-auto w-1/4">
       <div className="text-lg text-white pt-[20px]">
         <div className="mt-8">
 

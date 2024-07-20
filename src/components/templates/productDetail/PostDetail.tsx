@@ -51,10 +51,18 @@ export const PostDetail: React.FC<PostType> = () => {
   const [userOwn, setUserOwn] = useState();
   const { reportPostType } = useReport();
 
-  const handleInputChange = (event) => {
-    const value = parseInt(event.target.value);
+  const handleInputChange = (e) => {
+    const value = e.target.value;
     if (!isNaN(value) && value >= 1) {
-      setQuantity(value);
+      setQuantity(parseInt(value));
+    } else if (value === '') {
+      setQuantity('');
+    }
+  };
+
+  const handleInputBlur = () => {
+    if (quantity === '') {
+      setQuantity(1);
     }
   };
 
@@ -83,16 +91,13 @@ export const PostDetail: React.FC<PostType> = () => {
         .catch((error) => {
           console.error("Error fetching account information:", error);
         });
-    }, [])
+    }, [dispatch])
   }
 
-  console.log(userOwn)
-
-  console.log(studentInfo)
 
   const handleCreateWish = () => {
     if (!studentInfo) {
-      toast.error("Tặng thất bại! Bạn cần phải đăng nhập trước.");
+      toast.error("Tặng thất bại! Vui lòng đăng nhập để tiếp tục!");
       return;
     }
 
@@ -166,6 +171,11 @@ export const PostDetail: React.FC<PostType> = () => {
   const contentCreate = `Tôi muốn thực hiện trao đổi đối với sản phẩm này: ${postDetail?.product.detail.productName}`
 
   const handleChat = () => {
+    if (!studentInfo) {
+      toast.error("Trao đổi thất bại! Vui lòng đăng nhập trước để tiếp tục!");
+      return;
+    }
+
     if (userOwn?.sellerTO?.sellerId !== postDetail?.product?.seller?.sellerId) {
       dispatch(contactSeller({
         registeredStudentId: studentInfo?.registeredStudentId,
@@ -241,23 +251,34 @@ export const PostDetail: React.FC<PostType> = () => {
 
   const [selectedReportType, setSelectedReportType] = useState(null);
   const [reportTypeId, setReportTypeId] = useState();
+  const [error, setError] = useState('');
 
   const handleSelectChange = (value) => {
     const selectedType = reportPostType.find((type) => type.reportProductTypeId === value);
     setSelectedReportType(selectedType);
     setReportTypeId(value)
+    setError('');
   };
 
   const showReportModal = () => {
-    setIsModalReport(true);
+    if (!studentInfo) {
+      toast.error("Bạn cần phải đăng nhập để báo cáo!")
+    } else {
+      setIsModalReport(true);
+    }
   };
 
 
-  const reportContent = useRef("");
+  const reportContent = useRef('');
 
   const handleReportOk = () => {
+    if (!reportTypeId) {
+      setError("Vui lòng chọn loại báo cáo");
+      return;
+    }
     if (reportTypeId && reportContent) {
       dispatch(sendReportThunk({ registeredStudentId: studentInfo?.registeredStudentId, postProductId: parseInt(postProductId), reportProductTypeId: reportTypeId, content: reportContent.current }))
+      console.log(reportContent.current);
       setIsModalReport(false);
     }
   };
@@ -267,7 +288,7 @@ export const PostDetail: React.FC<PostType> = () => {
   };
 
 
-  const updateQuantityRef = useRef("");
+  const updateQuantityRef = useRef(1);
 
   const handleOk = () => {
     if (selectedWishlist && updateQuantityRef) {
@@ -304,7 +325,13 @@ export const PostDetail: React.FC<PostType> = () => {
               <div className="font-bold text-4xl">
                 {postDetail?.product.detail.productName}
               </div>
-              <div onClick={showReportModal} className="cursor-pointer">
+              <div onClick={() => {
+                if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
+                  toast.error("Bạn không thể báo cáo bài đăng của chính mình!");
+                } else {
+                  showReportModal();
+                }
+              }} className="cursor-pointer">
                 <WarningOutlined className="text-2xl" />
               </div>
             </div>
@@ -358,109 +385,118 @@ export const PostDetail: React.FC<PostType> = () => {
             {/* button  */}
 
             {postDetail?.postType.postTypeId === 3 && (
-              <div className="flex my-3 gap-3">
-                <Button onClick={() => {
-                  const userInfo = localStorage.getItem("userInfo");
-                  const student = userInfo ? JSON.parse(userInfo) : null;
-                  if (!student) {
-                    alert("Sign in to Continue?");
-                  } else if (postDetail) {
-                    if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
-                      toast.error("Bạn không thể đặt vào giỏ hàng sản phẩm của chính mình!");
-                    } else {
-                      console.log("studentID:", student.username);
-                      console.log("postProductId:", postDetail?.postProductId);
-                      console.log("variationId:");
-                      const variationList = [];
-                      Object.entries(detail).forEach(([key, values]) => {
-                        variationList.push(values);
-                      });
+              postDetail?.product.seller?.active === 1 ? (
+                <div className="flex my-3 gap-3">
+                  <Button
+                    className="flex justify-center items-center text-base py-4 px-6"
+                    onClick={() => {
+                      const userInfo = localStorage.getItem("userInfo");
+                      const student = userInfo ? JSON.parse(userInfo) : null;
+                      if (!student) {
+                        toast.error("Vui lòng đăng nhập để tiếp tục!");
+                      } else if (postDetail) {
+                        if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
+                          toast.error("Bạn không thể đặt vào giỏ hàng sản phẩm của chính mình!");
+                        } else {
+                          console.log("studentID:", student.username);
+                          console.log("postProductId:", postDetail?.postProductId);
+                          console.log("variationId:");
+                          const variationList = [];
+                          Object.entries(detail).forEach(([key, values]) => {
+                            variationList.push(values);
+                          });
 
-                      // let paymentItem = [{ productId: prdId, variationList: variationList, quantity: 1 }];
-                      // localStorage.setItem(
-                      //   "paymentItem",
-                      //   JSON.stringify(paymentItem)
-                      // );
-                      // prdId ? dispatch(getProductByIdThunk(prdId)) : "";
-
-
-
-                      // dispatch(getProductByVariationDetailThunk(variationList));
-                      // dispatch(setProductQuantity({ id: parseInt(postProductId + ''), quantity: quantity }));
-                      // navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
-
-                      let prdId = postDetail.product.productId;
-                      const cartProduct: addCartItem = { registeredStudentId: student.registeredStudentId, postProductId: prdId, quantity: quantity, variationDetailId: variationList }
+                          let prdId = postDetail.product.productId;
+                          const cartProduct: addCartItem = { registeredStudentId: student.registeredStudentId, postProductId: prdId, quantity: quantity, variationDetailId: variationList }
+                          if (
+                            postDetail &&
+                            postDetail.product.variation.length > Object.keys(detail).length
+                          ) {
+                            toast.error("Vui lòng hoàn thiện sản phẩm")
+                          } else {
+                            dispatch(addToCartThunk(cartProduct))
+                          }
+                        }
+                      }
+                    }}>Thêm vào giỏ hàng</Button>
+                  <Button type="primary"
+                    className="flex justify-center items-center text-base py-4 px-6"
+                    onClick={() => {
                       if (
                         postDetail &&
                         postDetail.product.variation.length > Object.keys(detail).length
                       ) {
-                        toast.error("Vui lòng hoàn thiện sản phẩm")
-                      } else {
-                        dispatch(addToCartThunk(cartProduct))
-                      }
-                    }
-                  }
-                }}>Thêm vào giỏ hàng</Button>
-                <Button
-                  onClick={() => {
-                    if (
-                      postDetail &&
-                      postDetail.product.variation.length > Object.keys(detail).length
-                    ) {
-                      toast.error("Vui lòng hoàn thiện sản phẩm");
-                    } else if (postDetail) {
-                      if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
-                        toast.error("Bạn không thể mua sản phẩm của chính mình!");
-                      } else {
-                        let prdId = postDetail.product.productId;
-                        const variationList = [];
-                        Object.entries(detail).forEach(([key, values]) => {
-                          variationList.push(values);
-                        });
+                        toast.error("Vui lòng hoàn thiện sản phẩm");
+                      } else if (postDetail) {
+                        if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
+                          toast.error("Bạn không thể mua sản phẩm của chính mình!");
+                        } else {
+                          let prdId = postDetail.product.productId;
+                          const variationList = [];
+                          Object.entries(detail).forEach(([key, values]) => {
+                            variationList.push(values);
+                          });
 
-                        // let paymentItem = [{ productId: prdId, variationList: variationList, quantity: 1 }];
-                        // localStorage.setItem(
-                        //   "paymentItem",
-                        //   JSON.stringify(paymentItem)
-                        // );
-                        // prdId ? dispatch(getProductByIdThunk(prdId)) : "";
-
-                        dispatch(getProductByVariationDetailThunk(variationList));   //đẩy variation vào list
-                        dispatch(setProductQuantity({ id: prdId, quantity: quantity }));    //id product và số lượng
-                        navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
+                          dispatch(getProductByVariationDetailThunk(variationList));   //đẩy variation vào list
+                          dispatch(setProductQuantity({ id: prdId, quantity: quantity }));    //id product và số lượng
+                          navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
+                        }
                       }
-                    }
-                  }}
-                >
-                  Mua ngay
-                </Button>
-                <div className="flex items-center gap-2"><MinusOutlined onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />{quantity}<PlusOutlined onClick={() => setQuantity(quantity + 1)} /></div>
-              </div>
+                    }}
+                  >
+                    Mua ngay
+                  </Button>
+                  <div className="flex items-center gap-2"><MinusOutlined
+                    onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />
+                    <input
+                      value={quantity}
+                      onChange={handleInputChange}
+                      onBlur={handleInputBlur}
+                      className="border border-gray-300 rounded-md px-3 py-1 outline-none text-center w-16"
+                    />
+                    <PlusOutlined onClick={() => setQuantity(quantity + 1)} /></div>
+                </div>
+              ) : (
+                <div className="flex justify-center items-center my-3">
+                  <p className="text-red-500 font-medium">Người bán đã bị cấm. Không thể thực hiện các hành động với sản phẩm này.</p>
+                </div>
+              )
             )}
             {postDetail?.postType.postTypeId === 2 && (
-              <div className="flex my-3 gap-3">
-                <Button type="primary" className="flex justify-center items-center px-4 py-6 text-lg font-semibold"
-                  onClick={handleChat}
-                >Tôi muốn trao đổi</Button>
-              </div>
+              postDetail?.product.seller?.active === 1 ? (
+                <div className="flex my-3 gap-3">
+                  <Button type="primary" className="flex justify-center items-center px-4 py-6 text-lg font-semibold"
+                    onClick={handleChat}
+                  >Tôi muốn trao đổi</Button>
+                </div>
+              ) : (
+                <div className="flex justify-center items-center my-3">
+                  <p className="text-red-500 font-medium">Người bán đã bị cấm. Không thể thực hiện các hành động với sản phẩm này.</p>
+                </div>
+              )
             )}
 
             {postDetail?.postType.postTypeId === 1 && (
-              <div className="flex my-3 gap-3">
-                <Button type="primary" className="flex justify-center items-center px-4 py-6 text-lg font-semibold"
-                  onClick={handleCreateWish}
-                >Tôi muốn được tặng</Button>
-                <div className="flex items-center gap-2 ml-5"><MinusOutlined onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />
-                  <input
-                    defaultValue={quantity}
-                    value={quantity}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded-md px-3 py-1 outline-none text-center w-16"
-                  />
-                  <PlusOutlined onClick={() => setQuantity(quantity + 1)} />
+              postDetail?.product.seller?.active === 1 ? (
+                <div className="flex my-3 gap-3">
+                  <Button type="primary" className="flex justify-center items-center px-4 py-6 text-lg font-semibold"
+                    onClick={handleCreateWish}
+                  >Tôi muốn được tặng</Button>
+                  <div className="flex items-center gap-2 ml-5"><MinusOutlined onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />
+                    <input
+                      value={quantity}
+                      onChange={handleInputChange}
+                      onBlur={handleInputBlur}
+                      className="border border-gray-300 rounded-md px-3 py-1 outline-none text-center w-16"
+                    />
+                    <PlusOutlined onClick={() => setQuantity(quantity + 1)} />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex justify-center items-center my-3">
+                  <p className="text-red-500 font-medium">Người bán đã bị cấm. Không thể thực hiện các hành động với sản phẩm này.</p>
+                </div>
+              )
             )}
             {/* end button  */}
             {/* //! Review  */}
@@ -489,7 +525,7 @@ export const PostDetail: React.FC<PostType> = () => {
                   <th className="py-5 px-2 text-center">Thời gian đăng kí</th>
                   <th className="py-5 px-2 text-center">Số lượng</th>
                   <th className="py-5 px-2 text-center">Trạng thái hiện tại</th>
-                  <th className="py-5 px-2 text-center">Cập nhật số lượng</th>
+                  <th className="py-5 px-2 text-center">Cập nhật</th>
                 </tr>
               </thead>
               {view && view.length > 0 && (
@@ -504,7 +540,7 @@ export const PostDetail: React.FC<PostType> = () => {
                       ) : (
                         <td className="py-5 text-red-500 font-semibold text-center">Đang chờ được tặng</td>
                       )}
-                      {studentInfo.registeredStudentId === item.registeredStudentId && (
+                      {studentInfo?.registeredStudentId === item.registeredStudentId && (
                         <td className="py-5 px-2 flex justify-center items-center">
                           <Button onClick={() => showModal(item.wishListId)}>Cập nhật</Button>
                         </td>
@@ -577,9 +613,15 @@ export const PostDetail: React.FC<PostType> = () => {
                 <div className="mb-2 mr-5">Cập nhật số lượng: </div>
                 <input
                   type="number"
+                  min="1"
                   className="h-8 rounded-md px-4 border border-gray-300 w-20"
                   onChange={(e) => {
-                    updateQuantityRef.current = e.target.value;
+                    const value = parseInt(e.target.value);
+                    if (!isNaN(value) && value >= 1) {
+                      updateQuantityRef.current = value;
+                    } else {
+                      updateQuantityRef.current = 1; // Đặt giá trị mặc định là 1 nếu không hợp lệ
+                    }
                   }}
                 />
               </div>
@@ -601,7 +643,7 @@ export const PostDetail: React.FC<PostType> = () => {
               Hủy
             </Button>,
             <Button key="submit" type="primary" onClick={handleReportOk}>
-              Lưu
+              Gửi
             </Button>,
           ]}
         >
@@ -620,6 +662,9 @@ export const PostDetail: React.FC<PostType> = () => {
                     </Option>
                   ))}
                 </Select>
+                {error && (
+                  <div className="mt-2 text-red-500 font-medium">{error}</div>
+                )}
                 {selectedReportType && (
                   <div className="mt-4">
                     <div>Mô tả: {selectedReportType.description}</div>
@@ -632,6 +677,7 @@ export const PostDetail: React.FC<PostType> = () => {
                 <div className="mb-2">Nội dung: </div>
                 <Input.TextArea
                   className="h-8 rounded-md px-4"
+                  defaultValue=""
                   onChange={(e) => {
                     reportContent.current = e.target.value;
                   }}

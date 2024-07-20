@@ -61,3 +61,15 @@ export const contactStudent = createAsyncThunk(
     }
   }
 );
+
+export const deleteChatRoom = createAsyncThunk(
+  "deleteChatRoom",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const data = await manageChat.deleteChatRoom(payload);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

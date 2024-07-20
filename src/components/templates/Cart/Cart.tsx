@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { Checkbox, InputNumber, Button } from "antd"
 import './styles.css'
 import { useAppDispatch } from '../../../store'
@@ -18,13 +18,20 @@ export const Cart = () => {
   const { studentInfo } = useAccount();
   const { cartListFilter, cartList } = useCart();
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const navigate = useNavigate();
   //STT post
   const sttOrder = useRef<number>(0)
 
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(viewCartThunk(studentInfo.registeredStudentId+''))    
+    if (!studentInfo) {
+      navigate("/login");
+    }
+  }, []);
+
+  useEffect(() => {
+    dispatch(viewCartThunk(studentInfo?.registeredStudentId))
   }, [])
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 export const PATH = {
-  admin: "/admin",
   postList: "/detail",
   productDetail: "/detail/:postProductId",
   login: "/login",
@@ -20,6 +19,7 @@ export const PATH = {
   wishlistUpdate: "/dashboard/wishlist/:postProductId",
   post: "/dashboard/post",
   productDetailbyId: "/dashboard/product/:productId",
+  detailTransaction: "/dashboard/detail/:orderId",
 
   loginStaff: "/loginStaff",
 

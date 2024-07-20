@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import { useAppDispatch } from "../../../store";
 import { getLoginStaffThunk } from "../../../store/userManagement/thunk";
 import { useAccount } from "../../../hooks/useAccount";
+import { toast } from "react-toastify";
 
 export const LoginStaff = () => {
 
@@ -13,12 +14,19 @@ export const LoginStaff = () => {
   const pwdRef = useRef("");
   const { isAuthorize } = useAccount();
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
-    dispatch(
-      getLoginStaffThunk({ numberPhone: phoneNumRef.current, password: pwdRef.current })
-    );
-    if (isAuthorize) window.location.href = "/admin";
+    try {
+      await dispatch(
+        getLoginStaffThunk({ numberPhone: phoneNumRef.current, password: pwdRef.current })
+      );
+      if (isAuthorize) window.location.href = "/admin";
+    } catch (error) {
+      // Handle the error here
+      console.error("Error in handleSignIn:", error);
+      // You can also show an error message to the user
+      alert("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+    }
   };
 
   return (

@@ -27,7 +27,7 @@ interface Group {
   categories: Category[];
 }
 
-export const CreateProduct = () => {
+export const UpdateProduct = () => {
   const navigate = useNavigate();
   // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const [user, setUser] = useState('');
@@ -48,38 +48,11 @@ export const CreateProduct = () => {
   const [imgRender, setImgRender] = useState<any>([]);
   //!===============
 
-
   useEffect(() => {
     dispatch(getCategoryThunk());
   }, [dispatch]);
 
   const [images, setImages] = useState<string[]>([]);
-
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length + images.length > 4) {
-      toast.warning('Chỉ được phép tải lên tối đa 4 hình ảnh');
-      return;
-    }
-
-    console.log("file: ", files);
-
-
-    const newImages = files.slice(0, 4 - images.length); // Giới hạn tối đa 4 hình ảnh
-    const imageUrls = newImages.map(file => URL.createObjectURL(file));
-    setImages(prevImages => [...prevImages, ...imageUrls]); // Thêm các URL mới vào mảng images
-
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const files = Array.from(e.dataTransfer.files); // Lấy danh sách các tệp đã thả
-    setImgRender(files); // Cập nhật giá trị imgRender với danh sách tệp mới
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault(); // Ngăn chặn hành vi mặc định của trình duyệt
-  };
 
   useEffect(() => {
     dispatch(
@@ -161,8 +134,6 @@ export const CreateProduct = () => {
   const onFinish: FormProps<createProductType>['onFinish'] = async (values) => {
     values.studentId = studentInfo.username;
 
-    const urls = await handleAddImageToFB();
-
     values.productImageRequestsList = [];
     urls.map(imgUrl => {
       values.productImageRequestsList.push({ imageUrl: imgUrl })
@@ -180,26 +151,6 @@ export const CreateProduct = () => {
   };
 
   //!============================
-
-  //!FireBASE
-  const handleUpload = async (e) => {
-    const files = Array.from(e.target.files); // Convert FileList to Array
-    setImgRender(files);
-  };
-
-  const handleAddImageToFB = async () => {
-    const uploadPromises = imgRender.map((file) => {
-
-      const imageRef = ref(imgDB, `products/${v4()}`);
-      return uploadBytes(imageRef, file).then((snapshot) => {
-        return getDownloadURL(snapshot.ref);
-      });
-    });
-
-    const urls = await Promise.all(uploadPromises); // Wait for all uploads to complete
-    setImg((prevImg) => [...prevImg, ...urls]);
-    return urls;
-  };
 
   //*getData from firebase
   const getData = async () => {
@@ -239,7 +190,7 @@ export const CreateProduct = () => {
                 <Form.Item<createProductType>
                   name="productName"
                   className="w-full"
-                  rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]}
+                  rules={[{ required: true, message: 'Vui lòng nhập sản phẩm!' }]}
 
                 >
                   <Input className='border-slate-400 focus:outline-none text-gray-500 focus:text-black border px-4 py-2 h-10 w-full rounded-md mt-2 bg-white' />
@@ -394,79 +345,18 @@ export const CreateProduct = () => {
                 <Form.Item
                   name="price"
                   className="w-1/4"
-                  rules={[
-                    { required: true, message: 'Vui lòng nhập giá trị sản phẩm!' },
-                    { type: 'number', min: 1000, message: 'Giá trị sản phẩm không được nhỏ hơn 1000!' },
-                  ]}
+                  rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
                 >
                   <InputNumber
                     className='border-slate-400 focus:outline-none text-gray-500 focus:text-black border h-10 w-full rounded-md mt-2 bg-white flex items-center'
+                    defaultValue={10000}
                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    // parser={value => value.replace(/đ\s?|(\,*)/g, '')}
+                    step={1000}
                   />
                 </Form.Item>
               </div>
 
-              <div className="mt-8">
-                {/* <label className='font-semibold'>Hình ảnh (tối thiểu 1 hình, tối đa 4 hình)</label>
-                <div
-                  className="border-dashed border-4 border-slate-400 text-black mt-4 px-4 py-8 rounded-md flex items-center justify-center flex-col gap-y-2 text-lg"
-                  onDrop={handleDrop}
-                  onDragOver={handleDragOver}
-                >
-                  <label htmlFor="fileInput" style={{ display: 'block', cursor: 'pointer' }} className="block cursor-pointer px-5 py-2 bg-[var(--color-primary)] rounded-sm text-white">
-                    Tải ảnh lên
-                    <input
-                      id="fileInput"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      required
-                      onChange={handleImageChange}
-                      style={{ display: 'none' }}
-                    />
-                  </label>
-                  <div className="text-base text-gray-700">Hoặc</div>
-                  
-                  Kéo và thả ảnh vào đây
-                </div>
-                <div className="mt-4 flex flex-wrap">
-                  {images.map((image, index) => (
-                    <img key={index} src={image} alt={`Upload Preview ${index}`} className="w-32 h-32 object-cover mr-2 mb-2 rounded-md" />
-                  ))}
-                </div> */}
-                {/* <FirebaseUpload /> */}
-                <br />
-                {/* <button onClick={handleClick}>Add</button> */}
-
-                <label className='font-semibold'>Hình ảnh (tối thiểu 1 hình, tối đa 4 hình)</label>
-                <div
-                  className="border-dashed border-4 border-slate-400 text-black mt-4 px-4 py-8 rounded-md flex items-center justify-center flex-col gap-y-2 text-lg"
-                  onDragOver={handleDragOver}
-                  onDrop={handleDrop}
-                >
-                  <label htmlFor="fileInput" style={{ display: 'block', cursor: 'pointer' }} className="block cursor-pointer px-5 py-2 bg-[var(--color-primary)] rounded-sm text-white">
-                    Tải ảnh lên
-                    <input id="fileInput" multiple type="file" onChange={(e) => handleUpload(e)} style={{ display: 'none' }} />
-                  </label>
-                  <div>
-                    {imgRender &&
-                      imgRender.map(img => {
-                        return (
-                          <div>{img.name}</div>
-                        )
-                      })
-                    }
-                  </div>
-                  <div className="text-base text-gray-700">Hoặc</div>
-                  Kéo và thả ảnh vào đây
-                </div>
-                <div className="mt-4 flex flex-wrap">
-                  {img.map((image, index) => (
-                    <img key={index} src={image} alt={`Upload Preview ${index}`} className="w-32 h-32 object-cover mr-2 mb-2 rounded-md" />
-                  ))}
-                </div>
-
-              </div>
             </div>
 
             <div className="flex justify-end mt-5 gap-x-5">
@@ -475,7 +365,7 @@ export const CreateProduct = () => {
               </Button>
               <Form.Item wrapperCol={{ offset: 0, span: 16 }} className="m-0">
                 <Button htmlType="submit" type="primary" className="px-5 py-2 flex justify-center items-center text-lg">
-                  Tạo sản phẩm
+                  Chỉnh sửa
                 </Button>
               </Form.Item>
             </div>
@@ -486,4 +376,4 @@ export const CreateProduct = () => {
   );
 };
 
-export default CreateProduct;
+export default UpdateProduct;

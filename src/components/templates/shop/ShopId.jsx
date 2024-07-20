@@ -5,10 +5,11 @@ import { UserOutlined, WarningOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../store";
 import { getPostBySellerIdThunk } from "../../../store/postManagement/thunk";
 import { usePost } from "../../../hooks/usePost";
-import { getSellerInfoBySellerIdThunk } from "../../../store/userManagement/thunk"
+import { getSellerInfoBySellerIdThunk, getSellerInfoThunk } from "../../../store/userManagement/thunk"
 import { useAccount } from "../../../hooks/useAccount"
 import { useReport } from "../../../hooks/useReport"
 import { getSellerTypeReportThunk, sendReportSellerThunk } from "../../../store/reportManager/thunk"
+import { toast } from "react-toastify";
 
 export const ShopId = () => {
   const navigate = useNavigate();
@@ -18,8 +19,34 @@ export const ShopId = () => {
   const [user, setUser] = useState();
   const { studentInfo } = useAccount();
   const { reportSellerType } = useReport();
+  const [userOwn, setUserOwn] = useState();
 
   const { Option } = Select;
+
+  if (studentInfo) {
+    useEffect(() => {
+      dispatch(
+        getSellerInfoThunk({
+          sellerTO: {
+            RegisteredStudent: {
+              Student: {
+                studentId: studentInfo.username
+              }
+            }
+          }
+        })
+      )
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          setUserOwn(data); // Kết hợp userInfo và data thành một đối tượng mới
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
+    }, [])
+  }
+
 
   useEffect(() => {
     dispatch(getPostBySellerIdThunk(parseInt(sellerId)));
@@ -42,19 +69,29 @@ export const ShopId = () => {
   }, [dispatch])
 
   const [reportTypeId, setReportTypeId] = useState();
+  const [error, setError] = useState('');
 
   const handleSelectChange = (value) => {
     setReportTypeId(value)
+    setError('');
   };
 
   const showReportModal = () => {
-    setIsModalReport(true);
+    if (!studentInfo) {
+      toast.error("Bạn cần phải đăng nhập để báo cáo!")
+    } else {
+      setIsModalReport(true);
+    }
   };
 
 
   const reportContent = useRef("");
 
   const handleReportOk = () => {
+    if (!reportTypeId) {
+      setError("Vui lòng chọn loại báo cáo");
+      return;
+    }
     if (reportTypeId && reportContent) {
       dispatch(sendReportSellerThunk({ registeredStudentId: studentInfo?.registeredStudentId, sellerId: parseInt(sellerId), reportSellerTypeId: reportTypeId, content: reportContent.current }))
       setIsModalReport(false);
@@ -77,7 +114,13 @@ export const ShopId = () => {
       </div>
       <div className="flex gap-x-8">
         <div class="text-3xl font-semibold pl-60 mt-8 mb-16">{user?.sellerTO.student.firstName} {user?.sellerTO.student.lastName}</div>
-        <div className="mt-10 mb-16 cursor-pointer" onClick={showReportModal}>
+        <div className="mt-10 mb-16 cursor-pointer" onClick={() => {
+          if (userOwn?.sellerTO?.sellerId === parseInt(sellerId)) {
+            toast.error("Bạn không thể báo cáo chính mình!");
+          } else {
+            showReportModal();
+          }
+        }}>
           <WarningOutlined className="text-xl" />
         </div>
       </div>
@@ -135,7 +178,7 @@ export const ShopId = () => {
             Hủy
           </Button>,
           <Button key="submit" type="primary" onClick={handleReportOk}>
-            Lưu
+            Gửi
           </Button>,
         ]}
       >
@@ -154,6 +197,9 @@ export const ShopId = () => {
                   </Option>
                 ))}
               </Select>
+              {error && (
+                <div className="mt-2 text-red-500 font-medium">{error}</div>
+              )}
             </div>
           </Form.Item>
           <Form.Item>
@@ -161,6 +207,7 @@ export const ShopId = () => {
               <div className="mb-2">Nội dung: </div>
               <Input.TextArea
                 className="h-8 rounded-md px-4"
+                defaultValue=""
                 onChange={(e) => {
                   reportContent.current = e.target.value;
                 }}

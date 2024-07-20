@@ -73,7 +73,7 @@ export const ManageReportAccount = () => {
 
   useEffect(() => {
     dispatch(viewFilterReportSellerThunk({ sellerName: filterName, reportSellerTypeId: filterReportType, reportStatusId: filterStatus }))
-  }, [filterName, filterReportType, filterStatus, handleOk])
+  }, [filterName, filterReportType, filterStatus])
 
   return (
     <div className="mx-auto p-4">
@@ -174,7 +174,9 @@ export const ManageReportAccount = () => {
             <div className="my-2">Người báo cáo: {selectedReport.buyerName}</div>
             <div className="my-2">Người bị báo cáo: {selectedReport.sellerName}</div>
             <div className="my-2">Loại báo cáo: {selectedReport.reportSellerType.reportTypeName}</div>
-            <div className="my-2">Nội dung: {selectedReport.content}</div>
+            {selectedReport.content === "" ? (
+              <div className="my-2">Nội dung: Không có</div>
+            ) : (<div className="my-2">Nội dung: {selectedReport.content}</div>)}
             <div className="my-2">Trạng thái đơn báo cáo: {selectedReport.reportStatus.reportStatusName}</div>
           </div>
         )}

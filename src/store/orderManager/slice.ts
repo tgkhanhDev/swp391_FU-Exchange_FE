@@ -1,25 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Post, PostLoadMore } from "../../types/post";
-import { getOrderThunk, getOrderDetailThunk, getOrderPostProductThunk, postPayCodThunk, postPayVnPayThunk, getOrderBySellerIdThunk, getOrderDetailBySellerIdThunk, updateStatusOrderThunk, getTotalOrderPostThunk } from "./thunk";
-import { Orders, PostProductInOrder, orderPostProduct, TotalOrderPost} from "../../types/order"
+import { getOrderThunk, postPayCodThunk, postPayVnPayThunk, getOrderBySellerIdThunk, getOrderDetailBySellerIdThunk, updateStatusOrderThunk } from "./thunk";
+import { Orders, PostProductInOrder, PostProductInOrders} from "../../types/order"
 import { toast } from "react-toastify";
 
 type stateType = {
-  order: Orders[];
-  orderDetail: PostProductInOrder[];
-  orderPostProduct: orderPostProduct[];
+  order: PostProductInOrders[];
   orderSeller: Orders[];
   orderDetailSeller: PostProductInOrder[];
-  orderTotal: TotalOrderPost[];
 };
 
 const initialState: stateType = {
   order: [],
-  orderDetail: [],
-  orderPostProduct: [],
   orderSeller: [],
   orderDetailSeller: [],
-  orderTotal: [],
 };
 
 export const manageOrderSlice = createSlice({
@@ -41,12 +35,6 @@ export const manageOrderSlice = createSlice({
     builder.addCase(getOrderThunk.fulfilled, (state, { payload }) => {
       state.order = payload;
     });
-    builder.addCase(getOrderDetailThunk.fulfilled, (state, { payload }) => {
-      state.orderDetail = payload;
-    });
-    builder.addCase(getOrderPostProductThunk.fulfilled, (state, { payload }) => {
-      state.orderPostProduct = payload;
-    });
     builder.addCase(getOrderBySellerIdThunk.fulfilled, (state, { payload }) => {
       state.orderSeller = payload;
     });
@@ -62,9 +50,6 @@ export const manageOrderSlice = createSlice({
       } else {
         toast.error(`${payload.content}`);
       }
-    });
-    builder.addCase(getTotalOrderPostThunk.fulfilled, (state, { payload }) => {
-      state.orderTotal = payload.data;
     });
   },
 });

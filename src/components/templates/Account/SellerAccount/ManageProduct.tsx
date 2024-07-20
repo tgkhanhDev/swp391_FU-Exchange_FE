@@ -19,6 +19,45 @@ export const ManageProduct = () => {
   const [filterName, setFilterName] = useState<string>("");
   //DetailModal
   const [openDetail, setOpenDetail] = React.useState<boolean>(false);
+  const [user, setUser] = useState('');
+
+  useEffect(() => {
+
+    if (!studentInfo) {
+      navigate('/login');
+    }
+    else if (studentInfo.role !== "Seller") {
+      navigate('/authorize');
+    }
+
+    // dispatch(getProductByStudentIdThunk({ current: 5, name: "", studentId: studentInfo.username }))
+    dispatch(
+      getSellerInfoThunk({
+        sellerTO: {
+          RegisteredStudent: {
+            Student: {
+              studentId: studentInfo?.username,
+            }
+          }
+        }
+      })
+    )
+      .then((action) => {
+        const { payload } = action;
+        const { data } = payload;
+        setUser(data); // Kết hợp userInfo và data thành một đối tượng mới
+      })
+      .catch((error) => {
+        console.error("Error fetching account information:", error);
+      });
+      fetchProductWareHouse()
+  }, [itemQuantity, filterName])
+
+  useEffect(() => {
+    if (user && (user.sellerTO?.active === 2 || user.sellerTO?.active === 0)) {
+      navigate('/*');
+    }
+  }, [user, navigate]);
 
   const loadMorePost = () => {
     let newItemQuantity: number;
@@ -35,49 +74,8 @@ export const ManageProduct = () => {
   };
 
   const fetchProductWareHouse = () => {
-    dispatch(getProductByStudentIdThunk({ current: itemQuantity, name: filterName, studentId: studentInfo.username }))
+    dispatch(getProductByStudentIdThunk({ current: itemQuantity, name: filterName, studentId: studentInfo?.username }))
   }
-
-  const [user, setUser] = useState('');
-
-  useEffect(() => {
-
-    fetchProductWareHouse()
-
-    // dispatch(getProductByStudentIdThunk({ current: 5, name: "", studentId: studentInfo.username }))
-    dispatch(
-      getSellerInfoThunk({
-        sellerTO: {
-          RegisteredStudent: {
-            Student: {
-              studentId: studentInfo.username,
-            }
-          }
-        }
-      })
-    )
-      .then((action) => {
-        const { payload } = action;
-        const { data } = payload;
-        setUser(data); // Kết hợp userInfo và data thành một đối tượng mới
-      })
-      .catch((error) => {
-        console.error("Error fetching account information:", error);
-      });
-
-    if (!studentInfo) {
-      navigate('/login');
-    }
-    else if (studentInfo.role !== "Seller") {
-      navigate('/authorize');
-    }
-  }, [itemQuantity, filterName])
-
-  useEffect(() => {
-    if (user && (user.sellerTO?.active === 2 || user.sellerTO?.active === 0)) {
-      navigate('/*');
-    }
-  }, [user, navigate]);
 
   return (
     <div>
@@ -164,7 +162,7 @@ export const ManageProduct = () => {
               className="flex items-center justify-center m-auto text-[18px] my-10"
               style={{ width: "300px", height: "50px" }}
             >
-              Load more products
+              Xem thêm
               {/* <span className="italic text-xs">
                 {" "}
                 {posts?.meta?.current}/{posts?.meta?.total}
