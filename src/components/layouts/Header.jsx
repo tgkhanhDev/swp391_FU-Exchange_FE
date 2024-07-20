@@ -189,6 +189,8 @@ export const Header = () => {
   };
 
   const handleSelectChat = (studentSendId, studentReceiveId) => {
+    console.log(studentSendId)
+    console.log(studentReceiveId)
     dispatch(chatRoomStS({ studentSendId: studentSendId, studentReceiveId: studentReceiveId }));
     if (studentReceiveId !== userInfo.registeredStudentId) {
       dispatch(getAccountInfoThunk({ registeredStudentId: studentReceiveId }))

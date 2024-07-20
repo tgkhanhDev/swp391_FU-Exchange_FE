@@ -239,7 +239,7 @@ export const CreateProduct = () => {
                 <Form.Item<createProductType>
                   name="productName"
                   className="w-full"
-                  rules={[{ required: true, message: 'Vui lòng nhập sản phẩm!' }]}
+                  rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]}
 
                 >
                   <Input className='border-slate-400 focus:outline-none text-gray-500 focus:text-black border px-4 py-2 h-10 w-full rounded-md mt-2 bg-white' />
@@ -394,14 +394,14 @@ export const CreateProduct = () => {
                 <Form.Item
                   name="price"
                   className="w-1/4"
-                  rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
+                  rules={[
+                    { required: true, message: 'Vui lòng nhập giá trị sản phẩm!' },
+                    { type: 'number', min: 1000, message: 'Giá trị sản phẩm không được nhỏ hơn 1000!' },
+                  ]}
                 >
                   <InputNumber
                     className='border-slate-400 focus:outline-none text-gray-500 focus:text-black border h-10 w-full rounded-md mt-2 bg-white flex items-center'
-                    defaultValue={10000}
                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    // parser={value => value.replace(/đ\s?|(\,*)/g, '')}
-                    step={1000}
                   />
                 </Form.Item>
               </div>

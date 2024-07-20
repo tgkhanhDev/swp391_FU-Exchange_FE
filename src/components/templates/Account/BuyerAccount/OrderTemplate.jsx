@@ -350,7 +350,7 @@ export const OrderTemplate = () => {
                     </div>
                   )}
                   {item.order.orderStatus.orderStatusId === 3 && (
-                    <div>
+                    <div className="flex justify-end mx-4">
                       <button
                         className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold mr-12"
                         onClick={() => handleChangeStatus(item.order.orderId, 5)}

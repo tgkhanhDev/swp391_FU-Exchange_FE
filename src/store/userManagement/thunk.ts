@@ -16,6 +16,7 @@ import { deleteSellerPostProductFilter, filterGetCustomerAccount } from "../../t
 import { managePost } from "../../services/managePost";
 import { PostFilter_API } from "../../types/post";
 import { manageUsers } from "../../services/manageUser";
+import { toast } from "react-toastify";
 
 export const getLoginThunk = createAsyncThunk(
   "login",
@@ -156,6 +157,7 @@ export const getLoginStaffThunk = createAsyncThunk(
       const data = await manageUsers.isLoginStaff(payload);
       return data.data;
     } catch (error) {
+      toast.error(`Tài khoản không tồn tại hoặc khả dụng!`)
       return rejectWithValue(error);
     }
   }
