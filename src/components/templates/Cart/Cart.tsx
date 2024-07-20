@@ -18,7 +18,7 @@ export const Cart = () => {
   const { studentInfo } = useAccount();
   const { cartListFilter, cartList } = useCart();
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const navigate = useNavigate();
+    const navigate = useNavigate();
   //STT post
   const sttOrder = useRef<number>(0)
 
