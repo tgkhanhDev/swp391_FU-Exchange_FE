@@ -4,11 +4,11 @@ import { VariationDetail } from "./product";
 export interface deleteItemCartType {
   cartId: number;
   postProductId: number;
-  variationDetailId: number;
+  variationDetailId: number | number[];
 }
 
 export interface updateItemCartType extends deleteItemCartType {
-    quantity: number
+  quantity: number;
 }
 
 export interface addCartItem {
@@ -26,9 +26,11 @@ export interface cartItem {
   sttPostInCart: number;
 }
 
-
 export interface cartItemFilter {
-  cartPostId: deleteItemCartType;
+  cart: {
+    cartId: number;
+    registeredStudentId: number;  
+  };
   postProduct: Post;
   quantity: number;
   variationDetail: VariationDetail[];

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addToCartThunk, deleteItemCartThunk, viewCartThunk } from "./thunk";
+import { addToCartThunk, deleteItemCartThunk, updateItemCartThunk, viewCartThunk } from "./thunk";
 import { toast } from "react-toastify";
 import { cartItem, cartItemFilter } from "../../types/cart";
 
@@ -51,6 +51,9 @@ export const manageCartSlice = createSlice({
     }),
     builder.addCase(deleteItemCartThunk.fulfilled, (state, { payload }) => {
       toast.success("Xóa sản phẩm thành công");
+    });
+    builder.addCase(updateItemCartThunk.rejected, (state, { payload }) => {
+      toast.error("Cập nhập sản phẩm thất bại!");
     });
   },
 });

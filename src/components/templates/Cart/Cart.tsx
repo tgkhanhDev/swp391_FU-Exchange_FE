@@ -3,10 +3,10 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { Checkbox, InputNumber, Button } from "antd"
 import './styles.css'
 import { useAppDispatch } from '../../../store'
-import { deleteItemCartThunk, viewCartThunk } from '../../../store/cartManager/thunk'
+import { deleteItemCartThunk, updateItemCartThunk, viewCartThunk } from '../../../store/cartManager/thunk'
 import { useAccount } from "../../../hooks/useAccount";
 import { useCart } from "../../../hooks/useCart";
-import { cartItem, deleteItemCartType } from '../../../types/cart'
+import { cartItem, deleteItemCartType, updateItemCartType } from '../../../types/cart'
 import { PaymentType, PostProductToBuyRequest } from '../../../types/order'
 import { postPayCodThunk } from '../../../store/orderManager/thunk'
 import { toast } from 'react-toastify'
@@ -18,11 +18,17 @@ export const Cart = () => {
   const { studentInfo } = useAccount();
   const { cartListFilter, cartList } = useCart();
   const [totalPrice, setTotalPrice] = useState<number>(0);
-    const navigate = useNavigate();
+  const [updateList, setUpdateList] = useState<updateItemCartType[]>([]);
+
+  const navigate = useNavigate();
   //STT post
   const sttOrder = useRef<number>(0)
 
   const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    console.log("cartListFilter:::", cartListFilter);
+  }, [cartListFilter])
 
   useEffect(() => {
     if (!studentInfo) {
@@ -31,12 +37,8 @@ export const Cart = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(viewCartThunk(studentInfo?.registeredStudentId))
+    dispatch(viewCartThunk(studentInfo?.registeredStudentId + ''))
   }, [])
-
-  useEffect(() => {
-    console.log("cartList:::", cartList);
-  }, [cartList])
 
   useEffect(() => {
     let calculatedTotalPrice = 0;
@@ -59,15 +61,24 @@ export const Cart = () => {
   const handleItemCheck = (index) => (e) => {
     const newCheckedItems = [...checkedItems];
     newCheckedItems[index] = e.target.checked;
+    console.log("e.target.checked:::", e.target.checked);
+    e.target.checked === false ? setAllChecked(false) : null;
     setCheckedItems(newCheckedItems);
 
     // If all checkboxes are checked, set the allChecked state to true, otherwise set it to false
-    setAllChecked(newCheckedItems.every((item) => item));
+    //setAllChecked(newCheckedItems.every((item) => item));
   };
+
+  const handleUpdateAll = () => {
+    updateList.map( async (item) => {
+      await dispatch(updateItemCartThunk({ ...item }))
+    })
+    toast.success("Cập nhật giỏ hàng thành công")
+  }
 
   const handleBuyAll = () => {
     const postProductToBuyRequests: cartItem[] = []
-  
+
     cartList.map((item, idx) => {
       postProductToBuyRequests.push(
         {
@@ -77,7 +88,7 @@ export const Cart = () => {
           variationId: item.variationDetail.variation.variationId,
           variationDetailId: item.variationDetail.variationDetailId,
           quantity: item.quantity,
-          price: parseFloat(item.postProduct.product.price+""),
+          price: parseFloat(item.postProduct.product.price + ""),
         }
       )
     })
@@ -85,10 +96,10 @@ export const Cart = () => {
     const payload: PaymentType = {
       registeredStudentId: studentInfo.registeredStudentId,
       paymentMethodId: 1,
-      description:"",
+      description: "",
       postProductToBuyRequests: postProductToBuyRequests,
     }
-    
+
     dispatch(postPayCodThunk(payload)).then(item => {
       if (item.payload.status == 400) {
         toast.error(item.payload.content)
@@ -115,12 +126,12 @@ export const Cart = () => {
               </NavLink>
 
               {/* <NavLink to={'/payment'}> */}
-                <button onClick={handleBuyAll} className='px-14 py-3 text-base hover:text-[var(--color-secondary)] hover:bg-white font-semibold text-white bg-[var(--color-primary)] duration-300 hover:shadow-[inset_0_0_0_2px_var(--color-secondary)]'>
-                  Mua tất cả - {totalPrice}VNĐ
-                </button>
+              <button onClick={handleBuyAll} className='px-14 py-3 text-base hover:text-[var(--color-secondary)] hover:bg-white font-semibold text-white bg-[var(--color-primary)] duration-300 hover:shadow-[inset_0_0_0_2px_var(--color-secondary)]'>
+                Mua tất cả - {totalPrice}VNĐ
+              </button>
               {/* </NavLink> */}
 
-              <button onClick={() => { console.log("Update") }} className='px-10 py-2 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] bg-white font-semibold hover:border-white duration-300'>
+              <button onClick={handleUpdateAll} className='px-10 py-2 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] bg-white font-semibold hover:border-white duration-300'>
                 Cập nhập
               </button>
 
@@ -148,14 +159,14 @@ export const Cart = () => {
 
           {/*Card */}
 
-          {cartListFilter.map(item => {
-            if (item.sttPostInCart){
+          {cartListFilter.map((item) => {
+            if (item.sttPostInCart) {
               return (
                 <div className='bg-white rounded-md h-40 w-full grid grid-cols-12 gap-2 mb-2'>
                   <div className='col-span-1 flex justify-center items-center'><Checkbox
                     className="custom-checkbox"
-                    checked={checkedItems[0]}
-                    onChange={handleItemCheck(0)}
+                    checked={checkedItems[item.sttPostInCart]}
+                    onChange={handleItemCheck(item.sttPostInCart)}
                   ></Checkbox></div>
 
                   <div className='col-span-4 flex items-center'>
@@ -179,15 +190,36 @@ export const Cart = () => {
                     <div>{item.postProduct.product.price} VNĐ</div>
                   </div>
                   <div className='col-span-2 flex justify-center items-center'>
-                    <InputNumber min={1} max={10} defaultValue={item.quantity}></InputNumber>
+                    <InputNumber min={1} max={10} defaultValue={item.quantity}
+                      onChange={
+                        (value: number | any) => {
+                          const updatePrd: updateItemCartType = {
+                            cartId: item.cart.cartId,
+                            quantity: value,
+                            postProductId: item.postProduct.postProductId,
+                            variationDetailId: item.variationDetail.map(detail => detail.variationDetailId)
+                          }
+                          // Check if the item with the same postProductId already exists
+                          const existingIndex = updateList.findIndex(prd => prd.postProductId === updatePrd.postProductId);
+                          
+                          if (existingIndex !== -1) {
+                            // Update the existing item
+                            const newUpdateList = [...updateList];
+                            newUpdateList[existingIndex] = updatePrd;
+                            setUpdateList(newUpdateList);
+                          } else {
+                            // Add the new item
+                            setUpdateList([...updateList, updatePrd]);
+                          }
+                        }}></InputNumber>
                   </div>
                   <div className='col-span-1 flex justify-center items-center'>
                     <div>{item.postProduct.product.price * item.quantity * 1000} VNĐ</div>
                   </div>
                   <div className='col-span-1 flex justify-center items-center'>
-                    <Button onClick={()=>{
+                    <Button onClick={() => {
 
-                      const variationDetailIds: number[] =[]
+                      const variationDetailIds: number[] = []
                       item.variationDetail.map(variation => {
                         variationDetailIds.push(variation.variationDetailId)
                       })
@@ -198,14 +230,14 @@ export const Cart = () => {
                         variationDetailId: variationDetailIds
                       }
                       // console.log("delItem:", delItem);
-                      dispatch(deleteItemCartThunk(delItem)).then(()=>{
+                      dispatch(deleteItemCartThunk(delItem)).then(() => {
                         dispatch(viewCartThunk(studentInfo.registeredStudentId))
                       })
                       //view cart
                       // dispatch(viewCartThunk());
                       // dispatch(viewCartThunk(studentInfo.registeredStudentId))
 
-                    }} type="link">Delete</Button>
+                    }} type="link">Xóa</Button>
                   </div>
                 </div>
               )
