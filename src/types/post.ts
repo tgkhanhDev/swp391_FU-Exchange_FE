@@ -27,6 +27,7 @@ export interface Post {
   content: string;
   totalReview: number;
   totalRating: number;
+  sellerId: number;
 }
 
 // export interface Product {

@@ -23,7 +23,9 @@ export interface VnPayPayment {
 }
 
 export interface PostProductToBuyRequest {
+  sttOrder: number;
   postProductId: number;
+  sellerId: number;
   variationDetailId: number;
   variationId: number;
   quantity: number;

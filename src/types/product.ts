@@ -56,7 +56,15 @@ export type VariationDetail = {
     variationName: string;
     variationDetail: {
       variationDetailId: number;
-      variationName: string;
+      variation: {
+        variationId: number;
+        variationName: string;
+        variationDetail: {
+          variationDetailId: number;
+          description: string;
+        }[];
+      };
+      description: string
     }[];
   };
   description: string;

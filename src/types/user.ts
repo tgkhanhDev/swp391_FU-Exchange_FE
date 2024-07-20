@@ -99,3 +99,10 @@ export interface Staff {
   phoneNumber: string;
   dob: string;
 }
+
+export interface StudentInfo {
+  accessToken: string;
+  registeredStudentId: number;
+  role: string;
+  username:string
+}
