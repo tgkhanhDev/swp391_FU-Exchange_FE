@@ -14,7 +14,7 @@ import OrderTemplate from "../components/templates/Account/BuyerAccount/OrderTem
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize, ModeratorAuthorize } from "../page/account";
 import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate, AccountManager, SellerAccountManager, SellerManager } from "../components/templates/Account/Admin";
 import { ManagePostProduct, ManageReportPost, ProfileTemplateModerator, ProfileModeratorUpdate } from "../components/templates/Account/Moderator";
-import { UpdateProduct, ManageProduct, CreateProduct, Transaction, Post, ProductDetailById, Wishlist, UpdateWishlist, TransactionDetail } from "../components/templates/Account/SellerAccount";
+import { ManageProduct, CreateProduct, Transaction, Post, ProductDetailById, Wishlist, UpdateWishlist, TransactionDetail } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 import { Payment } from "../components/templates/Payment";
@@ -85,10 +85,6 @@ export const router = [
       {
         element: <ManageProduct />,
         path: PATH.manageProduct,
-      },
-      {
-        element: <UpdateProduct />,
-        path: PATH.updateProduct,
       },
       {
         element: <CreateProduct />,

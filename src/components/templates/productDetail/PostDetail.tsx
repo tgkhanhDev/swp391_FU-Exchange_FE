@@ -342,7 +342,8 @@ export const PostDetail: React.FC<PostType> = () => {
               <div className="my-1">{postDetail?.product.price}VNĐ</div>
             )}
             <div className="min-h-[100px] my-3">
-              {postDetail?.product.detail.description}
+              <div className="text-lg">{postDetail?.product.detail.description}</div>
+              <div className="my-1"><strong>Số lượng còn lại:</strong> {postDetail?.quantity}</div>
             </div>
             {/* author  */}
             <div className="my-1">
@@ -463,7 +464,7 @@ export const PostDetail: React.FC<PostType> = () => {
                               variationDetailId: values,
                               variationId: parseInt(key),
                               quantity: quantity,
-                              price: parseFloat(postDetail.product.price * 1000 + ""),
+                              price: parseFloat(postDetail.product.price + "") * 1000 ,
                             })
                           });
 
@@ -474,6 +475,8 @@ export const PostDetail: React.FC<PostType> = () => {
                             postProductToBuyRequests: postProductToBuyRequests,
                             orderMethod: "buyNow"
                           }
+
+                          
                           dispatch(setPayCart(payload))
 
                           navigate(PATH.payment);

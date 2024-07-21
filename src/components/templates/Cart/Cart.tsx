@@ -16,7 +16,7 @@ import { ProductPaymentType } from '../../../types/product'
 export const Cart = () => {
 
   const [allChecked, setAllChecked] = useState(false);
-  const [checkedItems, setCheckedItems] = useState([]); // Initialize the state for the two checkboxes
+  const [checkedItems, setCheckedItems] = useState<any>([]); // Initialize the state for the two checkboxes
   const { studentInfo } = useAccount();
   const { cartListFilter, cartList } = useCart();
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -46,7 +46,7 @@ export const Cart = () => {
     let calculatedTotalPrice = 0;
     cartListFilter.forEach(item => {
       if (item.sttPostInCart) {
-        calculatedTotalPrice += item.postProduct.product.price * item.quantity * 1000;
+        calculatedTotalPrice += parseFloat(item.postProduct.product.price+"") * item.quantity * 1000;
       }
     });
     setTotalPrice(calculatedTotalPrice);
@@ -100,7 +100,7 @@ export const Cart = () => {
           variationId: item.variationDetail.variation.variationId,
           variationDetailId: item.variationDetail.variationDetailId,
           quantity: item.quantity,
-          price: parseFloat(item.postProduct.product.price * 1000 + ""),
+          price: parseFloat(item.postProduct.product.price+ "") * 1000 ,
         }
       )
     })
@@ -166,7 +166,7 @@ export const Cart = () => {
               {/* </NavLink> */}
 
               <button onClick={handleUpdateAll} className='px-10 py-2 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] bg-white font-semibold hover:border-white duration-300'>
-                Cập nhập
+                Cập nhật
               </button>
 
             </div>
@@ -224,7 +224,7 @@ export const Cart = () => {
                     <div>{item.postProduct.product.price} VNĐ</div>
                   </div>
                   <div className='col-span-2 flex justify-center items-center'>
-                    <InputNumber min={1} max={10} defaultValue={item.quantity}
+                    <InputNumber min={1} defaultValue={item.quantity}
                       onChange={
                         (value: number | any) => {
                           const updatePrd: updateItemCartType = {
@@ -248,7 +248,7 @@ export const Cart = () => {
                         }}></InputNumber>
                   </div>
                   <div className='col-span-1 flex justify-center items-center'>
-                    <NumberFormatter number={item.postProduct.product.price * item.quantity * 1000} /><span className='ml-1'>VND</span>
+                    <NumberFormatter number={ parseFloat(item.postProduct.product.price+"") * item.quantity * 1000} /><span className='ml-1'>VND</span>
                   </div>
                   <div className='col-span-1 flex justify-center items-center'>
                     <Button onClick={() => {
@@ -285,3 +285,4 @@ export const Cart = () => {
 }
 
 export default Cart
+

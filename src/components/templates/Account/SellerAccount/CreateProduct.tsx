@@ -169,9 +169,15 @@ export const CreateProduct = () => {
     })
 
     // console.log('Success:', values);
-    dispatch(createProductThunk(values)).then(() => {
-      navigate(-1)
-      toast.success("Tạo sản phẩm thành công!")
+    dispatch(createProductThunk(values)).then(({ payload }: any) => {
+      // navigate(-1)
+      console.log("reseseses: ", payload);
+
+      if (payload.status === 400) {
+        toast.error(payload.content)
+      } else {
+        toast.success(payload.content)
+      }
     });
   };
 
@@ -396,12 +402,22 @@ export const CreateProduct = () => {
                   className="w-1/4"
                   rules={[
                     { required: true, message: 'Vui lòng nhập giá trị sản phẩm!' },
-                    { type: 'number', min: 1000, message: 'Giá trị sản phẩm không được nhỏ hơn 1000!' },
+                    { type: 'number', min: 1000, message: 'Giá trị sản phẩm phải là bội số của 1000!' },
+                    {
+                      validator: (_, value) => {
+                        if (value % 1000 !== 0) {
+                          return Promise.reject(new Error('Giá trị sản phẩm phải là bội số của 1000! VD: 1.000; 35.000'));
+                        }
+                        return Promise.resolve();
+                      },
+                    },
                   ]}
                 >
                   <InputNumber
                     className='border-slate-400 focus:outline-none text-gray-500 focus:text-black border h-10 w-full rounded-md mt-2 bg-white flex items-center'
                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={value => value.replace(/\$\s?|(,*)/g, '')} // Remove $ and ,
+                    min={1000}
                   />
                 </Form.Item>
               </div>
@@ -439,6 +455,10 @@ export const CreateProduct = () => {
                 {/* <button onClick={handleClick}>Add</button> */}
 
                 <label className='font-semibold'>Hình ảnh (tối thiểu 1 hình, tối đa 4 hình)</label>
+                <Button onClick={() => {
+                  setImg([])
+                  setImgRender([])
+                }} className="rounded mx-3">Xóa toàn bộ ảnh</Button>
                 <div
                   className="border-dashed border-4 border-slate-400 text-black mt-4 px-4 py-8 rounded-md flex items-center justify-center flex-col gap-y-2 text-lg"
                   onDragOver={handleDragOver}
