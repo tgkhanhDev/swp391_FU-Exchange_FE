@@ -410,14 +410,14 @@ export const PostDetail: React.FC<PostType> = () => {
                           });
 
                           let prdId = postDetail.product.productId;
-                          const cartProduct: addCartItem = { 
+                          const cartProduct: addCartItem = {
                             registeredStudentId: student.registeredStudentId,
                             postProductId: prdId,
                             quantity: quantity,
-                            variationDetailId: variationList 
+                            variationDetailId: variationList
                           }
                           // console.log("cartProduct:", cartProduct);
-                          
+
                           if (
                             postDetail &&
                             postDetail.product.variation.length > Object.keys(detail).length
@@ -432,7 +432,11 @@ export const PostDetail: React.FC<PostType> = () => {
                   <Button type="primary"
                     className="flex justify-center items-center text-base py-4 px-6"
                     onClick={() => {
-                      if (
+                      const userInfo = localStorage.getItem("userInfo");
+                      const student = userInfo ? JSON.parse(userInfo) : null;
+                      if (!student) {
+                        toast.error("Vui lòng đăng nhập để tiếp tục!");
+                      } else if (
                         postDetail &&
                         postDetail.product.variation.length > Object.keys(detail).length
                       ) {
@@ -464,7 +468,7 @@ export const PostDetail: React.FC<PostType> = () => {
                               variationDetailId: values,
                               variationId: parseInt(key),
                               quantity: quantity,
-                              price: parseFloat(postDetail.product.price + "") * 1000 ,
+                              price: parseFloat(postDetail.product.price + "") * 1000,
                             })
                           });
 
@@ -476,7 +480,7 @@ export const PostDetail: React.FC<PostType> = () => {
                             orderMethod: "buyNow"
                           }
 
-                          
+
                           dispatch(setPayCart(payload))
 
                           navigate(PATH.payment);

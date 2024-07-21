@@ -65,21 +65,27 @@ export const TransactionDetail = () => {
 
   return (
     <div>
-      <main className='py-10'>
-        <div className='pl-14'>
-          <div className='font-bold text-4xl'>Chi tiết giao dịch</div>
+      <main className="py-10">
+        <div className="pl-14">
+          <div className="font-bold text-4xl">Chi tiết giao dịch</div>
           <div className="flex my-4">
-            <Button type="primary" className="flex justify-center items-center py-5 px-8 text-lg"
+            <Button
+              type="primary"
+              className="flex justify-center items-center py-5 px-8 text-lg"
               onClick={() => {
                 navigate(`/dashboard`);
               }}
-            >Trở về</Button>
+            >
+              Trở về
+            </Button>
           </div>
           <div className="pr-6">
-
             {/*Đơn hàng */}
             {orderDetailSeller.map((detail, index) => (
-              <div key={index} className='bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300'>
+              <div
+                key={index}
+                className="bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300"
+              >
                 {/*Thông tin cơ bản đơn hàng */}
                 <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">
                   <div className="">
@@ -94,11 +100,23 @@ export const TransactionDetail = () => {
 
                   <div className="">
                     <div className="text-lg font-bold">Tổng đơn: </div>
-                    <div> VNĐ</div>
+                    <div>
+                      {detail.postProductInOrder
+                        .reduce(
+                          (total, product) =>
+                            total +
+                            product.priceBought * product.quantity * 1000,
+                          0
+                        )
+                        .toLocaleString("de-DE")}{" "}
+                      VNĐ
+                    </div>
                   </div>
 
                   <div className="">
-                    <div className="text-lg font-bold">Trạng thái đơn hàng: </div>
+                    <div className="text-lg font-bold">
+                      Trạng thái đơn hàng:{" "}
+                    </div>
                     <div>{detail.order.orderStatus.orderStatusName}</div>
                   </div>
 
@@ -111,20 +129,21 @@ export const TransactionDetail = () => {
                     <div className="text-lg font-bold">Mã đơn: </div>
                     <div className="text-center">{detail.order.orderId}</div>
                   </div>
-
                 </div>
 
                 {/*Chi tiết đơn hàng */}
                 {detail.postProductInOrder.map((product, prodIndex) => (
                   <div className="py-5 px-5 flex flex-row gap-4">
                     {/*Hình ảnh */}
-                    <div className='h-36 w-36 border-2'>
+                    <div className="h-36 w-36 border-2">
                       <img src={product.imageUrlProduct}></img>
                     </div>
 
                     <div className="w-[40%]">
                       <div className="pb-4">
-                        <div className="font-semibold text-lg">{product.productName}</div>
+                        <div className="font-semibold text-lg">
+                          {product.productName}
+                        </div>
                         <div className="flex-1 truncate">
                           {product.firstVariation}
                         </div>
@@ -138,7 +157,14 @@ export const TransactionDetail = () => {
                     </div>
 
                     <div className="flex flex-col justify-center items-end flex-grow text-lg font-medium">
-                      <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: 23,000 VNĐ</div>
+                      <div className="text-[var(--color-tertiary)]">
+                        Tổng giá trị sản phẩm:{" "}
+                        {(
+                          product.priceBought *
+                          product.quantity *
+                          1000
+                        ).toLocaleString("de-DE")}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -148,7 +174,7 @@ export const TransactionDetail = () => {
         </div>
       </main>
     </div>
-  )
+  );
 }
 
 
