@@ -132,7 +132,7 @@ export const Cart = () => {
               {/* </NavLink> */}
 
               <button onClick={handleUpdateAll} className='px-10 py-2 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] bg-white font-semibold hover:border-white duration-300'>
-                Cập nhập
+                Cập nhật
               </button>
 
             </div>
@@ -190,7 +190,7 @@ export const Cart = () => {
                     <div>{item.postProduct.product.price} VNĐ</div>
                   </div>
                   <div className='col-span-2 flex justify-center items-center'>
-                    <InputNumber min={1} max={10} defaultValue={item.quantity}
+                    <InputNumber min={1} defaultValue={item.quantity}
                       onChange={
                         (value: number | any) => {
                           const updatePrd: updateItemCartType = {
