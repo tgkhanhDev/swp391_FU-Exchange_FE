@@ -50,6 +50,7 @@ export const CreatePostModal: React.FC<postProps> = ({ productId }) => {
     }
 
     const handleUploadPost = () => {
+        setOpen(false)
         let postUpload = {
             productId: productId,
             postTypeId: postTypeChoice,

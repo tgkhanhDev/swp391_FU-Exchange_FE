@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Checkbox, InputNumber, Button } from "antd"
-import './styles.css'
+import { InputNumber, Button } from "antd"
 import { useAppDispatch } from '../../../store'
 import { deleteItemCartThunk, updateItemCartThunk, viewCartThunk } from '../../../store/cartManager/thunk'
 import { useAccount } from "../../../hooks/useAccount";
@@ -15,8 +14,6 @@ import { PATH } from '../../../constants/config'
 import { ProductPaymentType } from '../../../types/product'
 export const Cart = () => {
 
-  const [allChecked, setAllChecked] = useState(false);
-  const [checkedItems, setCheckedItems] = useState<any>([]); // Initialize the state for the two checkboxes
   const { studentInfo } = useAccount();
   const { cartListFilter, cartList } = useCart();
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -58,24 +55,6 @@ export const Cart = () => {
     }).format(number);
 
     return <span>{formattedNumber}</span>;
-  };
-
-  // Function to handle the change of the first checkbox
-  const handleAllCheck = (e) => {
-    const isChecked = e.target.checked;
-    setAllChecked(isChecked);
-    setCheckedItems(checkedItems.map(() => isChecked));
-  };
-
-  // Function to handle the change of individual checkboxesz
-  const handleItemCheck = (index) => (e) => {
-    const newCheckedItems: any = [...checkedItems];
-    newCheckedItems[index] = e.target.checked;
-    e.target.checked === false ? setAllChecked(false) : null;
-    setCheckedItems(newCheckedItems);
-
-    // If all checkboxes are checked, set the allChecked state to true, otherwise set it to false
-    //setAllChecked(newCheckedItems.every((item) => item));
   };
 
  const handleUpdateAll = () => {
@@ -154,7 +133,7 @@ export const Cart = () => {
             <div className='flex justify-center items-center gap-10'>
 
               <NavLink to={'/detail'}>
-                <button className='px-10 py-2 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] bg-white font-semibold hover:border-white duration-300'>
+                <button className='w-44 px-10 py-2 border-2 border-[var(--color-secondary)] text-base text-[var(--color-secondary)] bg-white font-semibold hover:border-white duration-300'>
                   Tiếp tục mua hàng
                 </button>
               </NavLink>
@@ -178,17 +157,12 @@ export const Cart = () => {
           {/*Header */}
           <div className='rounded-t-md h-16 w-full bg-white mb-5 grid grid-cols-12 gap-2 sticky top-32 z-10 shadow-lg'>
 
-            <div className='col-span-1 flex justify-center items-center'><Checkbox
-              className="custom-checkbox"
-              checked={allChecked}
-              onChange={handleAllCheck}></Checkbox></div>
-
             <div className='col-span-4 flex justify-center items-center font-semibold text-gray-70'>Sản phẩm</div>
             <div className='col-span-2 flex justify-center items-center font-semibold text-gray-70'>Phân loại</div>
             <div className='col-span-1 flex justify-center items-center font-semibold text-gray-70'>Đơn giá</div>
             <div className='col-span-2 flex justify-center items-center font-semibold text-gray-70'>Số lượng</div>
             <div className='col-span-1 flex justify-center items-center font-semibold text-gray-70'>Số tiền</div>
-            <div className='col-span-1 flex justify-center items-center font-semibold text-gray-70'>Thao tác</div>
+            <div className='col-span-2 flex justify-center items-center font-semibold text-gray-70'>Thao tác</div>
           </div>
 
           {/*Card */}
@@ -197,14 +171,9 @@ export const Cart = () => {
             if (item.sttPostInCart) {
               return (
                 <div className='bg-white rounded-md h-40 w-full grid grid-cols-12 gap-2 mb-2'>
-                  <div className='col-span-1 flex justify-center items-center'><Checkbox
-                    className="custom-checkbox"
-                    checked={checkedItems[item.sttPostInCart]}
-                    onChange={handleItemCheck(item.sttPostInCart)}
-                  ></Checkbox></div>
 
                   <div className='col-span-4 flex items-center'>
-                    <div className='flex gap-2'>
+                    <div className='flex gap-2 px-4'>
                       <img src={item.postProduct.product.image[0].imageUrl} className='h-32 w-32 border-2'></img>
                       <div className='flex items-center'>{item.postProduct.content}</div>
                     </div>
@@ -248,9 +217,9 @@ export const Cart = () => {
                         }}></InputNumber>
                   </div>
                   <div className='col-span-1 flex justify-center items-center'>
-                    <NumberFormatter number={ parseFloat(item.postProduct.product.price+"") * item.quantity * 1000} /><span className='ml-1'>VND</span>
+                    <NumberFormatter number={ parseFloat(item.postProduct.product.price+"") * item.quantity * 1000} /><span className='ml-1'>VNĐ</span>
                   </div>
-                  <div className='col-span-1 flex justify-center items-center'>
+                  <div className='col-span-2 flex justify-center items-center'>
                     <Button onClick={() => {
 
                       const variationDetailIds: number[] = []

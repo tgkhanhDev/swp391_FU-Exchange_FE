@@ -170,7 +170,7 @@ export const PostDetail: React.FC<PostType> = () => {
   //   console.log("detail:::", detail);
   // }, [detail]);
 
-  const contentCreate = `Tôi muốn thực hiện trao đổi đối với sản phẩm này: ${postDetail?.product.detail.productName}`
+  const contentCreate = `Tôi muốn thực hiện trao đổi đối với sản phẩm này: ${postDetail?.product.detail?.productName}`
 
   const handleChat = () => {
     if (!studentInfo) {
@@ -736,11 +736,11 @@ export const PostDetail: React.FC<PostType> = () => {
     );
   } else {
     return <div>
-      <div className="mt-5">
-        <button onClick={() => navigate('/detail')} className="px-2 py-2 rounded-r-full text-lg bg-[var(--color-primary)] text-white w-40 duration-500 hover:w-44">Trở về <LeftOutlined className="ml-4" /></button>
-      </div>
       <div className="container">
         <div className="h-[30vh] flex justify-center items-center font-bold text-2xl">Bài đăng không tồn tại hoặc đã bị xóa</div>
+        <div className="flex justify-center items-center">
+          <button onClick={() => navigate('/detail')} className="px-2 py-2 rounded-lg text-lg bg-[var(--color-primary)] text-white w-40 duration-500 hover:w-44">Trở về</button>
+        </div>
       </div>
     </div>;
   }

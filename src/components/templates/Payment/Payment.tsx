@@ -94,8 +94,13 @@ export const Payment = () => {
       dispatch(setPayCart(newCart));
 
       // Dispatch the thunk with newCart instead of payCart
-      dispatch(postPayVnPayThunk(newCart)).then((response) => {
-        window.location.href = response.payload.paymentUrl;
+      dispatch(postPayVnPayThunk(newCart)).then((item) => {
+        if (item.payload.status == 400) {
+          toast.error(item.payload.content)
+        } else {
+          toast.success(item.payload.content)
+          window.location.href = item.payload.paymentUrl;
+        }
       });
     }
   };

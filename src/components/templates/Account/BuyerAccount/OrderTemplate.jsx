@@ -124,7 +124,7 @@ export const OrderTemplate = () => {
     setContent(content);
   }
 
-  const contentCreate = `Tôi đã mua sản phẩm này: ${content}`;
+  const contentCreate = `Chào bạn, tôi vừa mua sản phẩm ${content} và muốn trao đổi thêm một số thông tin.`;
 
   useEffect(() => {
     if (sellerId && registeredId && showBoxChat) {

@@ -30,9 +30,9 @@ export const manageOrderSlice = createSlice({
         toast.error(`${payload.content}`);
       }
     });
-    builder.addCase(postPayCodThunk.pending, (state, { payload }) => {
-      toast.loading("Yêu cầu đang được thực hiện")
-    })
+    // builder.addCase(postPayCodThunk.pending, (state, { payload }) => {
+    //   toast.loading("Yêu cầu đang được thực hiện")
+    // })
     builder.addCase(postPayVnPayThunk.fulfilled, (state, { payload }) => {
     });
     builder.addCase(getOrderThunk.fulfilled, (state, { payload }) => {
