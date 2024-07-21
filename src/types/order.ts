@@ -2,7 +2,7 @@ export interface PaymentType {
   registeredStudentId: number;
   postProductToBuyRequests: PostProductToBuyRequestType[];
   paymentMethodId: number;
-  description: string;
+  description?: string;
   navigate?: any;
   orderMethod: "buyNow" | "cart";
 };

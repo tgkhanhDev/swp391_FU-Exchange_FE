@@ -29,13 +29,8 @@ export const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { postProductId } = location.state || {};
-  const [textDescription, setDescription] = useState<string>("")
 
   const descriptionRef = useRef<String>("")
-
-  useEffect(() => {
-    console.log("textDescription:::", textDescription);
-  }, [textDescription])
 
   useEffect(() => {
     if (!studentInfo) {
@@ -69,21 +64,22 @@ export const Payment = () => {
         ...payCart,
         paymentMethodId: 1,
         description: descriptionRef.current
-      }
+      };
       console.log("payCartCOD:::", newCart);
-      dispatch(setPayCart(newCart))
-    }
+      dispatch(setPayCart(newCart));
 
-    setTimeout(() => {
-      dispatch(postPayCodThunk(payCart)).then(item => {
-        if (item.payload.status == 400) {
-          toast.error(item.payload.content)
-        } else {
-          toast.success(item.payload.content)
-        }
-      })
-    }, 5000);
-  }
+      // Delay the dispatch of postPayCodThunk to ensure payCart is updated
+      setTimeout(() => {
+        dispatch(postPayCodThunk(newCart)).then(item => {
+          if (item.payload.status === 400) {
+            toast.error(item.payload.content);
+          } else {
+            toast.success(item.payload.content);
+          }
+        });
+      }, 5000);
+    }
+  };
 
 
   const onPurchaseVnPay = () => {
@@ -92,18 +88,19 @@ export const Payment = () => {
         ...payCart,
         paymentMethodId: 2,
         description: descriptionRef.current
-      }
+      };
+
       console.log("payCartVNPAY:::", newCart);
-      dispatch(setPayCart(newCart))
+      dispatch(setPayCart(newCart));
+
+      // Dispatch the thunk with newCart instead of payCart
+      dispatch(postPayVnPayThunk(newCart)).then((response) => {
+        setTimeout(() => {
+          window.location.href = response.payload.paymentUrl;
+        }, 5000);
+      });
     }
-
-    dispatch(postPayVnPayThunk(payCart)).then((response) => {
-      setTimeout(() => {
-        window.location.href = response.payload.paymentUrl;
-      }, 5000);
-    });
-
-  }
+  };
 
   const NumberFormatter = ({ number }) => {
     const formattedNumber = new Intl.NumberFormat('de-DE', {
