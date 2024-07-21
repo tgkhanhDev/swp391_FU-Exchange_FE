@@ -6,7 +6,6 @@ import { getPostByIdThunk } from "../../../store/postManagement/thunk";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { useNavigate, useParams, NavLink } from "react-router-dom";
-import { log } from "console";
 import { PATH } from "../../../constants/config";
 import { getProductByIdThunk, getProductByVariationDetailThunk } from "../../../store/productManagement/thunk";
 import { MinusOutlined, PlusOutlined, WarningOutlined, LeftOutlined } from "@ant-design/icons";
@@ -148,6 +147,8 @@ export const PostDetail: React.FC<PostType> = () => {
   };
 
   useEffect(() => {
+    console.log("postDetail:::", postDetail);
+
     const images: { original: string; thumbnail: string }[] = [];
     postDetail?.product.image.map((img) => {
       images.push({ original: img.imageUrl, thumbnail: img.imageUrl });
@@ -247,8 +248,6 @@ export const PostDetail: React.FC<PostType> = () => {
   };
 
   useEffect(() => {
-    console.log("postDetail:::", postDetail);
-
     dispatch(getPostTypeReportThunk());
   }, [dispatch])
 
@@ -464,7 +463,7 @@ export const PostDetail: React.FC<PostType> = () => {
                               variationDetailId: values,
                               variationId: parseInt(key),
                               quantity: quantity,
-                              price: parseFloat(postDetail.product.price + ""),
+                              price: parseFloat(postDetail.product.price * 1000 + ""),
                             })
                           });
 

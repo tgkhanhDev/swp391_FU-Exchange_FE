@@ -43,29 +43,31 @@ export const Payment = () => {
 
   }, [studentInfo, productView])
 
-  useEffect(() => {    
-    console.log("payCart:::", payCart);
+  useEffect(() => {
+
+    console.log("productView:::", productView);
     
     let price = 0;
     productView.forEach(product => {
       let prdPrice = parseInt(product.product.price) * product.quantity * 1000
+      Number.isNaN(prdPrice) ? prdPrice = parseInt(product.product.price) * productQuantity[product.product.productId] * 1000 : null
       price += prdPrice
     });
     setTotalPrice(price);//Db need to * 1000 :D
   }, [productView]);
 
   const onPurchase = () => {
-    if (payCart){
+    if (payCart) {
       dispatch(setPayCart(
         {
           ...payCart,
-          paymentMethodId : 1,
-          description : (document.getElementById("description") as HTMLInputElement).value
+          paymentMethodId: 1,
+          description: (document.getElementById("description") as HTMLInputElement).value
         }
       ))
     }
-
-
+    console.log("payCart:::", payCart);
+    
     dispatch(postPayCodThunk(payCart)).then(item => {
       if (item.payload.status == 400) {
         toast.error(item.payload.content)
@@ -92,6 +94,13 @@ export const Payment = () => {
 
   }
 
+  const NumberFormatter = ({ number }) => {
+    const formattedNumber = new Intl.NumberFormat('de-DE', {
+      maximumFractionDigits: 0,
+    }).format(number);
+
+    return <span>{formattedNumber}</span>;
+  };
   return (
     <div>
       {/*Tựa đề */}
@@ -139,7 +148,7 @@ export const Payment = () => {
                       <div><span className="mr-1 font-bold">{variation.variationName}</span>:{variation.variationDetail.description}</div>
                     )}
                     <div><span className="mr-1 font-bold">Số lượng:</span> {product.quantity ||
-                    productQuantity[product.product.productId]}</div>
+                      productQuantity[product.product.productId]}</div>
                   </div>
                   <div className="font-medium text-lg"><span className="mr-1 font-bold">Giá: </span>{product?.product.price}</div>
                 </div>
@@ -155,10 +164,15 @@ export const Payment = () => {
           <div className="text-lg">
             <div className="py-5 border-b-2 border-black">
               {productView.map((product, index) => {
+                
+                const price = product.quantity ? parseInt(product.product.price) * product.quantity * 1000
+                  : parseInt(product.product.price) * productQuantity[product.product.productId] * 1000
+
                 return (
                   <div className="flex justify-between items-center">
                     <div>Tổng giá trị sản phẩm ({index + 1})</div>
-                    <div>{parseInt(product.product.price) * product.quantity * 1000} VNĐ</div>
+                    <div>
+                      <NumberFormatter number={price} /> VNĐ</div>
                   </div>
                 )
               })}
@@ -166,8 +180,10 @@ export const Payment = () => {
             </div>
             <div className="flex justify-between items-center py-5">
               <div>Tổng</div>
-              <div>{totalPrice} VNĐ</div>
-              
+              <div>
+                <NumberFormatter number={totalPrice} /> VNĐ
+                </div>
+
             </div>
           </div>
           {/* Description  */}

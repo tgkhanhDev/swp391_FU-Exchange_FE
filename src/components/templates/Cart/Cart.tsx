@@ -13,7 +13,6 @@ import { toast } from 'react-toastify'
 import { setPayCart, setProductView } from "../../../store/productManagement/slice"
 import { PATH } from '../../../constants/config'
 import { ProductPaymentType } from '../../../types/product'
-
 export const Cart = () => {
 
   const [allChecked, setAllChecked] = useState(false);
@@ -52,6 +51,14 @@ export const Cart = () => {
     });
     setTotalPrice(calculatedTotalPrice);
   }, [cartListFilter]);
+
+  const NumberFormatter = ({ number }) => {
+    const formattedNumber = new Intl.NumberFormat('de-DE', {
+      maximumFractionDigits: 0,
+    }).format(number);
+
+    return <span>{formattedNumber}</span>;
+  };
 
   // Function to handle the change of the first checkbox
   const handleAllCheck = (e) => {
@@ -93,7 +100,7 @@ export const Cart = () => {
           variationId: item.variationDetail.variation.variationId,
           variationDetailId: item.variationDetail.variationDetailId,
           quantity: item.quantity,
-          price: parseFloat(item.postProduct.product.price + ""),
+          price: parseFloat(item.postProduct.product.price * 1000 + ""),
         }
       )
     })
@@ -154,7 +161,7 @@ export const Cart = () => {
 
               {/* <NavLink to={'/payment'}> */}
               <button onClick={handleBuyAll} className='px-14 py-3 text-base hover:text-[var(--color-secondary)] hover:bg-white font-semibold text-white bg-[var(--color-primary)] duration-300 hover:shadow-[inset_0_0_0_2px_var(--color-secondary)]'>
-                Mua tất cả - {totalPrice}VNĐ
+                Mua tất cả - <NumberFormatter number={totalPrice} />VNĐ
               </button>
               {/* </NavLink> */}
 
@@ -241,7 +248,7 @@ export const Cart = () => {
                         }}></InputNumber>
                   </div>
                   <div className='col-span-1 flex justify-center items-center'>
-                    <div>{item.postProduct.product.price * item.quantity * 1000} VNĐ</div>
+                    <NumberFormatter number={item.postProduct.product.price * item.quantity * 1000 } />
                   </div>
                   <div className='col-span-1 flex justify-center items-center'>
                     <Button onClick={() => {

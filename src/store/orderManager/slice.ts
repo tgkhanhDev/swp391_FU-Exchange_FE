@@ -25,7 +25,7 @@ export const manageOrderSlice = createSlice({
     builder.addCase(postPayCodThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
         toast.success(`${payload.content}`);
-        window.location.href = "/authorize/order";
+        // window.location.href = "/authorize/order";
       } else {
         toast.error(`${payload.content}`);
       }
