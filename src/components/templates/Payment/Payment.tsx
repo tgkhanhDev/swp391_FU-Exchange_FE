@@ -82,13 +82,7 @@ export const Payment = () => {
       dispatch(setPayCart(newCart))
     }
 
-    dispatch(postPayCodThunk(payCart)).then(item => {
-      if (item.payload.status == 400) {
-        toast.error(item.payload.content)
-      } else {
-        toast.success(item.payload.content)
-      }
-    })
+    dispatch(postPayCodThunk(payCart))
   }
 
 
@@ -104,9 +98,7 @@ export const Payment = () => {
     }
 
     dispatch(postPayVnPayThunk(payCart)).then((response) => {
-      setTimeout(() => {
         window.location.href = response.payload.paymentUrl;
-      }, 5000);
     });
 
   }
