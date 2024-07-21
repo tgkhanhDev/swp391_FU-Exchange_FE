@@ -55,7 +55,7 @@ export const manageProductSlice = createSlice({
       });
     builder.addCase(createProductThunk.fulfilled, (state, { payload }) => {
       // state.createProductRes = payload.data;
-      toast.success(payload.data.content);
+      // toast.success(payload.data.content);
     });
     builder.addCase(
       getProductByStudentIdThunk.fulfilled,

@@ -13,13 +13,21 @@ import TextArea from "antd/es/input/TextArea";
 import { useAccount } from "../../../hooks/useAccount";
 import { toast } from "react-toastify";
 
+const withPreConstructPayment = (WrappedComponent) => {
+  return (props) => {
+    // Render component gốc
+    const dispatch = useAppDispatch();
+    dispatch(setProductEmpty());
+    return <WrappedComponent {...props} />;
+  };
+};
+
 export interface PaymentItem {
   productId: number;
   variationList: number[];
   quantity: number;
 }
 [];
-
 
 export const Payment = () => {
   const dispatch = useAppDispatch();
@@ -226,4 +234,4 @@ export const Payment = () => {
   );
 };
 
-export default Payment;
+export default withPreConstructPayment(Payment);

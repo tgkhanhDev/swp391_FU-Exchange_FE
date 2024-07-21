@@ -463,7 +463,7 @@ export const PostDetail: React.FC<PostType> = () => {
                               variationDetailId: values,
                               variationId: parseInt(key),
                               quantity: quantity,
-                              price: parseFloat(postDetail.product.price * 1000 + ""),
+                              price: parseFloat(postDetail.product.price + "") * 1000 ,
                             })
                           });
 
@@ -474,6 +474,8 @@ export const PostDetail: React.FC<PostType> = () => {
                             postProductToBuyRequests: postProductToBuyRequests,
                             orderMethod: "buyNow"
                           }
+
+                          
                           dispatch(setPayCart(payload))
 
                           navigate(PATH.payment);
