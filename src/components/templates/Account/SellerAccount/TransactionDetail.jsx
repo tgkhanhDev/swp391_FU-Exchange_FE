@@ -6,6 +6,7 @@ import { getSellerInfoThunk } from "../../../../store/userManagement/thunk";
 import { getOrderDetailBySellerIdThunk } from "../../../../store/orderManager/thunk"
 import { useOrder } from "../../../../hooks/useOrder"
 import { Button } from "antd"
+import { format } from 'date-fns';
 
 export const TransactionDetail = () => {
   const navigate = useNavigate();
@@ -57,7 +58,10 @@ export const TransactionDetail = () => {
     }
   }, [user, navigate]);
 
-  console.log(orderDetailSeller)
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, 'dd-MM-yyyy HH:mm:ss');
+  };
 
   return (
     <div>
@@ -72,29 +76,6 @@ export const TransactionDetail = () => {
             >Trở về</Button>
           </div>
           <div className="pr-6">
-            {orderDetailSeller.map((detail, index) => (
-              <div key={index} className="order-detail">
-                <div>Order ID: {detail.order.orderId}</div>
-                <div>Complete Date: {detail.order.completeDate}</div>
-                <div>Create Date: {detail.order.createDate}</div>
-                <div>Order Status ID: {detail.order.orderStatus.orderStatusId}</div>
-                <div>Order Status Name: {detail.order.orderStatus.orderStatusName}</div>
-                <div>Payment ID: {detail.order.paymentId}</div>
-                <div>Registered Student: {detail.order.registeredStudent}</div>
-                {detail.postProductInOrder.map((product, prodIndex) => (
-                  <div key={prodIndex} className="post-product">
-                    <div>Post Product ID: {product.postProductId}</div>
-                    <div>First Variation: {product.firstVariation}</div>
-                    <div>
-                      Image URL: <img src={product.imageUrlProduct} alt="Product" />
-                    </div>
-                    <div>Post Status ID: {product.postStatusDTO.postStatusId}</div>
-                    <div>Post Status Name: {product.postStatusDTO.postStatusName}</div>
-                    <div>Quantity: {product.quantity}</div>
-                  </div>
-                ))}
-              </div>
-            ))}
 
             {/*Đơn hàng */}
             {orderDetailSeller.map((detail, index) => (
@@ -103,12 +84,12 @@ export const TransactionDetail = () => {
                 <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">
                   <div className="">
                     <div className="text-lg font-bold">Ngày đặt đơn: </div>
-                    <div>{detail.order.createDate}</div>
+                    <div>{formatDate(detail.order.createDate)}</div>
                   </div>
 
                   <div>
                     <div className="text-lg font-bold">Ngày cập nhật mới:</div>
-                    <div>{detail.order.completeDate}</div>
+                    <div>{formatDate(detail.order.completeDate)}</div>
                   </div>
 
                   <div className="">
@@ -143,13 +124,20 @@ export const TransactionDetail = () => {
 
                     <div className="w-[40%]">
                       <div className="pb-4">
-                        <div className="font-semibold text-lg"></div>
-                        <div>Màu sắc: Xanh ngọc</div>
-                        <div>Số lượng: {product.quantity}</div>
+                        <div className="font-semibold text-lg">{product.productName}</div>
+                        <div className="flex-1 truncate">
+                          {product.firstVariation}
+                        </div>
+                        {product.secondVariation && (
+                          <div className="flex-1 truncate">
+                            {product.secondVariation}
+                          </div>
+                        )}
+                        <div className="mt-2">Số lượng: {product.quantity}</div>
                       </div>
                     </div>
 
-                    <div className="flex flex-col justify-between items-end flex-grow text-lg font-medium">
+                    <div className="flex flex-col justify-center items-end flex-grow text-lg font-medium">
                       <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: 23,000 VNĐ</div>
                     </div>
                   </div>

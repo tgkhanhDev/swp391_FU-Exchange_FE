@@ -276,13 +276,21 @@ export const OrderTemplate = () => {
                     >
                       <div className="h-32 w-32">
                         {product.imageUrlProduct ? (
-                          <img
-                            src={product.imageUrlProduct}
-                            className="h-32 w-32"
-                            alt={product.productName}
-                          />
+                          product.postStatusDTO.postStatusId === 4 ? (
+                            <img
+                              src={product.imageUrlProduct}
+                              className="h-32 w-32"
+                              alt={product.productName}
+                            />
+                          ) : (
+                            <div className="flex justify-center items-center h-full">
+                              <div className="text-center">No Image</div>
+                            </div>
+                          )
                         ) : (
-                          <div>No Image</div>
+                          <div className="flex justify-center items-center h-full">
+                            <div className="text-center">No Image</div>
+                          </div>
                         )}
                       </div>
                       <div className="w-[40%]">
