@@ -199,7 +199,7 @@ export const Payment = () => {
           </div>
           {/* Description  */}
           <div className="my-5">
-            <div className="text-with-lines">LỜI NHẮN CHO ĐƠN VỊ VẬN CHUYỂN</div>
+            <div className="text-with-lines">LỜI NHẮN DÀNH CHO NGƯỜI BÁN</div>
             <TextArea
               id="description"
               rows={4}

@@ -168,6 +168,17 @@ export const TransactionDetail = () => {
                     </div>
                   </div>
                 ))}
+                <div className="my-2 ml-10">
+                  {detail.order.description ? (
+                    <div>
+                      <strong className="text-lg text-[var(--color-primary)]">Lời nhắn dành cho người bán:</strong> {detail.order.description}
+                    </div>
+                  ) : (
+                    <div>
+                      <strong className="text-lg text-[var(--color-primary)]">Lời nhắn dành cho người bán:</strong> Không có
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
