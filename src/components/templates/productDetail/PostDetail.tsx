@@ -10,7 +10,7 @@ import { log } from "console";
 import { PATH } from "../../../constants/config";
 import { getProductByIdThunk, getProductByVariationDetailThunk } from "../../../store/productManagement/thunk";
 import { MinusOutlined, PlusOutlined, WarningOutlined, LeftOutlined } from "@ant-design/icons";
-import { setProductQuantity, setTest } from "../../../store/productManagement/slice"
+import { setPayCart, setProductQuantity } from "../../../store/productManagement/slice"
 import { addToCartThunk } from "../../../store/cartManager/thunk";
 import { getAccountInfoTypeThunk, getSellerInfoThunk } from "../../../store/userManagement/thunk";
 import { contactSeller } from "../../../store/chatManager/thunk";
@@ -25,7 +25,8 @@ import Rating from 'react-rating';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useReport } from "../../../hooks/useReport";
 import { getPostTypeReportThunk, sendReportThunk } from "../../../store/reportManager/thunk"
-import { addCartItem } from "../../../types/cart";
+import { addCartItem, cartItem, postProductToBuyRequest } from "../../../types/cart";
+import { PaymentType } from "../../../types/order";
 
 type PostType = {
   postId: number;
@@ -246,6 +247,8 @@ export const PostDetail: React.FC<PostType> = () => {
   };
 
   useEffect(() => {
+    console.log("postDetail:::", postDetail);
+    
     dispatch(getPostTypeReportThunk());
   }, [dispatch])
 
@@ -292,7 +295,7 @@ export const PostDetail: React.FC<PostType> = () => {
 
   const handleOk = () => {
     if (selectedWishlist && updateQuantityRef) {
-      dispatch(updateQuantityWishlistThunk({ wishListId: selectedWishlist, quantity: parseInt(updateQuantityRef.current) }))
+      dispatch(updateQuantityWishlistThunk({ wishListId: selectedWishlist, quantity: updateQuantityRef.current }))
       setIsModalVisible(false);
     }
   };
@@ -435,10 +438,37 @@ export const PostDetail: React.FC<PostType> = () => {
                           const variationList = [];
                           Object.entries(detail).forEach(([key, values]) => {
                             variationList.push(values);
+                            console.log("Key", key  ,"---values:", values);
                           });
 
                           dispatch(getProductByVariationDetailThunk(variationList));   //đẩy variation vào list
                           dispatch(setProductQuantity({ id: prdId, quantity: quantity }));    //id product và số lượng
+
+                          console.log("variationList:", variationList);
+                          
+                          //pass to Payment
+                          const postProductToBuyRequests: postProductToBuyRequest[] = []
+
+                          Object.entries(detail).forEach(([key, values]) => {
+                            postProductToBuyRequests.push({
+                              sttOrder: 1,
+                              postProductId: parseInt(postProductId!),
+                              sellerId: postDetail.product.seller?.sellerId!,
+                              variationDetailId: values,
+                              variationId: parseInt(key),
+                              quantity: quantity,
+                              price: parseFloat(postDetail.product.price + ""),
+                            })
+                          });
+
+                          const payload: PaymentType = {
+                            registeredStudentId: studentInfo.registeredStudentId,
+                            paymentMethodId: 1,
+                            description: "",
+                            postProductToBuyRequests: postProductToBuyRequests,
+                          }
+                          dispatch(setPayCart(payload))
+
                           navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
                         }
                       }

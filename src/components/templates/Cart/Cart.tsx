@@ -6,15 +6,18 @@ import { useAppDispatch } from '../../../store'
 import { deleteItemCartThunk, updateItemCartThunk, viewCartThunk } from '../../../store/cartManager/thunk'
 import { useAccount } from "../../../hooks/useAccount";
 import { useCart } from "../../../hooks/useCart";
-import { cartItem, deleteItemCartType, updateItemCartType } from '../../../types/cart'
+import { cartItem, deleteItemCartType, postProductToBuyRequest, updateItemCartType } from '../../../types/cart'
 import { PaymentType, PostProductToBuyRequest } from '../../../types/order'
 import { postPayCodThunk } from '../../../store/orderManager/thunk'
 import { toast } from 'react-toastify'
+import { setPayCart, setProductView } from "../../../store/productManagement/slice"
+import { PATH } from '../../../constants/config'
+import { ProductPaymentType } from '../../../types/product'
 
 export const Cart = () => {
 
   const [allChecked, setAllChecked] = useState(false);
-  const [checkedItems, setCheckedItems] = useState([false, false]); // Initialize the state for the two checkboxes
+  const [checkedItems, setCheckedItems] = useState([]); // Initialize the state for the two checkboxes
   const { studentInfo } = useAccount();
   const { cartListFilter, cartList } = useCart();
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -61,7 +64,6 @@ export const Cart = () => {
   const handleItemCheck = (index) => (e) => {
     const newCheckedItems = [...checkedItems];
     newCheckedItems[index] = e.target.checked;
-    console.log("e.target.checked:::", e.target.checked);
     e.target.checked === false ? setAllChecked(false) : null;
     setCheckedItems(newCheckedItems);
 
@@ -77,7 +79,7 @@ export const Cart = () => {
   }
 
   const handleBuyAll = () => {
-    const postProductToBuyRequests: cartItem[] = []
+    const postProductToBuyRequests: postProductToBuyRequest[] = []
 
     cartList.map((item, idx) => {
       postProductToBuyRequests.push(
@@ -99,15 +101,24 @@ export const Cart = () => {
       description: "",
       postProductToBuyRequests: postProductToBuyRequests,
     }
+    dispatch(setPayCart(payload)) //set for payment
 
-    dispatch(postPayCodThunk(payload)).then(item => {
-      if (item.payload.status == 400) {
-        toast.error(item.payload.content)
-      } else {
-        toast.success(item.payload.content)
-      }
-    })
 
+
+    //For Render
+    const productView: ProductPaymentType[] = []
+    // const newVar
+
+    // cartListFilter.map((cart) => {
+    //   productView.push({
+    //     product: cart.postProduct.product,
+    //     variation
+    //   })
+    // })c
+   
+    //dispatch(setProductView(cartList)) //set for Render
+    navigate(PATH.payment)
+    
   }
 
   return (
