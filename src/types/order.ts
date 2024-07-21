@@ -3,7 +3,8 @@ export interface PaymentType {
   postProductToBuyRequests: PostProductToBuyRequestType[];
   paymentMethodId: number;
   description: string;
-  navigate ?: any;
+  navigate?: any;
+  orderMethod: "buyNow" | "cart";
 };
 
 export interface PostProductToBuyRequestType {

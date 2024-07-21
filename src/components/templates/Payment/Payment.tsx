@@ -44,6 +44,8 @@ export const Payment = () => {
   }, [studentInfo, productView])
 
   useEffect(() => {    
+    console.log("payCart:::", payCart);
+    
     let price = 0;
     productView.forEach(product => {
       let prdPrice = parseInt(product.product.price) * product.quantity * 1000

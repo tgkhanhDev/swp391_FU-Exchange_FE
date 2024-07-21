@@ -103,10 +103,10 @@ export const Cart = () => {
       paymentMethodId: 1,
       description: "",
       postProductToBuyRequests: postProductToBuyRequests,
+      orderMethod:"cart"
     }
+
     dispatch(setPayCart(payload)) //set for payment
-
-
 
     //For Render
     const productView: ProductPaymentType[] = []

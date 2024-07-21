@@ -473,6 +473,7 @@ export const PostDetail: React.FC<PostType> = () => {
                             paymentMethodId: 1,
                             description: "",
                             postProductToBuyRequests: postProductToBuyRequests,
+                            orderMethod: "buyNow"
                           }
                           dispatch(setPayCart(payload))
 
