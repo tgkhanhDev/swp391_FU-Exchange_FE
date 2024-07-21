@@ -43,15 +43,15 @@ export const Payment = () => {
 
   }, [studentInfo, productView])
 
-  useEffect(() => {
-    console.log("productView:::", productView);
+  useEffect(() => {    
+    console.log("payCart:::", payCart);
     
     let price = 0;
     productView.forEach(product => {
-      let prdPrice = (parseInt(product.product.price) * productQuantity[product.product.productId]);
+      let prdPrice = parseInt(product.product.price) * product.quantity * 1000
       price += prdPrice
     });
-    setTotalPrice(price * 1000);//Db need to * 1000 :D
+    setTotalPrice(price);//Db need to * 1000 :D
   }, [productView]);
 
   const onPurchase = () => {
@@ -138,22 +138,11 @@ export const Payment = () => {
                     {product.variation.map(variation =>
                       <div><span className="mr-1 font-bold">{variation.variationName}</span>:{variation.variationDetail.description}</div>
                     )}
-                    <div><span className="mr-1 font-bold">Số lượng:</span> {productQuantity[product.product.productId]}</div>
+                    <div><span className="mr-1 font-bold">Số lượng:</span> {product.quantity ||
+                    productQuantity[product.product.productId]}</div>
                   </div>
                   <div className="font-medium text-lg"><span className="mr-1 font-bold">Giá: </span>{product?.product.price}</div>
                 </div>
-
-                {/* <div className='flex flex-grow items-center justify-end w-full'>byVendorName</div> */}
-                {/* <div className="flex flex-col justify-between items-end flex-grow ">
-                  <div className="flex justify-end gap-10 text-lg">
-                    <button className="underline text-[var(--color-primary)] duration-200 hover:text-black">
-                      Chỉnh sửa
-                    </button>
-                    <button className="underline text-[var(--color-primary)] duration-200 hover:text-black">
-                      Xóa
-                    </button>
-                  </div>
-                </div> */}
               </div>
             );
           })}
@@ -169,20 +158,16 @@ export const Payment = () => {
                 return (
                   <div className="flex justify-between items-center">
                     <div>Tổng giá trị sản phẩm ({index + 1})</div>
-                    <div>{parseInt(product.product.price) * productQuantity[product.product.productId] * 1000} VNĐ</div>
+                    <div>{parseInt(product.product.price) * product.quantity * 1000} VNĐ</div>
                   </div>
                 )
               })}
-
-              {/* <div className="flex justify-between items-center">
-              //   <div>Phụ thu</div>
-              //   <div>{totalPrice * 0.1} VNĐ</div>
-              // </div> */}
 
             </div>
             <div className="flex justify-between items-center py-5">
               <div>Tổng</div>
               <div>{totalPrice} VNĐ</div>
+              
             </div>
           </div>
           {/* Description  */}

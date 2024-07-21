@@ -87,6 +87,7 @@ export interface ProductPaymentType {
       description: string;
     };
   }[];
+  quantity: number;
 }
 
 export type createProductType = {

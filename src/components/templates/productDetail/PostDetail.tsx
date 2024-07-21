@@ -248,7 +248,7 @@ export const PostDetail: React.FC<PostType> = () => {
 
   useEffect(() => {
     console.log("postDetail:::", postDetail);
-    
+
     dispatch(getPostTypeReportThunk());
   }, [dispatch])
 
@@ -411,7 +411,14 @@ export const PostDetail: React.FC<PostType> = () => {
                           });
 
                           let prdId = postDetail.product.productId;
-                          const cartProduct: addCartItem = { registeredStudentId: student.registeredStudentId, postProductId: prdId, quantity: quantity, variationDetailId: variationList }
+                          const cartProduct: addCartItem = { 
+                            registeredStudentId: student.registeredStudentId,
+                            postProductId: prdId,
+                            quantity: quantity,
+                            variationDetailId: variationList 
+                          }
+                          // console.log("cartProduct:", cartProduct);
+                          
                           if (
                             postDetail &&
                             postDetail.product.variation.length > Object.keys(detail).length
@@ -439,14 +446,14 @@ export const PostDetail: React.FC<PostType> = () => {
                           const variationList = [];
                           Object.entries(detail).forEach(([key, values]) => {
                             variationList.push(values);
-                            console.log("Key", key  ,"---values:", values);
+                            console.log("Key", key, "---values:", values);
                           });
 
                           dispatch(getProductByVariationDetailThunk(variationList));   //đẩy variation vào list
                           dispatch(setProductQuantity({ id: prdId, quantity: quantity }));    //id product và số lượng
 
                           console.log("variationList:", variationList);
-                          
+
                           //pass to Payment
                           const postProductToBuyRequests: postProductToBuyRequest[] = []
 
@@ -467,10 +474,11 @@ export const PostDetail: React.FC<PostType> = () => {
                             paymentMethodId: 1,
                             description: "",
                             postProductToBuyRequests: postProductToBuyRequests,
+                            orderMethod: "buyNow"
                           }
                           dispatch(setPayCart(payload))
 
-                          navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
+                          navigate(PATH.payment);
                         }
                       }
                     }}

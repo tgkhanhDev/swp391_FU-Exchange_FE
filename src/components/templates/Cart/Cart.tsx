@@ -62,7 +62,7 @@ export const Cart = () => {
 
   // Function to handle the change of individual checkboxesz
   const handleItemCheck = (index) => (e) => {
-    const newCheckedItems = [...checkedItems];
+    const newCheckedItems: any = [...checkedItems];
     newCheckedItems[index] = e.target.checked;
     e.target.checked === false ? setAllChecked(false) : null;
     setCheckedItems(newCheckedItems);
@@ -71,12 +71,15 @@ export const Cart = () => {
     //setAllChecked(newCheckedItems.every((item) => item));
   };
 
-  const handleUpdateAll = () => {
-    updateList.map( async (item) => {
-      await dispatch(updateItemCartThunk({ ...item }))
-    })
-    toast.success("Cập nhật giỏ hàng thành công")
-  }
+ const handleUpdateAll = () => {
+     (updateList.map(item => {
+        dispatch(updateItemCartThunk({ ...item })).then(() => {
+           dispatch(viewCartThunk(studentInfo?.registeredStudentId + ''));
+        });
+     }));
+
+     toast.success("Cập nhật thành công!")
+ }
 
   const handleBuyAll = () => {
     const postProductToBuyRequests: postProductToBuyRequest[] = []
@@ -100,25 +103,38 @@ export const Cart = () => {
       paymentMethodId: 1,
       description: "",
       postProductToBuyRequests: postProductToBuyRequests,
+      orderMethod:"cart"
     }
+
     dispatch(setPayCart(payload)) //set for payment
-
-
 
     //For Render
     const productView: ProductPaymentType[] = []
     // const newVar
+    cartListFilter.map((cart) => {
+      const newVariation: any = []
 
-    // cartListFilter.map((cart) => {
-    //   productView.push({
-    //     product: cart.postProduct.product,
-    //     variation
-    //   })
-    // })c
-   
-    //dispatch(setProductView(cartList)) //set for Render
+      cart.variationDetail.map((item) => {
+        newVariation.push({
+          variationDetail: {
+            variationDetailId: item.variationDetailId,//23
+            description: item.description, //3XL
+          },
+          variationId: item.variation.variationId, //6
+          variationName: item.variation.variationName, // Kich Thước
+        })
+      })
+
+      productView.push({
+        product: cart.postProduct.product,
+        quantity: cart.quantity,
+        variation: newVariation
+      })
+    })
+
+    dispatch(setProductView(productView)) //set for Render
     navigate(PATH.payment)
-    
+
   }
 
   return (
@@ -212,7 +228,7 @@ export const Cart = () => {
                           }
                           // Check if the item with the same postProductId already exists
                           const existingIndex = updateList.findIndex(prd => prd.postProductId === updatePrd.postProductId);
-                          
+
                           if (existingIndex !== -1) {
                             // Update the existing item
                             const newUpdateList = [...updateList];
