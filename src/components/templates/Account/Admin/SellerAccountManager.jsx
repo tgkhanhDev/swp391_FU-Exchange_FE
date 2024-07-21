@@ -20,6 +20,7 @@ export const SellerAccountManager = () => {
   const [isModalInfoVisible, setIsModalInfoVisible] = useState(false);
 
   const [selectedStatus, setSelectedStatus] = useState();
+  const [error, setError] = useState('');
   const [selectedAccId, setSelectedAccId] = useState();
   const [isModalStatusVisible, setIsModalStatusVisible] = useState(false);
 
@@ -74,6 +75,10 @@ export const SellerAccountManager = () => {
   };
 
   const handleOk = () => {
+    if (!selectedStatus) {
+      setError("Vui lòng chọn trạng thái!");
+      return;
+    }
     if (selectedAccId !== null && selectedStatus !== null) {
       dispatch(setStatusSellerThunk({ sellerId: selectedAccId, isActive: selectedStatus }))
         .then(() => {
@@ -101,6 +106,7 @@ export const SellerAccountManager = () => {
 
   const handleStatusChange = (value) => {
     setSelectedStatus(value);
+    setError('');
   };
 
   return (
@@ -125,7 +131,7 @@ export const SellerAccountManager = () => {
             </tr>
           </thead>
           <tbody>
-          {filteredUsers?.map((request) => (
+            {filteredUsers?.map((request) => (
               <tr key={request.sellerId} className="hover:bg-gray-50 duration-150">
                 <td className="py-5 px-2 text-center">{`${request.student?.firstName} ${request.student?.lastName}`}</td>
                 <td className="py-5 px-2 text-center">{request.student?.identityCard}</td>
@@ -158,8 +164,8 @@ export const SellerAccountManager = () => {
             Hủy
           </Button>,
           <Button key="submit" type="primary" onClick={handleOk}>
-          Lưu
-        </Button>,
+            Lưu
+          </Button>,
         ]}
       >
         <Select
@@ -171,6 +177,9 @@ export const SellerAccountManager = () => {
           <Option value={1}>Hoạt động</Option>
           <Option value={0}>Không hoạt động</Option>
         </Select>
+        {error && (
+          <div className="mt-2 text-red-500 font-medium">{error}</div>
+        )}
       </Modal>
 
       <Modal
@@ -195,7 +204,7 @@ export const SellerAccountManager = () => {
           </div>
         )}
       </Modal>
-      
+
     </div>
   )
 }

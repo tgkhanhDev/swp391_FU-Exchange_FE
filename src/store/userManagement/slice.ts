@@ -69,7 +69,7 @@ export const manageUsersSlice = createSlice({
         toast.error(`${payload.content}`);
       }
     }),
-      builder.addCase(getLoginThunk.rejected, (state, { payload }) => {}),
+      builder.addCase(getLoginThunk.rejected, (state, { payload }) => { }),
       builder.addCase(getLoginStaffThunk.fulfilled, (state, { payload }) => {
         if (payload.status === 200) {
           toast.success(`${payload.content}`);
@@ -88,11 +88,12 @@ export const manageUsersSlice = createSlice({
           }
 
           state.isAuthorize = true;
-        } else {
+        }
+        else {
           toast.error(`${payload.content}`);
         }
       });
-    builder.addCase(getLoginStaffThunk.rejected, (state, { payload }) => {}),
+    builder.addCase(getLoginStaffThunk.rejected, (state, { payload }) => { }),
       builder.addCase(isRegisteredThunk.fulfilled, (state, { payload }) => {
         if (payload.status == 200) {
           state.isAccountRegistered = true;

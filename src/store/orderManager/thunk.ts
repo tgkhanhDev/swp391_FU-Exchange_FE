@@ -7,6 +7,7 @@ export const postPayCodThunk = createAsyncThunk(
   "pay_cod",
   async (payload: PaymentType, { rejectWithValue }) => {
     try {
+      console.log(payload)
       const data = await manageOrder.pay_cod(payload);
       // console.log("dataTest:::", data);
       return data.data;

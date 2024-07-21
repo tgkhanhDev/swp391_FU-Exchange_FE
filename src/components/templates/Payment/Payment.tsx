@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Checkbox, InputNumber, Button } from "antd";
 import "./styles.css";
 import { useAppDispatch } from "../../../store";
-import { manageProductActions, setProductEmpty } from "../../../store/productManagement/slice";
+import { manageProductActions, setPayCart, setProductEmpty } from "../../../store/productManagement/slice";
 import { useProduct } from "../../../hooks/useProduct";
 import { getProductByIdThunk } from "../../../store/productManagement/thunk";
 import { PATH } from "../../../constants/config";
@@ -13,6 +13,15 @@ import TextArea from "antd/es/input/TextArea";
 import { useAccount } from "../../../hooks/useAccount";
 import { toast } from "react-toastify";
 
+const withPreConstructPayment = (WrappedComponent) => {
+  return (props) => {
+    // Render component gốc
+    const dispatch = useAppDispatch();
+    dispatch(setProductEmpty());
+    return <WrappedComponent {...props} />;
+  };
+};
+
 export interface PaymentItem {
   productId: number;
   variationList: number[];
@@ -20,15 +29,16 @@ export interface PaymentItem {
 }
 [];
 
-
 export const Payment = () => {
   const dispatch = useAppDispatch();
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const { productView, productQuantity } = useProduct();
+  const { productView, productQuantity, payCart } = useProduct();
   const { studentInfo } = useAccount()
   const navigate = useNavigate();
   const location = useLocation();
   const { postProductId } = location.state || {};
+
+  const descriptionRef = useRef<String>("")
 
   useEffect(() => {
     if (!studentInfo) {
@@ -44,81 +54,64 @@ export const Payment = () => {
   }, [studentInfo, productView])
 
   useEffect(() => {
+
+    console.log("productView:::", productView);
+
     let price = 0;
     productView.forEach(product => {
-      let prdPrice = (parseInt(product.product.price) * productQuantity[product.product.productId]);
+      let prdPrice = parseInt(product.product.price) * product.quantity * 1000
+      Number.isNaN(prdPrice) ? prdPrice = parseInt(product.product.price) * productQuantity[product.product.productId] * 1000 : null
       price += prdPrice
     });
-    setTotalPrice(price * 1000);//Db need to * 1000 :D
+    setTotalPrice(price);//Db need to * 1000 :D
   }, [productView]);
 
   const onPurchase = () => {
-    const postProductToBuyRequests: PostProductToBuyRequestType[] = []
-    console.log("productQUantity:::", productQuantity);
-    
-    productView.map(prd => {
-      prd.variation.map((item, index) => {
-        postProductToBuyRequests.push(
-          {
-            sttOrder: index + 1,
-            postProductId: postProductId,
-            variationId: item.variationId,
-            variationDetailId: item.variationDetail.variationDetailId,
-            quantity: productQuantity[postProductId],
-            price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
-          }
-        )
-      })
-    })
-    console.log(postProductToBuyRequests)
-    const payment: PaymentType = {
-      registeredStudentId: studentInfo.registeredStudentId,
-      postProductToBuyRequests: postProductToBuyRequests,
-      paymentMethodId: 1,
-      description: (document.getElementById("description") as HTMLInputElement).value,
-    }
+    if (payCart) {
+      const newCart = {
+        ...payCart,
+        paymentMethodId: 1,
+        description: descriptionRef.current
+      };
+      console.log("payCartCOD:::", newCart);
+      dispatch(setPayCart(newCart));
 
-    dispatch(postPayCodThunk(payment)).then(item => {
-      if (item.payload.status == 400) {
-        toast.error(item.payload.content)
-      } else {
-        toast.success(item.payload.content)
-      }
-    })
-  }
+      // Delay the dispatch of postPayCodThunk to ensure payCart is updated
+      dispatch(postPayCodThunk(newCart))
+    }
+  };
 
 
   const onPurchaseVnPay = () => {
-    const postProductToBuyRequests: PostProductToBuyRequestType[] = []
+    if (payCart) {
+      const newCart = {
+        ...payCart,
+        paymentMethodId: 2,
+        description: descriptionRef.current
+      };
 
-    productView.map(prd => {
-      prd.variation.map((item, index) => {
-        postProductToBuyRequests.push(
-          {
-            sttOrder: index + 1,
-            postProductId: postProductId,
-            variationId: item.variationId,
-            variationDetailId: item.variationDetail.variationDetailId,
-            quantity: productQuantity[postProductId],
-            price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
-          }
-        )
-      })
+      console.log("payCartVNPAY:::", newCart);
+      dispatch(setPayCart(newCart));
 
-    })
-
-
-    const payment: PaymentType = {
-      registeredStudentId: studentInfo.registeredStudentId,
-      postProductToBuyRequests: postProductToBuyRequests,
-      paymentMethodId: 2,
-      description: (document.getElementById("description") as HTMLInputElement).value
+      // Dispatch the thunk with newCart instead of payCart
+      dispatch(postPayVnPayThunk(newCart)).then((item) => {
+        if (item.payload.status == 400) {
+          toast.error(item.payload.content)
+        } else {
+          toast.success(item.payload.content)
+          window.location.href = item.payload.paymentUrl;
+        }
+      });
     }
-    dispatch(postPayVnPayThunk(payment)).then((response) => {
-      window.location.href = response.payload.paymentUrl;
-    });
-  }
+  };
 
+  const NumberFormatter = ({ number }) => {
+    const formattedNumber = new Intl.NumberFormat('de-DE', {
+      maximumFractionDigits: 0,
+    }).format(number);
+
+    return <span>{formattedNumber}</span>;
+  };
   return (
     <div>
       {/*Tựa đề */}
@@ -165,22 +158,11 @@ export const Payment = () => {
                     {product.variation.map(variation =>
                       <div><span className="mr-1 font-bold">{variation.variationName}</span>:{variation.variationDetail.description}</div>
                     )}
-                    <div><span className="mr-1 font-bold">Số lượng:</span> {productQuantity[product.product.productId]}</div>
+                    <div><span className="mr-1 font-bold">Số lượng:</span> {product.quantity ||
+                      productQuantity[product.product.productId]}</div>
                   </div>
                   <div className="font-medium text-lg"><span className="mr-1 font-bold">Giá: </span>{product?.product.price}</div>
                 </div>
-
-                {/* <div className='flex flex-grow items-center justify-end w-full'>byVendorName</div> */}
-                {/* <div className="flex flex-col justify-between items-end flex-grow ">
-                  <div className="flex justify-end gap-10 text-lg">
-                    <button className="underline text-[var(--color-primary)] duration-200 hover:text-black">
-                      Chỉnh sửa
-                    </button>
-                    <button className="underline text-[var(--color-primary)] duration-200 hover:text-black">
-                      Xóa
-                    </button>
-                  </div>
-                </div> */}
               </div>
             );
           })}
@@ -193,29 +175,38 @@ export const Payment = () => {
           <div className="text-lg">
             <div className="py-5 border-b-2 border-black">
               {productView.map((product, index) => {
+
+                const price = product.quantity ? parseInt(product.product.price) * product.quantity * 1000
+                  : parseInt(product.product.price) * productQuantity[product.product.productId] * 1000
+
                 return (
                   <div className="flex justify-between items-center">
                     <div>Tổng giá trị sản phẩm ({index + 1})</div>
-                    <div>{parseInt(product.product.price) * productQuantity[product.product.productId] * 1000} VNĐ</div>
+                    <div>
+                      <NumberFormatter number={price} /> VNĐ</div>
                   </div>
                 )
               })}
 
-              {/* <div className="flex justify-between items-center">
-              //   <div>Phụ thu</div>
-              //   <div>{totalPrice * 0.1} VNĐ</div>
-              // </div> */}
-
             </div>
             <div className="flex justify-between items-center py-5">
               <div>Tổng</div>
-              <div>{totalPrice} VNĐ</div>
+              <div>
+                <NumberFormatter number={totalPrice} /> VNĐ
+              </div>
+
             </div>
           </div>
           {/* Description  */}
           <div className="my-5">
             <div className="text-with-lines">LỜI NHẮN CHO ĐƠN VỊ VẬN CHUYỂN</div>
-            <TextArea id="description" rows={4} showCount maxLength={255} />
+            <TextArea
+              id="description"
+              rows={4}
+              showCount
+              maxLength={255}
+              onChange={(e) => descriptionRef.current = (e.target.value)}
+            />
           </div>
 
           {/*Các nút */}
@@ -235,4 +226,4 @@ export const Payment = () => {
   );
 };
 
-export default Payment;
+export default withPreConstructPayment(Payment);

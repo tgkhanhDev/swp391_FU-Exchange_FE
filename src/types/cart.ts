@@ -1,14 +1,14 @@
 import { Post } from "./post";
-import { VaritationDetail } from "./product";
+import { VariationDetail } from "./product";
 
 export interface deleteItemCartType {
   cartId: number;
   postProductId: number;
-  variationDetailId: number;
+  variationDetailId: number | number[];
 }
 
 export interface updateItemCartType extends deleteItemCartType {
-    quantity: number
+  quantity: number;
 }
 
 export interface addCartItem {
@@ -22,15 +22,27 @@ export interface cartItem {
   cartPostId: deleteItemCartType;
   postProduct: Post;
   quantity: number;
-  variationDetail: VaritationDetail;
+  variationDetail: VariationDetail;
   sttPostInCart: number;
 }
 
+export interface postProductToBuyRequest {
+  sttOrder: number;
+  postProductId: number;
+  sellerId: number;
+  variationId: number;
+  variationDetailId: number;
+  price: number;
+  quantity:number;
+}
 
 export interface cartItemFilter {
-  cartPostId: deleteItemCartType;
+  cart: {
+    cartId: number;
+    registeredStudentId: number;
+  };
   postProduct: Post;
   quantity: number;
-  variationDetail: VaritationDetail[];
+  variationDetail: VariationDetail[];
   sttPostInCart: number;
 }

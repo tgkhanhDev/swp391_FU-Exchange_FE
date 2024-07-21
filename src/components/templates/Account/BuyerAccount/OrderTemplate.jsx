@@ -124,7 +124,7 @@ export const OrderTemplate = () => {
     setContent(content);
   }
 
-  const contentCreate = `Tôi muốn trao đổi về sản phẩm này: ${content}`;
+  const contentCreate = `Chào bạn, tôi vừa mua sản phẩm ${content} và muốn trao đổi thêm một số thông tin.`;
 
   useEffect(() => {
     if (sellerId && registeredId && showBoxChat) {
@@ -276,13 +276,21 @@ export const OrderTemplate = () => {
                     >
                       <div className="h-32 w-32">
                         {product.imageUrlProduct ? (
-                          <img
-                            src={product.imageUrlProduct}
-                            className="h-32 w-32"
-                            alt={product.productName}
-                          />
+                          product.postStatusDTO.postStatusId === 4 ? (
+                            <img
+                              src={product.imageUrlProduct}
+                              className="h-32 w-32"
+                              alt={product.productName}
+                            />
+                          ) : (
+                            <div className="flex justify-center items-center h-full">
+                              <div className="text-center">No Image</div>
+                            </div>
+                          )
                         ) : (
-                          <div>No Image</div>
+                          <div className="flex justify-center items-center h-full">
+                            <div className="text-center">No Image</div>
+                          </div>
                         )}
                       </div>
                       <div className="w-[40%]">
@@ -350,7 +358,7 @@ export const OrderTemplate = () => {
                     </div>
                   )}
                   {item.order.orderStatus.orderStatusId === 3 && (
-                    <div>
+                    <div className="flex justify-end mx-4">
                       <button
                         className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold mr-12"
                         onClick={() => handleChangeStatus(item.order.orderId, 5)}

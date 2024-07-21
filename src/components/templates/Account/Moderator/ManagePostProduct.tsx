@@ -91,12 +91,15 @@ export const ManagePostProduct = () => {
         {postStatus?.map(item => {
           return (
             <Button onClick={() => {
-              dispatch(updateStatusPostProductThunk({ postProductId: postProductId, postStatusId: item.postStatusId }))
-              dispatch(getAllPostByModeratorThunk({ page: page, sellerName: filterName, postStatus: postStt.postStatusId })).then((item: any) => {
-                setPostList(item.payload.data)
+              dispatch(updateStatusPostProductThunk({ postProductId: postProductId, postStatusId: item.postStatusId })).then(() => {
+                dispatch(getAllPostByModeratorThunk({ page: page, sellerName: filterName, postStatus: postStt.postStatusId })).then((item: any) => {
+                  setPostList(item.payload.data)
+                })
               })
             }}
-              disabled={item.postStatusId == statusId} className={(item.postStatusId == statusId) ? `bg-slate-100` : ""}>{item.postStatusName}</Button>
+              disabled={item.postStatusId == statusId} className={(item.postStatusId == statusId) ? `bg-slate-100` : ""}>
+              {item.postStatusName}
+            </Button>
           )
         })}
       </div>
@@ -154,6 +157,7 @@ export const ManagePostProduct = () => {
                   {post.postStatus.postStatusId == 3 ? <td className="py-5 px-2 text-center"><Popover content={<PopOverStatusChoice postProductId={post.postProductId} statusId={post.postStatus.postStatusId} />} trigger="click"><div className="bg-red-500 text-white m-5 rounded">{post.postStatus.postStatusName}</div></Popover></td> : null}
                   {post.postStatus.postStatusId == 4 ? <td className="py-5 px-2 text-center"><Popover content={<PopOverStatusChoice postProductId={post.postProductId} statusId={post.postStatus.postStatusId} />} trigger="click"><div className="bg-green-500 text-white m-5 rounded">{post.postStatus.postStatusName}</div></Popover></td> : null}
                   {post.postStatus.postStatusId == 5 ? <td className="py-5 px-2 text-center"><Popover content={<PopOverStatusChoice postProductId={post.postProductId} statusId={post.postStatus.postStatusId} />} trigger="click"><div className="bg-gray-300 line-through m-5 rounded">{post.postStatus.postStatusName}</div></Popover></td> : null}
+                  {post.postStatus.postStatusId == 6 ? <td className="py-5 px-2 text-center"><Popover content={<PopOverStatusChoice postProductId={post.postProductId} statusId={post.postStatus.postStatusId} />} trigger="click"><div className="bg-gray-300 line-through m-5 rounded">{post.postStatus.postStatusName}</div></Popover></td> : null}
                 </tr>
               )
             })}

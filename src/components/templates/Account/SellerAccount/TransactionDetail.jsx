@@ -6,6 +6,7 @@ import { getSellerInfoThunk } from "../../../../store/userManagement/thunk";
 import { getOrderDetailBySellerIdThunk } from "../../../../store/orderManager/thunk"
 import { useOrder } from "../../../../hooks/useOrder"
 import { Button } from "antd"
+import { format } from 'date-fns';
 
 export const TransactionDetail = () => {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ export const TransactionDetail = () => {
 
   useEffect(() => {
     if (user) {
-      dispatch(getOrderDetailBySellerIdThunk({ sellerId: user.sellerTO.sellerId, orderId: orderId }))
+      dispatch(getOrderDetailBySellerIdThunk({ sellerId: user.sellerTO?.sellerId, orderId: orderId }))
     }
   }, [user])
 
@@ -57,92 +58,123 @@ export const TransactionDetail = () => {
     }
   }, [user, navigate]);
 
-  console.log(orderDetailSeller)
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, 'dd-MM-yyyy HH:mm:ss');
+  };
 
   return (
     <div>
-      <main className='py-10'>
-        <div className='pl-14'>
-          <div className='font-bold text-4xl'>Chi tiết giao dịch</div>
-          <div className="flex justify-start ml-5 my-4">
-            <Button type="primary" className="flex justify-center items-center py-5 px-8 text-lg"
+      <main className="py-10">
+        <div className="pl-14">
+          <div className="font-bold text-4xl">Chi tiết giao dịch</div>
+          <div className="flex my-4">
+            <Button
+              type="primary"
+              className="flex justify-center items-center py-5 px-8 text-lg"
               onClick={() => {
                 navigate(`/dashboard`);
               }}
-            >Trở về</Button>
+            >
+              Trở về
+            </Button>
           </div>
-          <div className="py-10 pr-6">
-            {orderDetailSeller.postProductInOrder && orderDetailSeller.postProductInOrder.length > 0 && (
-              orderDetailSeller.postProductInOrder.map((product, index) => (
-                <div key={index}>
-                  <div>{product.firstVariation}</div>
-                  <div>{product.secondVariation}</div>
-                  <div>{product.quantity}</div>
-                  <div><img src={product.postProduct.product.detail.productImage[0].imageUrl} /></div>
-                </div>
-              ))
-            )}
-
+          <div className="pr-6">
             {/*Đơn hàng */}
+            {orderDetailSeller.map((detail, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300"
+              >
+                {/*Thông tin cơ bản đơn hàng */}
+                <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">
+                  <div className="">
+                    <div className="text-lg font-bold">Ngày đặt đơn: </div>
+                    <div>{formatDate(detail.order.createDate)}</div>
+                  </div>
 
-            <div className='bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300'>
-              {/*Thông tin cơ bản đơn hàng */}
-              <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">
-                <div className="">
-                  <div className="text-lg font-bold">Ngày đặt đơn: </div>
-                  <div></div>
-                </div>
+                  <div>
+                    <div className="text-lg font-bold">Ngày cập nhật mới:</div>
+                    <div>{formatDate(detail.order.completeDate)}</div>
+                  </div>
 
-                <div className="">
-                  <div className="text-lg font-bold">Tổng đơn: </div>
-                  <div> VNĐ</div>
-                </div>
+                  <div className="">
+                    <div className="text-lg font-bold">Tổng đơn: </div>
+                    <div>
+                      {detail.postProductInOrder
+                        .reduce(
+                          (total, product) =>
+                            total +
+                            product.priceBought * product.quantity * 1000,
+                          0
+                        )
+                        .toLocaleString("de-DE")}{" "}
+                      VNĐ
+                    </div>
+                  </div>
 
-                <div className="">
-                  <div className="text-lg font-bold">Trạng thái đơn hàng: </div>
-                  <div></div>
-                </div>
+                  <div className="">
+                    <div className="text-lg font-bold">
+                      Trạng thái đơn hàng:{" "}
+                    </div>
+                    <div>{detail.order.orderStatus.orderStatusName}</div>
+                  </div>
 
-                <div className="">
-                  <div className="text-lg font-bold">Payment:</div>
-                  <div>Not yet</div>
-                </div>
+                  <div className="">
+                    <div className="text-lg font-bold">Payment:</div>
+                    <div>{detail.order.paymentId}</div>
+                  </div>
 
-                <div className="">
-                  <div className="text-lg font-bold">Mã đơn: </div>
-                  <div className="text-center"></div>
-                </div>
-
-              </div>
-
-              {/*Chi tiết đơn hàng */}
-              <div className="py-5 px-5 flex flex-row gap-4">
-                {/*Hình ảnh */}
-                <div className='h-36 w-36 border-2'>
-                  <img src="https://firebasestorage.googleapis.com/v0/b/fu-exchange.appspot.com/o/Product1_1.jfif?alt=media&token=b33326cb-35d1-492b-8e58-b402ac8045c2"></img>
-                </div>
-
-                <div className="w-[40%]">
-                  <div className="pb-4">
-                    <div className="font-semibold text-lg"></div>
-                    <div>Màu sắc: Xanh ngọc</div>
-                    <div>Số lượng: 1</div>
+                  <div className="">
+                    <div className="text-lg font-bold">Mã đơn: </div>
+                    <div className="text-center">{detail.order.orderId}</div>
                   </div>
                 </div>
 
-                <div className="flex flex-col justify-between items-end flex-grow text-lg font-medium">
-                  <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: 23,000 VNĐ</div>
-                </div>
+                {/*Chi tiết đơn hàng */}
+                {detail.postProductInOrder.map((product, prodIndex) => (
+                  <div className="py-5 px-5 flex flex-row gap-4">
+                    {/*Hình ảnh */}
+                    <div className="h-36 w-36 border-2">
+                      <img src={product.imageUrlProduct}></img>
+                    </div>
+
+                    <div className="w-[40%]">
+                      <div className="pb-4">
+                        <div className="font-semibold text-lg">
+                          {product.productName}
+                        </div>
+                        <div className="flex-1 truncate">
+                          {product.firstVariation}
+                        </div>
+                        {product.secondVariation && (
+                          <div className="flex-1 truncate">
+                            {product.secondVariation}
+                          </div>
+                        )}
+                        <div className="mt-2">Số lượng: {product.quantity}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col justify-center items-end flex-grow text-lg font-medium">
+                      <div className="text-[var(--color-tertiary)]">
+                        Tổng giá trị sản phẩm:{" "}
+                        {(
+                          product.priceBought *
+                          product.quantity *
+                          1000
+                        ).toLocaleString("de-DE")}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-
-            </div>
-
-
+            ))}
           </div>
         </div>
       </main>
     </div>
-  )
+  );
 }
 
 

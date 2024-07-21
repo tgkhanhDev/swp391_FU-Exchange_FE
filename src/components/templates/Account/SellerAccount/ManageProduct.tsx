@@ -162,7 +162,7 @@ export const ManageProduct = () => {
               className="flex items-center justify-center m-auto text-[18px] my-10"
               style={{ width: "300px", height: "50px" }}
             >
-              Load more products
+              Xem thêm
               {/* <span className="italic text-xs">
                 {" "}
                 {posts?.meta?.current}/{posts?.meta?.total}

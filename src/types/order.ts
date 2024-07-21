@@ -2,8 +2,9 @@ export interface PaymentType {
   registeredStudentId: number;
   postProductToBuyRequests: PostProductToBuyRequestType[];
   paymentMethodId: number;
-  description: string;
-  navigate ?: any;
+  description?: string;
+  navigate?: any;
+  orderMethod: "buyNow" | "cart";
 };
 
 export interface PostProductToBuyRequestType {
@@ -23,7 +24,9 @@ export interface VnPayPayment {
 }
 
 export interface PostProductToBuyRequest {
+  sttOrder: number;
   postProductId: number;
+  sellerId: number;
   variationDetailId: number;
   variationId: number;
   quantity: number;

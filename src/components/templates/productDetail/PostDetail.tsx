@@ -6,11 +6,10 @@ import { getPostByIdThunk } from "../../../store/postManagement/thunk";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { useNavigate, useParams, NavLink } from "react-router-dom";
-import { log } from "console";
 import { PATH } from "../../../constants/config";
 import { getProductByIdThunk, getProductByVariationDetailThunk } from "../../../store/productManagement/thunk";
 import { MinusOutlined, PlusOutlined, WarningOutlined, LeftOutlined } from "@ant-design/icons";
-import { setProductQuantity, setTest } from "../../../store/productManagement/slice"
+import { setPayCart, setProductQuantity } from "../../../store/productManagement/slice"
 import { addToCartThunk } from "../../../store/cartManager/thunk";
 import { getAccountInfoTypeThunk, getSellerInfoThunk } from "../../../store/userManagement/thunk";
 import { contactSeller } from "../../../store/chatManager/thunk";
@@ -25,7 +24,8 @@ import Rating from 'react-rating';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useReport } from "../../../hooks/useReport";
 import { getPostTypeReportThunk, sendReportThunk } from "../../../store/reportManager/thunk"
-import { addCartItem } from "../../../types/cart";
+import { addCartItem, cartItem, postProductToBuyRequest } from "../../../types/cart";
+import { PaymentType } from "../../../types/order";
 
 type PostType = {
   postId: number;
@@ -91,7 +91,7 @@ export const PostDetail: React.FC<PostType> = () => {
         .catch((error) => {
           console.error("Error fetching account information:", error);
         });
-    }, [])
+    }, [dispatch])
   }
 
 
@@ -147,6 +147,8 @@ export const PostDetail: React.FC<PostType> = () => {
   };
 
   useEffect(() => {
+    console.log("postDetail:::", postDetail);
+
     const images: { original: string; thumbnail: string }[] = [];
     postDetail?.product.image.map((img) => {
       images.push({ original: img.imageUrl, thumbnail: img.imageUrl });
@@ -168,7 +170,7 @@ export const PostDetail: React.FC<PostType> = () => {
   //   console.log("detail:::", detail);
   // }, [detail]);
 
-  const contentCreate = `Tôi muốn thực hiện trao đổi đối với sản phẩm này: ${postDetail?.product.detail.productName}`
+  const contentCreate = `Tôi muốn thực hiện trao đổi đối với sản phẩm này: ${postDetail?.product.detail?.productName}`
 
   const handleChat = () => {
     if (!studentInfo) {
@@ -251,21 +253,31 @@ export const PostDetail: React.FC<PostType> = () => {
 
   const [selectedReportType, setSelectedReportType] = useState(null);
   const [reportTypeId, setReportTypeId] = useState();
+  const [error, setError] = useState('');
 
   const handleSelectChange = (value) => {
     const selectedType = reportPostType.find((type) => type.reportProductTypeId === value);
     setSelectedReportType(selectedType);
     setReportTypeId(value)
+    setError('');
   };
 
   const showReportModal = () => {
-    setIsModalReport(true);
+    if (!studentInfo) {
+      toast.error("Bạn cần phải đăng nhập để báo cáo!")
+    } else {
+      setIsModalReport(true);
+    }
   };
 
 
   const reportContent = useRef('');
 
   const handleReportOk = () => {
+    if (!reportTypeId) {
+      setError("Vui lòng chọn loại báo cáo");
+      return;
+    }
     if (reportTypeId && reportContent) {
       dispatch(sendReportThunk({ registeredStudentId: studentInfo?.registeredStudentId, postProductId: parseInt(postProductId), reportProductTypeId: reportTypeId, content: reportContent.current }))
       console.log(reportContent.current);
@@ -282,7 +294,7 @@ export const PostDetail: React.FC<PostType> = () => {
 
   const handleOk = () => {
     if (selectedWishlist && updateQuantityRef) {
-      dispatch(updateQuantityWishlistThunk({ wishListId: selectedWishlist, quantity: parseInt(updateQuantityRef.current) }))
+      dispatch(updateQuantityWishlistThunk({ wishListId: selectedWishlist, quantity: updateQuantityRef.current }))
       setIsModalVisible(false);
     }
   };
@@ -297,381 +309,442 @@ export const PostDetail: React.FC<PostType> = () => {
       setIsModalVisible(false);
     }
   }
-
-  return (
-    <div>
-      <div className="mt-5">
-        <button onClick={() => navigate('/detail')} className="px-2 py-2 rounded-r-full text-lg bg-[var(--color-primary)] text-white w-40 duration-500 hover:w-44">Trở về <LeftOutlined className="ml-4" /></button>
-      </div>
-      <div className="container">
-        {/* <FirebaseUpload /> */}
-        <div className="flex gap-[5%]">
-          <div className="w-[40%]">
-            <ImageGallery items={imageGrid} />
-          </div>
-          <div className="w-[60%] flex flex-col">
-            {/* title & report  */}
-            <div className="flex items-center gap-x-8">
-              <div className="font-bold text-4xl">
-                {postDetail?.product.detail.productName}
-              </div>
-              <div onClick={showReportModal} className="cursor-pointer">
-                <WarningOutlined className="text-2xl" />
-              </div>
+  if (postDetail) {
+    return (
+      <div>
+        <div className="mt-5">
+          <button onClick={() => navigate('/detail')} className="px-2 py-2 rounded-r-full text-lg bg-[var(--color-primary)] text-white w-40 duration-500 hover:w-44">Trở về <LeftOutlined className="ml-4" /></button>
+        </div>
+        <div className="container">
+          {/* <FirebaseUpload /> */}
+          <div className="flex gap-[5%]">
+            <div className="w-[40%]">
+              <ImageGallery items={imageGrid} />
             </div>
-            {/* end title  */}
-            {(postDetail?.postType.postTypeId === 3) && (
-              <div className="my-1">{postDetail?.product.price}VNĐ</div>
-            )}
-            <div className="min-h-[100px] my-3">
-              {postDetail?.product.detail.description}
-            </div>
-            {/* author  */}
-            <div className="my-1">
-              <button onClick={() => {
-                navigate(`/shop/${postDetail?.product.seller?.sellerId}/${postProductId}`)
-              }}><strong>Người đăng:</strong> <i className="text-lg underline">{postDetail?.product.seller?.student.firstName} {postDetail?.product.seller?.student.lastName}</i></button>
-            </div>
-            {/* end Author  */}
-            {/* variation  */}
-
-            {postDetail?.postType.postTypeId === 3 && (
-              postDetail?.product.variation.map((vari) => (
-                <div className={`flex items-start my-3`} key={vari.variationId}>
-                  <div className="flex items-center mr-5">{vari.variationName}</div>
-                  <div className="gap-2 w-[60%] flex flex-wrap">
-                    {vari.variationDetail.map((variDetail) => (
-                      <Button
-                        key={variDetail.variationDetailId}
-                        onClick={() =>
-                          updateDetail(vari.variationId, variDetail.variationDetailId)
-                        }
-                        className={`flex items-center px-2 py-1 border rounded ${Object.entries(
-                          detail
-                        )
-                          .map(([key, values]) => {
-                            if (values == variDetail.variationDetailId) {
-                              return "border-[var(--color-primary)] text-[var(--color-primary)] -translate-y-2";
-                            }
-                            return null;
-                          })
-                          .filter(Boolean)
-                          .join(" ")}`}
-                      >
-                        {variDetail.description}
-                      </Button>
-                    ))}
-                  </div>
+            <div className="w-[60%] flex flex-col">
+              {/* title & report  */}
+              <div className="flex items-center gap-x-8">
+                <div className="font-bold text-4xl">
+                  {postDetail?.product.detail.productName}
                 </div>
-              ))
-            )}
-            {/* end variation  */}
-            {/* button  */}
+                <div onClick={() => {
+                  if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
+                    toast.error("Bạn không thể báo cáo bài đăng của chính mình!");
+                  } else {
+                    showReportModal();
+                  }
+                }} className="cursor-pointer">
+                  <WarningOutlined className="text-2xl" />
+                </div>
+              </div>
+              {/* end title  */}
+              {(postDetail?.postType.postTypeId === 3) && (
+                <div className="my-1">{postDetail?.product.price}VNĐ</div>
+              )}
+              <div className="min-h-[100px] my-3">
+                <div className="text-lg">{postDetail?.product.detail.description}</div>
+                <div className="my-1"><strong>Số lượng còn lại:</strong> {postDetail?.quantity}</div>
+              </div>
+              {/* author  */}
+              <div className="my-1">
+                <button onClick={() => {
+                  navigate(`/shop/${postDetail?.product.seller?.sellerId}/${postProductId}`)
+                }}><strong>Người đăng:</strong> <i className="text-lg underline">{postDetail?.product.seller?.student.firstName} {postDetail?.product.seller?.student.lastName}</i></button>
+              </div>
+              {/* end Author  */}
+              {/* variation  */}
 
-            {postDetail?.postType.postTypeId === 3 && (
-              <div className="flex my-3 gap-3">
-                <Button
-                  className="flex justify-center items-center text-base py-4 px-6"
-                  onClick={() => {
-                    const userInfo = localStorage.getItem("userInfo");
-                    const student = userInfo ? JSON.parse(userInfo) : null;
-                    if (!student) {
-                      toast.error("Vui lòng đăng nhập để tiếp tục!");
-                    } else if (postDetail) {
-                      if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
-                        toast.error("Bạn không thể đặt vào giỏ hàng sản phẩm của chính mình!");
-                      } else {
-                        console.log("studentID:", student.username);
-                        console.log("postProductId:", postDetail?.postProductId);
-                        console.log("variationId:");
-                        const variationList = [];
-                        Object.entries(detail).forEach(([key, values]) => {
-                          variationList.push(values);
-                        });
+              {postDetail?.postType.postTypeId === 3 && (
+                postDetail?.product.variation.map((vari) => (
+                  <div className={`flex items-start my-3`} key={vari.variationId}>
+                    <div className="flex items-center mr-5">{vari.variationName}</div>
+                    <div className="gap-2 w-[60%] flex flex-wrap">
+                      {vari.variationDetail.map((variDetail) => (
+                        <Button
+                          key={variDetail.variationDetailId}
+                          onClick={() =>
+                            updateDetail(vari.variationId, variDetail.variationDetailId)
+                          }
+                          className={`flex items-center px-2 py-1 border rounded ${Object.entries(
+                            detail
+                          )
+                            .map(([key, values]) => {
+                              if (values == variDetail.variationDetailId) {
+                                return "border-[var(--color-primary)] text-[var(--color-primary)] -translate-y-2";
+                              }
+                              return null;
+                            })
+                            .filter(Boolean)
+                            .join(" ")}`}
+                        >
+                          {variDetail.description}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              )}
+              {/* end variation  */}
+              {/* button  */}
 
-                        // let paymentItem = [{ productId: prdId, variationList: variationList, quantity: 1 }];
-                        // localStorage.setItem(
-                        //   "paymentItem",
-                        //   JSON.stringify(paymentItem)
-                        // );
-                        // prdId ? dispatch(getProductByIdThunk(prdId)) : "";
+              {postDetail?.postType.postTypeId === 3 && (
+                postDetail?.product.seller?.active === 1 ? (
+                  <div className="flex my-3 gap-3">
+                    <Button
+                      className="flex justify-center items-center text-base py-4 px-6"
+                      onClick={() => {
+                        const userInfo = localStorage.getItem("userInfo");
+                        const student = userInfo ? JSON.parse(userInfo) : null;
+                        if (!student) {
+                          toast.error("Vui lòng đăng nhập để tiếp tục!");
+                        } else if (postDetail) {
+                          if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
+                            toast.error("Bạn không thể đặt vào giỏ hàng sản phẩm của chính mình!");
+                          } else {
+                            console.log("studentID:", student.username);
+                            console.log("postProductId:", postDetail?.postProductId);
+                            console.log("variationId:");
+                            const variationList = [];
+                            Object.entries(detail).forEach(([key, values]) => {
+                              variationList.push(values);
+                            });
 
+                            let prdId = postDetail.product.productId;
+                            const cartProduct: addCartItem = {
+                              registeredStudentId: student.registeredStudentId,
+                              postProductId: prdId,
+                              quantity: quantity,
+                              variationDetailId: variationList
+                            }
+                            // console.log("cartProduct:", cartProduct);
 
-
-                        // dispatch(getProductByVariationDetailThunk(variationList));
-                        // dispatch(setProductQuantity({ id: parseInt(postProductId + ''), quantity: quantity }));
-                        // navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
-
-                        let prdId = postDetail.product.productId;
-                        const cartProduct: addCartItem = { registeredStudentId: student.registeredStudentId, postProductId: prdId, quantity: quantity, variationDetailId: variationList }
-                        if (
+                            if (
+                              postDetail &&
+                              postDetail.product.variation.length > Object.keys(detail).length
+                            ) {
+                              toast.error("Vui lòng hoàn thiện sản phẩm")
+                            } else {
+                              dispatch(addToCartThunk(cartProduct))
+                            }
+                          }
+                        }
+                      }}>Thêm vào giỏ hàng</Button>
+                    <Button type="primary"
+                      className="flex justify-center items-center text-base py-4 px-6"
+                      onClick={() => {
+                        const userInfo = localStorage.getItem("userInfo");
+                        const student = userInfo ? JSON.parse(userInfo) : null;
+                        if (!student) {
+                          toast.error("Vui lòng đăng nhập để tiếp tục!");
+                        }
+                        else if (
                           postDetail &&
                           postDetail.product.variation.length > Object.keys(detail).length
                         ) {
-                          toast.error("Vui lòng hoàn thiện sản phẩm")
-                        } else {
-                          dispatch(addToCartThunk(cartProduct))
+                          toast.error("Vui lòng hoàn thiện sản phẩm");
+                        } else if (postDetail) {
+                          if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
+                            toast.error("Bạn không thể mua sản phẩm của chính mình!");
+                          } else {
+                            let prdId = postDetail.product.productId;
+                            const variationList = [];
+                            Object.entries(detail).forEach(([key, values]) => {
+                              variationList.push(values);
+                              console.log("Key", key, "---values:", values);
+                            });
+
+                            dispatch(getProductByVariationDetailThunk(variationList));   //đẩy variation vào list
+                            dispatch(setProductQuantity({ id: prdId, quantity: quantity }));    //id product và số lượng
+
+                            console.log("variationList:", variationList);
+
+                            //pass to Payment
+                            const postProductToBuyRequests: postProductToBuyRequest[] = []
+
+                            Object.entries(detail).forEach(([key, values]) => {
+                              postProductToBuyRequests.push({
+                                sttOrder: 1,
+                                postProductId: parseInt(postProductId!),
+                                sellerId: postDetail.product.seller?.sellerId!,
+                                variationDetailId: values,
+                                variationId: parseInt(key),
+                                quantity: quantity,
+                                price: parseFloat(postDetail.product.price + "") * 1000,
+                              })
+                            });
+
+                            const payload: PaymentType = {
+                              registeredStudentId: studentInfo.registeredStudentId,
+                              paymentMethodId: 1,
+                              description: "",
+                              postProductToBuyRequests: postProductToBuyRequests,
+                              orderMethod: "buyNow"
+                            }
+
+
+                            dispatch(setPayCart(payload))
+
+                            navigate(PATH.payment);
+                          }
                         }
-                      }
-                    }
-                  }}>Thêm vào giỏ hàng</Button>
-                <Button type="primary"
-                  className="flex justify-center items-center text-base py-4 px-6"
-                  onClick={() => {
-                    if (
-                      postDetail &&
-                      postDetail.product.variation.length > Object.keys(detail).length
-                    ) {
-                      toast.error("Vui lòng hoàn thiện sản phẩm");
-                    } else if (postDetail) {
-                      if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
-                        toast.error("Bạn không thể mua sản phẩm của chính mình!");
-                      } else {
-                        let prdId = postDetail.product.productId;
-                        const variationList = [];
-                        Object.entries(detail).forEach(([key, values]) => {
-                          variationList.push(values);
-                        });
+                      }}
+                    >
+                      Mua ngay
+                    </Button>
+                    <div className="flex items-center gap-2"><MinusOutlined
+                      onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />
+                      <input
+                        value={quantity}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
+                        className="border border-gray-300 rounded-md px-3 py-1 outline-none text-center w-16"
+                      />
+                      <PlusOutlined onClick={() => setQuantity(quantity + 1)} /></div>
+                  </div>
+                ) : (
+                  <div className="flex justify-center items-center my-3">
+                    <p className="text-red-500 font-medium">Người bán đã bị cấm. Không thể thực hiện các hành động với sản phẩm này.</p>
+                  </div>
+                )
+              )}
+              {postDetail?.postType.postTypeId === 2 && (
+                postDetail?.product.seller?.active === 1 ? (
+                  <div className="flex my-3 gap-3">
+                    <Button type="primary" className="flex justify-center items-center px-4 py-6 text-lg font-semibold"
+                      onClick={handleChat}
+                    >Tôi muốn trao đổi</Button>
+                  </div>
+                ) : (
+                  <div className="flex justify-center items-center my-3">
+                    <p className="text-red-500 font-medium">Người bán đã bị cấm. Không thể thực hiện các hành động với sản phẩm này.</p>
+                  </div>
+                )
+              )}
 
-                        // let paymentItem = [{ productId: prdId, variationList: variationList, quantity: 1 }];
-                        // localStorage.setItem(
-                        //   "paymentItem",
-                        //   JSON.stringify(paymentItem)
-                        // );
-                        // prdId ? dispatch(getProductByIdThunk(prdId)) : "";
-
-                        dispatch(getProductByVariationDetailThunk(variationList));   //đẩy variation vào list
-                        dispatch(setProductQuantity({ id: prdId, quantity: quantity }));    //id product và số lượng
-                        navigate(PATH.payment, { state: { postProductId: parseInt(postProductId!) } });
-                      }
-                    }
-                  }}
-                >
-                  Mua ngay
+              {postDetail?.postType.postTypeId === 1 && (
+                postDetail?.product.seller?.active === 1 ? (
+                  <div className="flex my-3 gap-3">
+                    <Button type="primary" className="flex justify-center items-center px-4 py-6 text-lg font-semibold"
+                      onClick={handleCreateWish}
+                    >Tôi muốn được tặng</Button>
+                    <div className="flex items-center gap-2 ml-5"><MinusOutlined onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />
+                      <input
+                        value={quantity}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
+                        className="border border-gray-300 rounded-md px-3 py-1 outline-none text-center w-16"
+                      />
+                      <PlusOutlined onClick={() => setQuantity(quantity + 1)} />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex justify-center items-center my-3">
+                    <p className="text-red-500 font-medium">Người bán đã bị cấm. Không thể thực hiện các hành động với sản phẩm này.</p>
+                  </div>
+                )
+              )}
+              {/* end button  */}
+              {/* //! Review  */}
+            </div>
+          </div>
+          {postDetail?.postType.postTypeId === 1 && (
+            <div className="mt-20 flex justify-center items-center">
+              {!showTable ? (
+                <Button className="flex justify-center items-center px-2 py-4 text-base" onClick={handleShowList}>
+                  Hiện danh sách chờ
                 </Button>
-                <div className="flex items-center gap-2"><MinusOutlined
-                  onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />
-                  <input
-                    value={quantity}
-                    onChange={handleInputChange}
-                    onBlur={handleInputBlur}
-                    className="border border-gray-300 rounded-md px-3 py-1 outline-none text-center w-16"
-                  />
-                  <PlusOutlined onClick={() => setQuantity(quantity + 1)} /></div>
-              </div>
-            )}
-            {postDetail?.postType.postTypeId === 2 && (
-              <div className="flex my-3 gap-3">
-                <Button type="primary" className="flex justify-center items-center px-4 py-6 text-lg font-semibold"
-                  onClick={handleChat}
-                >Tôi muốn trao đổi</Button>
-              </div>
-            )}
-
-            {postDetail?.postType.postTypeId === 1 && (
-              <div className="flex my-3 gap-3">
-                <Button type="primary" className="flex justify-center items-center px-4 py-6 text-lg font-semibold"
-                  onClick={handleCreateWish}
-                >Tôi muốn được tặng</Button>
-                <div className="flex items-center gap-2 ml-5"><MinusOutlined onClick={() => quantity > 1 ? setQuantity(quantity - 1) : ""} />
-                  <input
-                    value={quantity}
-                    onChange={handleInputChange}
-                    onBlur={handleInputBlur}
-                    className="border border-gray-300 rounded-md px-3 py-1 outline-none text-center w-16"
-                  />
-                  <PlusOutlined onClick={() => setQuantity(quantity + 1)} />
-                </div>
-              </div>
-            )}
-            {/* end button  */}
-            {/* //! Review  */}
-          </div>
-        </div>
-        {postDetail?.postType.postTypeId === 1 && (
-          <div className="mt-20 flex justify-center items-center">
-            {!showTable ? (
-              <Button className="flex justify-center items-center px-2 py-4 text-base" onClick={handleShowList}>
-                Hiện danh sách chờ
-              </Button>
-            ) : (
-              <Button className="flex justify-center items-center px-2 py-4 text-base" onClick={handleShowList}>
-                Ẩn danh sách chờ
-              </Button>
-            )}
-          </div>
-        )}
-        {postDetail?.postType.postTypeId === 1 && showTable && (
-          <div className="my-5">
-            <div className="flex justify-center items-center font-semibold text-[var(--color-primary)] text-4xl">Danh sách chờ</div>
-            <table className="min-w-full bg-white mt-5">
-              <thead>
-                <tr className="bg-[var(--color-primary)] text-white border-[var(--color-bg-hightlight)]">
-                  <th className="py-5 px-2 text-center">Họ và tên</th>
-                  <th className="py-5 px-2 text-center">Thời gian đăng kí</th>
-                  <th className="py-5 px-2 text-center">Số lượng</th>
-                  <th className="py-5 px-2 text-center">Trạng thái hiện tại</th>
-                  <th className="py-5 px-2 text-center">Cập nhật</th>
-                </tr>
-              </thead>
-              {view && view.length > 0 && (
-                <tbody>
-                  {view.map(item => (
-                    <tr key={item.registeredStudentId} className="hover:bg-gray-50 duration-150">
-                      <td className="py-5 px-2 text-center">{user[item.registeredStudentId]?.student.firstName} {user[item.registeredStudentId]?.student.lastName}</td>
-                      <td className="py-5 px-2 text-center">{formatDate(item.createTime)}</td>
-                      <td className="py-5 px-2 text-center">{item.quantity}</td>
-                      {item.active ? (
-                        <td className="py-5 text-green-500 font-semibold text-center">Đã được tặng</td>
-                      ) : (
-                        <td className="py-5 text-red-500 font-semibold text-center">Đang chờ được tặng</td>
-                      )}
-                      {studentInfo?.registeredStudentId === item.registeredStudentId && (
-                        <td className="py-5 px-2 flex justify-center items-center">
-                          <Button onClick={() => showModal(item.wishListId)}>Cập nhật</Button>
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              )}
-            </table>
-          </div>
-        )}
-        {postDetail?.postType.postTypeId === 3 && (
-          <div className="my-28 px-4 flex flex-col lg:flex-row">
-            <div className="w-full lg:w-1/3 mb-8 lg:mb-0">
-              <div className="text-3xl font-semibold mb-4">Đánh giá</div>
-              {review ? (
-                <div className="flex items-center mb-6">
-                  <StarRating rating={review.totalRating} />
-                  <div className="flex justify-center items-center text-xl ml-5">
-                    {review.totalReview} Đánh giá
-                  </div>
-                </div>
               ) : (
-                <div>Chưa có đánh giá nào</div>
+                <Button className="flex justify-center items-center px-2 py-4 text-base" onClick={handleShowList}>
+                  Ẩn danh sách chờ
+                </Button>
               )}
             </div>
-            <div className="w-full lg:w-2/3 ml-20">
-              <div className="mb-6 mt-12 flex justify-end">
-                <Select
-                  value={sortOption}
-                  onChange={(value) => setSortOption(value)}
-                >
-                  <Option value={1}>Đánh giá mới nhất</Option>
-                  <Option value={0}>Đánh giá cũ nhất</Option>
-                </Select>
-              </div>
-              {sortedReviews?.map((rev) => (
-                <div key={rev.review} className="mb-8 p-4 border border-gray-300 rounded-lg hover:bg-gray-200 duration-150">
-                  <div className="mb-2">
-                    <div className="font-semibold">{formatDate(rev.createTime)}</div>
-                  </div>
-                  <div className="mb-2">
-                    <StarDetailRating rating={rev.rating} />
-                  </div>
-                  <div className="mb-2">
-                    <span className="font-semibold">Đánh giá: </span>{rev.description}
-                  </div>
-                </div>
-              ))}
+          )}
+          {postDetail?.postType.postTypeId === 1 && showTable && (
+            <div className="my-5">
+              <div className="flex justify-center items-center font-semibold text-[var(--color-primary)] text-4xl">Danh sách chờ</div>
+              <table className="min-w-full bg-white mt-5">
+                <thead>
+                  <tr className="bg-[var(--color-primary)] text-white border-[var(--color-bg-hightlight)]">
+                    <th className="py-5 px-2 text-center">Họ và tên</th>
+                    <th className="py-5 px-2 text-center">Thời gian đăng kí</th>
+                    <th className="py-5 px-2 text-center">Số lượng</th>
+                    <th className="py-5 px-2 text-center">Trạng thái hiện tại</th>
+                    <th className="py-5 px-2 text-center">Cập nhật</th>
+                  </tr>
+                </thead>
+                {view && view.length > 0 && (
+                  <tbody>
+                    {view.map(item => (
+                      <tr key={item.registeredStudentId} className="hover:bg-gray-50 duration-150">
+                        <td className="py-5 px-2 text-center">{user[item.registeredStudentId]?.student.firstName} {user[item.registeredStudentId]?.student.lastName}</td>
+                        <td className="py-5 px-2 text-center">{formatDate(item.createTime)}</td>
+                        <td className="py-5 px-2 text-center">{item.quantity}</td>
+                        {item.active ? (
+                          <td className="py-5 text-green-500 font-semibold text-center">Đã được tặng</td>
+                        ) : (
+                          <td className="py-5 text-red-500 font-semibold text-center">Đang chờ được tặng</td>
+                        )}
+                        {studentInfo?.registeredStudentId === item.registeredStudentId && (
+                          <td className="py-5 px-2 flex justify-center items-center">
+                            <Button onClick={() => showModal(item.wishListId)}>Cập nhật</Button>
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                )}
+              </table>
             </div>
-          </div>
-        )}
-        <Modal
-          title="Thay đổi trạng thái"
-          visible={isModalVisible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          footer={[
-            <Button key="back" onClick={handleCancel}>
-              Hủy
-            </Button>,
-            <Button key="submit" type="primary" onClick={handleOk}>
-              Lưu
-            </Button>,
-          ]}
-        >
-          <Form>
-            <Form.Item>
-              <div className="mt-2 flex items-center">
-                <div className="mb-2 mr-5">Cập nhật số lượng: </div>
-                <input
-                  type="number"
-                  min="1"
-                  className="h-8 rounded-md px-4 border border-gray-300 w-20"
-                  onChange={(e) => {
-                    const value = parseInt(e.target.value);
-                    if (!isNaN(value) && value >= 1) {
-                      updateQuantityRef.current = value;
-                    } else {
-                      updateQuantityRef.current = 1; // Đặt giá trị mặc định là 1 nếu không hợp lệ
-                    }
-                  }}
-                />
-              </div>
-              <div className="my-5">Hoặc</div>
-              <Button type="primary" onClick={handleDeleteWishlist}>
-                Hủy đăng kí tặng
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
-
-        <Modal
-          title="Báo cáo bài đăng"
-          visible={isModalReport}
-          onOk={handleReportOk}
-          onCancel={handleReportCancel}
-          footer={[
-            <Button key="back" onClick={handleReportCancel}>
-              Hủy
-            </Button>,
-            <Button key="submit" type="primary" onClick={handleReportOk}>
-              Lưu
-            </Button>,
-          ]}
-        >
-          <Form>
-            <Form.Item>
-              <div className="mt-2">
-                <div className="mb-2">Loại báo cáo:</div>
-                <Select
-                  className="w-full"
-                  placeholder="Chọn loại báo cáo"
-                  onChange={handleSelectChange}
-                >
-                  {reportPostType.map((type) => (
-                    <Option key={type.reportProductTypeId} value={type.reportProductTypeId}>
-                      {type.reportProductTypeName}
-                    </Option>
-                  ))}
-                </Select>
-                {selectedReportType && (
-                  <div className="mt-4">
-                    <div>Mô tả: {selectedReportType.description}</div>
+          )}
+          {postDetail?.postType.postTypeId === 3 && (
+            <div className="my-28 px-4 flex flex-col lg:flex-row">
+              <div className="w-full lg:w-1/3 mb-8 lg:mb-0">
+                <div className="text-3xl font-semibold mb-4">Đánh giá</div>
+                {review ? (
+                  <div className="flex items-center mb-6">
+                    <StarRating rating={review.totalRating} />
+                    <div className="flex justify-center items-center text-xl ml-5">
+                      {review.totalReview} Đánh giá
+                    </div>
                   </div>
+                ) : (
+                  <div>Chưa có đánh giá nào</div>
                 )}
               </div>
-            </Form.Item>
-            <Form.Item>
-              <div className="mt-2">
-                <div className="mb-2">Nội dung: </div>
-                <Input.TextArea
-                  className="h-8 rounded-md px-4"
-                  defaultValue=""
-                  onChange={(e) => {
-                    reportContent.current = e.target.value;
-                  }}
-                />
+              <div className="w-full lg:w-2/3 ml-20">
+                <div className="mb-6 mt-12 flex justify-end">
+                  <Select
+                    value={sortOption}
+                    onChange={(value) => setSortOption(value)}
+                  >
+                    <Option value={1}>Đánh giá mới nhất</Option>
+                    <Option value={0}>Đánh giá cũ nhất</Option>
+                  </Select>
+                </div>
+                {sortedReviews?.map((rev) => (
+                  <div key={rev.review} className="mb-8 p-4 border border-gray-300 rounded-lg hover:bg-gray-200 duration-150">
+                    <div className="mb-2">
+                      <div className="font-semibold">{formatDate(rev.createTime)}</div>
+                    </div>
+                    <div className="mb-2">
+                      <StarDetailRating rating={rev.rating} />
+                    </div>
+                    <div className="mb-2">
+                      <span className="font-semibold">Đánh giá: </span>{rev.description}
+                    </div>
+                  </div>
+                ))}
               </div>
-            </Form.Item>
-          </Form>
-        </Modal>
+            </div>
+          )}
+          <Modal
+            title="Thay đổi trạng thái"
+            visible={isModalVisible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            footer={[
+              <Button key="back" onClick={handleCancel}>
+                Hủy
+              </Button>,
+              <Button key="submit" type="primary" onClick={handleOk}>
+                Lưu
+              </Button>,
+            ]}
+          >
+            <Form>
+              <Form.Item>
+                <div className="mt-2 flex items-center">
+                  <div className="mb-2 mr-5">Cập nhật số lượng: </div>
+                  <input
+                    type="number"
+                    min="1"
+                    className="h-8 rounded-md px-4 border border-gray-300 w-20"
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value);
+                      if (!isNaN(value) && value >= 1) {
+                        updateQuantityRef.current = value;
+                      } else {
+                        updateQuantityRef.current = 1; // Đặt giá trị mặc định là 1 nếu không hợp lệ
+                      }
+                    }}
+                  />
+                </div>
+                <div className="my-5">Hoặc</div>
+                <Button type="primary" onClick={handleDeleteWishlist}>
+                  Hủy đăng kí tặng
+                </Button>
+              </Form.Item>
+            </Form>
+          </Modal>
+
+          <Modal
+            title="Báo cáo bài đăng"
+            visible={isModalReport}
+            onOk={handleReportOk}
+            onCancel={handleReportCancel}
+            footer={[
+              <Button key="back" onClick={handleReportCancel}>
+                Hủy
+              </Button>,
+              <Button key="submit" type="primary" onClick={handleReportOk}>
+                Gửi
+              </Button>,
+            ]}
+          >
+            <Form>
+              <Form.Item>
+                <div className="mt-2">
+                  <div className="mb-2">Loại báo cáo:</div>
+                  <Select
+                    className="w-full"
+                    placeholder="Chọn loại báo cáo"
+                    onChange={handleSelectChange}
+                  >
+                    {reportPostType.map((type) => (
+                      <Option key={type.reportProductTypeId} value={type.reportProductTypeId}>
+                        {type.reportProductTypeName}
+                      </Option>
+                    ))}
+                  </Select>
+                  {error && (
+                    <div className="mt-2 text-red-500 font-medium">{error}</div>
+                  )}
+                  {selectedReportType && (
+                    <div className="mt-4">
+                      <div>Mô tả: {selectedReportType.description}</div>
+                    </div>
+                  )}
+                </div>
+              </Form.Item>
+              <Form.Item>
+                <div className="mt-2">
+                  <div className="mb-2">Nội dung: </div>
+                  <Input.TextArea
+                    className="h-8 rounded-md px-4"
+                    defaultValue=""
+                    onChange={(e) => {
+                      reportContent.current = e.target.value;
+                    }}
+                  />
+                </div>
+              </Form.Item>
+            </Form>
+          </Modal>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <div>
+      <div className="container">
+        <div className="h-[30vh] flex justify-center items-center font-bold text-2xl">Bài đăng không tồn tại hoặc đã bị xóa</div>
+        <div className="flex justify-center items-center">
+          <button onClick={() => navigate('/detail')} className="px-2 py-2 rounded-lg text-lg bg-[var(--color-primary)] text-white w-40 duration-500 hover:w-44">Trở về</button>
+        </div>
+      </div>
+    </div>;
+  }
+
 };
 
 export default PostDetail;

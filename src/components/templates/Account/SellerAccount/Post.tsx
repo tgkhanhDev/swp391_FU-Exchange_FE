@@ -23,6 +23,10 @@ export const Post = () => {
   }
 
   useEffect(() => {
+    console.log("postList changed:", postList);
+  },[postList])
+
+  useEffect(() => {
     if (!studentInfo) {
       navigate('/login');
     }
@@ -40,7 +44,7 @@ export const Post = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
             {postList.map((post, index) => {
-              if (post.postStatus.postStatusId === 4)
+              if (post.postStatus.postStatusId === 4){
                 return (
                   <div key={index} className="flex justify-center">
                     <Card
@@ -83,6 +87,42 @@ export const Post = () => {
                     </Card>
                   </div>
                 )
+              }else if (post.postStatus.postStatusId === 6){
+                return (
+                  <div key={index} className="flex justify-center">
+                    <Card
+                      className="w-full h-full flex flex-col"
+                      hoverable
+                      cover={<img alt="example" src={post.product.image[0].imageUrl} className="h-48 w-full object-cover" />}
+                    >
+                      <Meta
+                        title={<span className="block h-12 overflow-hidden">{post.product.detail.productName}</span>}
+                        description={
+                          <div className="block">
+                            <div className="mb-2">{post.product.detail.description}</div>
+                            <div className="mb-2"><span className="font-bold">Giá: </span>{post.product.price} VNĐ</div>
+                            <div className="mb-4"><span className="font-bold">Số lượng: </span>{post.quantity}</div>
+                            <div className="flex gap-2">
+                              <Button
+                                className="bg-red-500 text-white rounded"
+                                onClick={() => {
+                                  dispatch(deleteSellerPostProductThunk({ postProductId: post.postProductId, postStatusId: 5 })).then(() => {
+                                    toast.success("Xóa thành công");
+                                    fetchPostList();
+                                  });
+                                }}
+                              >
+                                Xóa bài
+                              </Button>
+                              <div className="italic text-gray-500 flex justify-center items-center">Bài đăng đã bị vô hiệu hóa</div>
+                            </div>
+                          </div>
+                        }
+                      />
+                    </Card>
+                  </div>
+                )
+              }
             })}
           </div>
           <div className="py-10 pr-6">

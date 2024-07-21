@@ -12,7 +12,6 @@ export const PATH = {
   shop: "/shop/:sellerId/:postProductId",
 
   manageProduct: "/dashboard/product",
-  updateProduct: "/dashboard/product/update/:productId",
   createProduct: "/dashboard/product/create",
   dashboard: "/dashboard",
   wishlist: "/dashboard/wishlist",
