@@ -82,15 +82,13 @@ export const Payment = () => {
       dispatch(setPayCart(newCart))
     }
 
-    setTimeout(() => {
-      dispatch(postPayCodThunk(payCart)).then(item => {
-        if (item.payload.status == 400) {
-          toast.error(item.payload.content)
-        } else {
-          toast.success(item.payload.content)
-        }
-      })
-    }, 5000);
+    dispatch(postPayCodThunk(payCart)).then(item => {
+      if (item.payload.status == 400) {
+        toast.error(item.payload.content)
+      } else {
+        toast.success(item.payload.content)
+      }
+    })
   }
 
 
