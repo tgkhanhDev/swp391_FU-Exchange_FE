@@ -170,7 +170,7 @@ export const CreateProduct = () => {
 
     // console.log('Success:', values);
     dispatch(createProductThunk(values)).then(({ payload }: any) => {
-      // navigate(-1)
+      navigate(-1)
       console.log("reseseses: ", payload);
 
       if (payload.status === 400) {
