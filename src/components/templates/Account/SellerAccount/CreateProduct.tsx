@@ -396,12 +396,22 @@ export const CreateProduct = () => {
                   className="w-1/4"
                   rules={[
                     { required: true, message: 'Vui lòng nhập giá trị sản phẩm!' },
-                    { type: 'number', min: 1000, message: 'Giá trị sản phẩm không được nhỏ hơn 1000!' },
+                    { type: 'number', min: 1000, message: 'Giá trị sản phẩm phải là bội số của 1000!' },
+                    {
+                      validator: (_, value) => {
+                        if (value % 1000 !== 0) {
+                          return Promise.reject(new Error('Giá trị sản phẩm phải là bội số của 1000! VD: 1.000; 35.000'));
+                        }
+                        return Promise.resolve();
+                      },
+                    },
                   ]}
                 >
                   <InputNumber
                     className='border-slate-400 focus:outline-none text-gray-500 focus:text-black border h-10 w-full rounded-md mt-2 bg-white flex items-center'
                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={value => value.replace(/\$\s?|(,*)/g, '')} // Remove $ and ,
+                    min={1000}
                   />
                 </Form.Item>
               </div>

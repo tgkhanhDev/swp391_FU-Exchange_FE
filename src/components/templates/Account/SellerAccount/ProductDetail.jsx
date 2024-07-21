@@ -72,15 +72,10 @@ export const ProductDetailById = () => {
       <main className='py-10'>
         <div className='pl-14'>
           <div className='font-bold text-4xl'>Chi tiết sản phẩm</div>
-          <div className="flex justify-end mr-5">
-            <Button className="flex justify-center items-center py-5 px-8 text-lg mr-5" onClick={() => navigate('/dashboard/product')}>Trở về</Button>
-            <Button type="primary" className="flex justify-center items-center py-5 px-4 text-lg"
-              onClick={() => {
-                navigate(`/dashboard/product/update/${productId}`);
-              }}
-            >Chỉnh sửa sản phẩm <EditOutlined /></Button>
+          <div className="flex my-3">
+            <Button type="primary" className="flex justify-center items-center py-5 px-8 text-lg mr-5" onClick={() => navigate('/dashboard/product')}>Trở về</Button>
           </div>
-          <div className="py-10 pr-6">
+          <div className=" pr-6">
             {productView.length > 0 && (productView.map(product =>
               <Card key={product.detail?.productDetailId}>
                 <Title level={3}>{product.detail?.productName}</Title>

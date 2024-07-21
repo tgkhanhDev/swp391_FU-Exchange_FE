@@ -1,4 +1,3 @@
-export * from './UpdateProduct'
 export * from './CreateProduct'
 export * from './Transaction'
 export * from './Post'
