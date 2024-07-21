@@ -26,10 +26,20 @@ export interface cartItem {
   sttPostInCart: number;
 }
 
+export interface postProductToBuyRequest {
+  sttOrder: number;
+  postProductId: number;
+  sellerId: number;
+  variationId: number;
+  variationDetailId: number;
+  price: number;
+  quantity:number;
+}
+
 export interface cartItemFilter {
   cart: {
     cartId: number;
-    registeredStudentId: number;  
+    registeredStudentId: number;
   };
   postProduct: Post;
   quantity: number;

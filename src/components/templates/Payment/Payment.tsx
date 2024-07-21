@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Checkbox, InputNumber, Button } from "antd";
 import "./styles.css";
 import { useAppDispatch } from "../../../store";
-import { manageProductActions, setProductEmpty } from "../../../store/productManagement/slice";
+import { manageProductActions, setPayCart, setProductEmpty } from "../../../store/productManagement/slice";
 import { useProduct } from "../../../hooks/useProduct";
 import { getProductByIdThunk } from "../../../store/productManagement/thunk";
 import { PATH } from "../../../constants/config";
@@ -24,7 +24,7 @@ export interface PaymentItem {
 export const Payment = () => {
   const dispatch = useAppDispatch();
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const { productView, productQuantity } = useProduct();
+  const { productView, productQuantity, payCart } = useProduct();
   const { studentInfo } = useAccount()
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,6 +44,8 @@ export const Payment = () => {
   }, [studentInfo, productView])
 
   useEffect(() => {
+    console.log("productView:::", productView);
+    
     let price = 0;
     productView.forEach(product => {
       let prdPrice = (parseInt(product.product.price) * productQuantity[product.product.productId]);
@@ -53,32 +55,18 @@ export const Payment = () => {
   }, [productView]);
 
   const onPurchase = () => {
-    const postProductToBuyRequests: PostProductToBuyRequestType[] = []
-    console.log("productQUantity:::", productQuantity);
-    
-    productView.map(prd => {
-      prd.variation.map((item, index) => {
-        postProductToBuyRequests.push(
-          {
-            sttOrder: index + 1,
-            postProductId: postProductId,
-            variationId: item.variationId,
-            variationDetailId: item.variationDetail.variationDetailId,
-            quantity: productQuantity[postProductId],
-            price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
-          }
-        )
-      })
-    })
-    console.log(postProductToBuyRequests)
-    const payment: PaymentType = {
-      registeredStudentId: studentInfo.registeredStudentId,
-      postProductToBuyRequests: postProductToBuyRequests,
-      paymentMethodId: 1,
-      description: (document.getElementById("description") as HTMLInputElement).value,
+    if (payCart){
+      dispatch(setPayCart(
+        {
+          ...payCart,
+          paymentMethodId : 1,
+          description : (document.getElementById("description") as HTMLInputElement).value
+        }
+      ))
     }
 
-    dispatch(postPayCodThunk(payment)).then(item => {
+
+    dispatch(postPayCodThunk(payCart)).then(item => {
       if (item.payload.status == 400) {
         toast.error(item.payload.content)
       } else {
@@ -89,34 +77,19 @@ export const Payment = () => {
 
 
   const onPurchaseVnPay = () => {
-    const postProductToBuyRequests: PostProductToBuyRequestType[] = []
-
-    productView.map(prd => {
-      prd.variation.map((item, index) => {
-        postProductToBuyRequests.push(
-          {
-            sttOrder: index + 1,
-            postProductId: postProductId,
-            variationId: item.variationId,
-            variationDetailId: item.variationDetail.variationDetailId,
-            quantity: productQuantity[postProductId],
-            price: parseFloat(prd.product.price) * 1000 //Db need to * 1000 :D
-          }
-        )
-      })
-
-    })
-
-
-    const payment: PaymentType = {
-      registeredStudentId: studentInfo.registeredStudentId,
-      postProductToBuyRequests: postProductToBuyRequests,
-      paymentMethodId: 2,
-      description: (document.getElementById("description") as HTMLInputElement).value
+    if (payCart) {
+      dispatch(setPayCart(
+        {
+          ...payCart,
+          paymentMethodId: 2,
+          description: (document.getElementById("description") as HTMLInputElement).value
+        }
+      ))
     }
-    dispatch(postPayVnPayThunk(payment)).then((response) => {
+    dispatch(postPayVnPayThunk(payCart)).then((response) => {
       window.location.href = response.payload.paymentUrl;
     });
+
   }
 
   return (
