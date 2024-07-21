@@ -91,12 +91,15 @@ export const ManagePostProduct = () => {
         {postStatus?.map(item => {
           return (
             <Button onClick={() => {
-              dispatch(updateStatusPostProductThunk({ postProductId: postProductId, postStatusId: item.postStatusId }))
-              dispatch(getAllPostByModeratorThunk({ page: page, sellerName: filterName, postStatus: postStt.postStatusId })).then((item: any) => {
-                setPostList(item.payload.data)
+              dispatch(updateStatusPostProductThunk({ postProductId: postProductId, postStatusId: item.postStatusId })).then(() => {
+                dispatch(getAllPostByModeratorThunk({ page: page, sellerName: filterName, postStatus: postStt.postStatusId })).then((item: any) => {
+                  setPostList(item.payload.data)
+                })
               })
             }}
-              disabled={item.postStatusId == statusId} className={(item.postStatusId == statusId) ? `bg-slate-100` : ""}>{item.postStatusName}</Button>
+              disabled={item.postStatusId == statusId} className={(item.postStatusId == statusId) ? `bg-slate-100` : ""}>
+              {item.postStatusName}
+            </Button>
           )
         })}
       </div>
