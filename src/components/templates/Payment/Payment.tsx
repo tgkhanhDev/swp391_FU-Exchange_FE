@@ -77,15 +77,7 @@ export const Payment = () => {
       dispatch(setPayCart(newCart));
 
       // Delay the dispatch of postPayCodThunk to ensure payCart is updated
-      setTimeout(() => {
-        dispatch(postPayCodThunk(newCart)).then(item => {
-          if (item.payload.status === 400) {
-            toast.error(item.payload.content);
-          } else {
-            toast.success(item.payload.content);
-          }
-        });
-      }, 5000);
+      dispatch(postPayCodThunk(newCart))
     }
   };
 
@@ -103,9 +95,7 @@ export const Payment = () => {
 
       // Dispatch the thunk with newCart instead of payCart
       dispatch(postPayVnPayThunk(newCart)).then((response) => {
-        setTimeout(() => {
-          window.location.href = response.payload.paymentUrl;
-        }, 5000);
+        window.location.href = response.payload.paymentUrl;
       });
     }
   };
