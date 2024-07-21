@@ -154,6 +154,7 @@ export const ManagePostProduct = () => {
                   {post.postStatus.postStatusId == 3 ? <td className="py-5 px-2 text-center"><Popover content={<PopOverStatusChoice postProductId={post.postProductId} statusId={post.postStatus.postStatusId} />} trigger="click"><div className="bg-red-500 text-white m-5 rounded">{post.postStatus.postStatusName}</div></Popover></td> : null}
                   {post.postStatus.postStatusId == 4 ? <td className="py-5 px-2 text-center"><Popover content={<PopOverStatusChoice postProductId={post.postProductId} statusId={post.postStatus.postStatusId} />} trigger="click"><div className="bg-green-500 text-white m-5 rounded">{post.postStatus.postStatusName}</div></Popover></td> : null}
                   {post.postStatus.postStatusId == 5 ? <td className="py-5 px-2 text-center"><Popover content={<PopOverStatusChoice postProductId={post.postProductId} statusId={post.postStatus.postStatusId} />} trigger="click"><div className="bg-gray-300 line-through m-5 rounded">{post.postStatus.postStatusName}</div></Popover></td> : null}
+                  {post.postStatus.postStatusId == 6 ? <td className="py-5 px-2 text-center"><Popover content={<PopOverStatusChoice postProductId={post.postProductId} statusId={post.postStatus.postStatusId} />} trigger="click"><div className="bg-gray-300 line-through m-5 rounded">{post.postStatus.postStatusName}</div></Popover></td> : null}
                 </tr>
               )
             })}
