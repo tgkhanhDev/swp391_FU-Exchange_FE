@@ -248,7 +248,7 @@ export const Cart = () => {
                         }}></InputNumber>
                   </div>
                   <div className='col-span-1 flex justify-center items-center'>
-                    <NumberFormatter number={item.postProduct.product.price * item.quantity * 1000 } />
+                    <NumberFormatter number={item.postProduct.product.price * item.quantity * 1000} /><span className='ml-1'>VND</span>
                   </div>
                   <div className='col-span-1 flex justify-center items-center'>
                     <Button onClick={() => {

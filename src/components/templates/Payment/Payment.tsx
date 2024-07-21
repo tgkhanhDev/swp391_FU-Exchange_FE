@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Checkbox, InputNumber, Button } from "antd";
 import "./styles.css";
@@ -29,6 +29,13 @@ export const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { postProductId } = location.state || {};
+  const [textDescription, setDescription] = useState<string>("")
+
+  const descriptionRef = useRef<String>("")
+
+  useEffect(() => {
+    console.log("textDescription:::", textDescription);
+  }, [textDescription])
 
   useEffect(() => {
     if (!studentInfo) {
@@ -46,7 +53,7 @@ export const Payment = () => {
   useEffect(() => {
 
     console.log("productView:::", productView);
-    
+
     let price = 0;
     productView.forEach(product => {
       let prdPrice = parseInt(product.product.price) * product.quantity * 1000
@@ -58,38 +65,42 @@ export const Payment = () => {
 
   const onPurchase = () => {
     if (payCart) {
-      dispatch(setPayCart(
-        {
-          ...payCart,
-          paymentMethodId: 1,
-          description: (document.getElementById("description") as HTMLInputElement).value
-        }
-      ))
-    }
-    console.log("payCart:::", payCart);
-    
-    dispatch(postPayCodThunk(payCart)).then(item => {
-      if (item.payload.status == 400) {
-        toast.error(item.payload.content)
-      } else {
-        toast.success(item.payload.content)
+      const newCart = {
+        ...payCart,
+        paymentMethodId: 1,
+        description: descriptionRef.current
       }
-    })
+      console.log("payCartCOD:::", newCart);
+      dispatch(setPayCart(newCart))
+    }
+
+    setTimeout(() => {
+      dispatch(postPayCodThunk(payCart)).then(item => {
+        if (item.payload.status == 400) {
+          toast.error(item.payload.content)
+        } else {
+          toast.success(item.payload.content)
+        }
+      })
+    }, 5000);
   }
 
 
   const onPurchaseVnPay = () => {
     if (payCart) {
-      dispatch(setPayCart(
-        {
-          ...payCart,
-          paymentMethodId: 2,
-          description: (document.getElementById("description") as HTMLInputElement).value
-        }
-      ))
+      const newCart = {
+        ...payCart,
+        paymentMethodId: 2,
+        description: descriptionRef.current
+      }
+      console.log("payCartVNPAY:::", newCart);
+      dispatch(setPayCart(newCart))
     }
+
     dispatch(postPayVnPayThunk(payCart)).then((response) => {
-      window.location.href = response.payload.paymentUrl;
+      setTimeout(() => {
+        window.location.href = response.payload.paymentUrl;
+      }, 5000);
     });
 
   }
@@ -164,7 +175,7 @@ export const Payment = () => {
           <div className="text-lg">
             <div className="py-5 border-b-2 border-black">
               {productView.map((product, index) => {
-                
+
                 const price = product.quantity ? parseInt(product.product.price) * product.quantity * 1000
                   : parseInt(product.product.price) * productQuantity[product.product.productId] * 1000
 
@@ -182,14 +193,20 @@ export const Payment = () => {
               <div>Tổng</div>
               <div>
                 <NumberFormatter number={totalPrice} /> VNĐ
-                </div>
+              </div>
 
             </div>
           </div>
           {/* Description  */}
           <div className="my-5">
             <div className="text-with-lines">LỜI NHẮN CHO ĐƠN VỊ VẬN CHUYỂN</div>
-            <TextArea id="description" rows={4} showCount maxLength={255} />
+            <TextArea
+              id="description"
+              rows={4}
+              showCount
+              maxLength={255}
+              onChange={(e) => descriptionRef.current = (e.target.value)}
+            />
           </div>
 
           {/*Các nút */}
