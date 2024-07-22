@@ -17,13 +17,13 @@ export const manageReviewSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(createReviewThunk.fulfilled, (state, { payload }) => {
-      if (payload.status == 200) {
+      if (payload.status === 200) {
         toast.success('Đánh giá thành công!');
         setTimeout(() => {
           window.location.href = "/authorize/order";
         }, 1000);
       } else {
-        toast.error('Đánh giá thất bại!');
+        toast.error(`${payload.content}`);
       }
     })
     builder.addCase(viewAllReviewThunk.fulfilled, (state, { payload }) => {

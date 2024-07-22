@@ -28,9 +28,9 @@ export const createWishlistThunk = createAsyncThunk(
 
 export const updateStatusWishlistThunk = createAsyncThunk(
   "updateStatusWishlist",
-  async (payload: updateQuantityWishlist, { rejectWithValue }) => {
+  async (payload: updateStatusWishlist, { rejectWithValue }) => {
     try {
-      const data = await manageWishlist.updateQuantityWishlist(payload);
+      const data = await manageWishlist.updateStatusWishlist(payload);
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

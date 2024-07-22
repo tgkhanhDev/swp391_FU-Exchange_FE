@@ -7,7 +7,6 @@ export const createReviewThunk = createAsyncThunk(
   async (payload: Review, { rejectWithValue }) => {
     try {
       const data = await manageReview.createReview(payload);
-      console.log(data.data.data)
       return data.data;
     } catch (error) {
       return rejectWithValue(error);

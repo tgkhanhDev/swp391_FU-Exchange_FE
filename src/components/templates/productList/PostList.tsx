@@ -35,14 +35,14 @@ export const PostList = () => {
   const { campus, postType } = useView();
   const [filterCampus, setFilterCampus] = useState<Campus>(() => {
     const campusId = params.get('campusId');
-    
+
     if (campusId) {
-        const foundCampus = campus?.find(item => item.campusId === Number(campusId));
-        return foundCampus ? foundCampus : { campusId: 0, campusName: "Tất cả Campus" };
+      const foundCampus = campus?.find(item => item.campusId === Number(campusId));
+      return foundCampus ? foundCampus : { campusId: 0, campusName: "Tất cả Campus" };
     } else {
-        return { campusId: 0, campusName: "Tất cả Campus" };
+      return { campusId: 0, campusName: "Tất cả Campus" };
     }
-});
+  });
 
   //Get all Campus list
   const campusItem: MenuProps["items"] = [
@@ -110,7 +110,7 @@ export const PostList = () => {
   const handleSearch = (e) => {
     setFilterName(e.target.value);
   };
-  
+
   const clearFilter = () => {
     setFilterCampus({
       campusId: 0,
@@ -134,15 +134,15 @@ export const PostList = () => {
         {/* Filter Col  */}
         <div className="flex flex-col" style={{ width: "200px" }}>
           <div className="flex items-end gap-3">
-            <div className="font-bold text-xl">Filters</div>
+            <div className="font-bold text-xl">Bộ lọc</div>
             <button onClick={clearFilter} className="underline text-gray-400">
-              Clear Filter
+              Bỏ lọc
             </button>
           </div>
           <div className="flex flex-col">
-            <div className="font-bold mt-5">Categories</div>
+            <div className="font-bold mt-5">Loại bài đăng</div>
             <div className="flex flex-col gap-3 mt-3">
-              <Input onChange={handleSearch} placeholder="Search Products..." />
+              <Input onChange={handleSearch} placeholder="Tìm sản phẩm..." />
               <Radio.Group
                 onChange={(e: RadioChangeEvent) => {
                   setPostTypeFilter(e.target.value);
@@ -203,9 +203,12 @@ export const PostList = () => {
                     </div>
                     <div className="flex w-full justify-between">
                       <div className="italic">Còn lại: {item.quantity}</div>
-                      <div className="font-bold text-xl">
-                        {item.product.price}VND
-                      </div>
+
+                      {item.postType.postTypeId === 3 && (
+                        <div className="font-bold text-xl">
+                          {item.product.price} VND
+                        </div>
+                      )}
                     </div>
                     <div>{item.campus.campusName}</div>
                   </div>
@@ -218,7 +221,7 @@ export const PostList = () => {
             className="flex items-center justify-center m-auto text-[18px] my-10"
             style={{ width: "300px", height: "50px" }}
           >
-            Load more products -{" "}
+            Xem thêm sản phẩm -{" "}
             <span className="italic text-xs">
               {" "}
               {posts?.meta?.current}/{posts?.meta?.total}

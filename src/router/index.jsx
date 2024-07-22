@@ -1,17 +1,20 @@
 import ProductList from "../components/templates/productList/ProductList";
 import NotFound from "../page/NotFound";
+import InternalError from "../page/InternalError";
+import CancelPayment from "../page/CancelPayment";
 import { PATH } from "../constants/config";
 import ProductPage from "../page/ProductPage";
 import PostDetail from "../components/templates/productDetail/PostDetail";
 import PostList from "../components/templates/productList/PostList";
 import Cart from "../components/templates/Cart/Cart";
+
 import ProfileTemplate from "../components/templates/Account/BuyerAccount/ProfileTemplate";
 import { LoginStaff } from "../components/templates/Account";
 import OrderTemplate from "../components/templates/Account/BuyerAccount/OrderTemplate";
 import { Login, Register, Authorize, SellerAuthorize, AdminAuthorize, ModeratorAuthorize } from "../page/account";
-import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate, AccountManager, SellerAccountManager } from "../components/templates/Account/Admin";
-import { ManageOrder, ManagePostProduct, ManageReportPost, ProfileTemplateModerator, ProfileModeratorUpdate } from "../components/templates/Account/Moderator";
-import { UpdateProduct, ManageProduct, CreateProduct, Dashboard, Transaction, Post, ProductDetailById, Wishlist, UpdateWishlist } from "../components/templates/Account/SellerAccount";
+import { ManageCustomerAccount, ManageReportAccount, ManageStaffAccount, ProfileTemplateAdmin, ProfileAdminUpdate, AccountManager, SellerAccountManager, SellerManager } from "../components/templates/Account/Admin";
+import { ManagePostProduct, ManageReportPost, ProfileTemplateModerator, ProfileModeratorUpdate } from "../components/templates/Account/Moderator";
+import { ManageProduct, CreateProduct, Transaction, Post, ProductDetailById, Wishlist, UpdateWishlist, TransactionDetail } from "../components/templates/Account/SellerAccount";
 import RegisterSeller from "../components/templates/Account/RegisterSeller";
 import ReviewProduct from "../components/templates/Account/ReviewProduct"
 import { Payment } from "../components/templates/Payment";
@@ -72,24 +75,20 @@ export const router = [
     path: PATH.dashboard,
     children: [
       {
-        element: <Dashboard />,
+        element: <Transaction />,
         index: true,
+      },
+      {
+        element: <TransactionDetail />,
+        path: PATH.detailTransaction
       },
       {
         element: <ManageProduct />,
         path: PATH.manageProduct,
       },
       {
-        element: <UpdateProduct />,
-        path: PATH.updateProduct,
-      },
-      {
         element: <CreateProduct />,
         path: PATH.createProduct,
-      },
-      {
-        element: <Transaction />,
-        path: PATH.transaction,
       },
       {
         element: <Post />,
@@ -127,6 +126,10 @@ export const router = [
         path: PATH.adminSellerRequest,
       },
       {
+        element: <SellerManager />,
+        path: PATH.adminSellerManage,
+      },
+      {
         element: <ManageReportAccount />,
         path: PATH.manageReportAcc,
       },
@@ -150,12 +153,8 @@ export const router = [
     path: PATH.moderator,
     children: [
       {
-        element: <ManageOrder />,
-        index: true,
-      },
-      {
         element: <ManagePostProduct />,
-        path: PATH.managePost,
+        index: true,
       },
       {
         element: <ManageReportPost />,
@@ -191,5 +190,13 @@ export const router = [
   {
     element: <NotFound />,
     path: "*",
+  },
+  {
+    element: <InternalError />,
+    path: "/500",
+  },
+  {
+    element: <CancelPayment />,
+    path: "/cancel",
   },
 ];

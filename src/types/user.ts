@@ -20,6 +20,11 @@ export type RegisteredStudent = {
   deliveryAddress: string;
 };
 
+export type updateDelivery = {
+  registeredStudentId: number,
+  deliveryAddress: string,
+}
+
 export type Role = {
   roleId: number;
   roleName: string;
@@ -93,4 +98,11 @@ export interface Staff {
   address: string;
   phoneNumber: string;
   dob: string;
+}
+
+export interface StudentInfo {
+  accessToken: string;
+  registeredStudentId: number;
+  role: string;
+  username:string
 }

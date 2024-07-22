@@ -20,7 +20,7 @@ export const ProfileTemplateAdmin = () => {
     return format(day, 'dd-MM-yyyy'); // Định dạng theo yêu cầu 'dd-MM-yyyy HH:mm:ss'
   };
 
-  const staffIDRef = staffInfor.staffId;
+  const staffIDRef = staffInfor?.staffId;
   const pwdOldRef = useRef("");
   const pwdNewRef = useRef("");
   const pwdNewConfirmRef = useRef("");
@@ -37,7 +37,7 @@ export const ProfileTemplateAdmin = () => {
 
   useEffect(() => {
     if (!staffInfor) {
-      navigate('/');
+      navigate('/*');
     } else if (staffInfor.role !== "Administrator") {
       navigate('/moderator');
     }

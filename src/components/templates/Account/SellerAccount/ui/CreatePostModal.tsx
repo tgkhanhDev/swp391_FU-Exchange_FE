@@ -50,6 +50,7 @@ export const CreatePostModal: React.FC<postProps> = ({ productId }) => {
     }
 
     const handleUploadPost = () => {
+        setOpen(false)
         let postUpload = {
             productId: productId,
             postTypeId: postTypeChoice,
@@ -66,7 +67,7 @@ export const CreatePostModal: React.FC<postProps> = ({ productId }) => {
                 Đăng bài
             </Button>
             <Modal
-                title={<p>Loading Modal</p>}
+                title={<p>Tạo bài viết</p>}
                 footer={
                     <Button className='my-3' type="primary" onClick={handleUploadPost}>
                         Post

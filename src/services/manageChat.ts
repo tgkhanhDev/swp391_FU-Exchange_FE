@@ -24,4 +24,7 @@ export const manageChat = {
 
   contactStudent: (payload: ContactStudent) =>
     api.post<utilsResponse<any>>(`contact-to-student`, payload),
+
+  deleteChatRoom: (payload: number) =>
+    api.put<utilsResponse<any>>(`delete-chat-room`, payload),
 };
