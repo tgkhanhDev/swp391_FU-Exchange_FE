@@ -75,7 +75,7 @@ export const SellerAccountManager = () => {
   };
 
   const handleOk = () => {
-    if (!selectedStatus) {
+    if (selectedStatus) {
       setError("Vui lòng chọn trạng thái!");
       return;
     }

@@ -43,7 +43,7 @@ export const Cart = () => {
     let calculatedTotalPrice = 0;
     cartListFilter.forEach(item => {
       if (item.sttPostInCart) {
-        calculatedTotalPrice += parseFloat(item.postProduct.product.price+"") * item.quantity * 1000;
+        calculatedTotalPrice += parseFloat(item.postProduct.product.price + "") * item.quantity * 1000;
       }
     });
     setTotalPrice(calculatedTotalPrice);
@@ -57,17 +57,21 @@ export const Cart = () => {
     return <span>{formattedNumber}</span>;
   };
 
- const handleUpdateAll = () => {
-     (updateList.map(item => {
-        dispatch(updateItemCartThunk({ ...item })).then(() => {
-           dispatch(viewCartThunk(studentInfo?.registeredStudentId + ''));
-        });
-     }));
+  const handleUpdateAll = () => {
+    (updateList.map(item => {
+      dispatch(updateItemCartThunk({ ...item })).then(() => {
+        dispatch(viewCartThunk(studentInfo?.registeredStudentId + ''));
+      });
+    }));
 
-     toast.success("Cập nhật thành công!")
- }
+    toast.success("Cập nhật thành công!")
+  }
 
   const handleBuyAll = () => {
+    if (totalPrice === 0) {
+      toast.error("Giỏ hàng chưa có sản phẩm!");
+      return;
+    }
     const postProductToBuyRequests: postProductToBuyRequest[] = []
 
     cartList.map((item, idx) => {
@@ -79,7 +83,7 @@ export const Cart = () => {
           variationId: item.variationDetail.variation.variationId,
           variationDetailId: item.variationDetail.variationDetailId,
           quantity: item.quantity,
-          price: parseFloat(item.postProduct.product.price+ "") * 1000 ,
+          price: parseFloat(item.postProduct.product.price + "") * 1000,
         }
       )
     })
@@ -89,7 +93,7 @@ export const Cart = () => {
       paymentMethodId: 1,
       description: "",
       postProductToBuyRequests: postProductToBuyRequests,
-      orderMethod:"cart"
+      orderMethod: "cart"
     }
 
     dispatch(setPayCart(payload)) //set for payment
@@ -217,7 +221,7 @@ export const Cart = () => {
                         }}></InputNumber>
                   </div>
                   <div className='col-span-1 flex justify-center items-center'>
-                    <NumberFormatter number={ parseFloat(item.postProduct.product.price+"") * item.quantity * 1000} /><span className='ml-1'>VNĐ</span>
+                    <NumberFormatter number={parseFloat(item.postProduct.product.price + "") * item.quantity * 1000} /><span className='ml-1'>VNĐ</span>
                   </div>
                   <div className='col-span-2 flex justify-center items-center'>
                     <Button onClick={() => {
