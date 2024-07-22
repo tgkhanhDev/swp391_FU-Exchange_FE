@@ -330,7 +330,11 @@ export const PostDetail: React.FC<PostType> = () => {
                 <div onClick={() => {
                   if (userOwn?.sellerTO?.sellerId === postDetail?.product?.seller?.sellerId) {
                     toast.error("Bạn không thể báo cáo bài đăng của chính mình!");
-                  } else {
+                  } 
+                  else if (postDetail?.product.seller?.active === 0) {
+                    toast.error("Người bán đã bị khoá, bạn không thể báo cáo!");
+                  }
+                  else {
                     showReportModal();
                   }
                 }} className="cursor-pointer">

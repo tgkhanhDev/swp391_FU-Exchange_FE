@@ -117,7 +117,11 @@ export const ShopId = () => {
         <div className="mt-10 mb-16 cursor-pointer" onClick={() => {
           if (userOwn?.sellerTO?.sellerId === parseInt(sellerId)) {
             toast.error("Bạn không thể báo cáo chính mình!");
-          } else {
+          } 
+          else if (postView[0]?.product.seller?.active === 0) {
+            toast.error("Người bán đã bị khoá, bạn không thể báo cáo!");
+          }
+          else {
             showReportModal();
           }
         }}>
