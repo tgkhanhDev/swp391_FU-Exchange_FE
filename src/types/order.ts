@@ -2,8 +2,9 @@ export interface PaymentType {
   registeredStudentId: number;
   postProductToBuyRequests: PostProductToBuyRequestType[];
   paymentMethodId: number;
-  description: string;
-  navigate ?: any;
+  description?: string;
+  navigate?: any;
+  orderMethod: "buyNow" | "cart";
 };
 
 export interface PostProductToBuyRequestType {
@@ -23,7 +24,9 @@ export interface VnPayPayment {
 }
 
 export interface PostProductToBuyRequest {
+  sttOrder: number;
   postProductId: number;
+  sellerId: number;
   variationDetailId: number;
   variationId: number;
   quantity: number;
@@ -97,7 +100,59 @@ export interface PostProductInOrder {
   secondVariation?: string;
 }
 
-export interface orderPostProduct {
-  postProductID: number
-  totalpriceBought: number
+export interface orderDetailSellerId {
+  sellerId: number;
+  orderId: number;
 }
+
+export interface updateStatusOrder {
+  orderId: number,
+  orderStatusId: number,
+} 
+
+export interface PostProductInOrders {
+  order: Order
+  postProduct: PostProduct
+  imageUrlProduct: string
+  quantity: number
+  firstVariation: string
+  secondVariation?: string
+}
+
+export interface Order {
+  orderId: number
+  registeredStudent: number
+  orderStatus: OrderStatus
+  createDate: string
+  completeDate: string
+  paymentId: number
+}
+
+export interface PostProduct {
+  postProductId: number
+  sellerId: number
+  product: Products
+  postType: PostType
+  campus: Campus
+  postStatus: PostStatus
+  quantity: number
+  createDate: string
+  content: string
+  priceBought: number
+}
+
+export interface Products {
+  productId: number
+  detail: Detail
+  category: Category
+  price: string
+  productStatus: boolean
+}
+
+export interface Detail {
+  productDetailId: number
+  productName: string
+  description: string
+}
+
+//export interface orderStatusUpdate {}

@@ -1,0 +1,18 @@
+{
+  "description": "M",
+  "variation": {
+    "variationDetail": null,
+    "variationId": 6,
+    "variationName": "Kích Thước"
+  },
+  "variationDetailId": 19
+}
+
+{
+    "variationDetail":{
+        "description": "M",
+        "variationDetailId":23
+    },
+    "variationId":6,
+    "variationName":"Kích Thước"
+}

@@ -8,7 +8,10 @@ const api = apiInstance({
 
 export const manageReview = {
   createReview: (payload: Review) =>
-    api.post<utilsResponse<any>>(`/create`, payload),
+  {
+    console.log(payload)
+    return api.post<utilsResponse<any>>(`/create`, payload);
+  },
   viewAllReview: (payload: number) =>
     api.get<utilsResponse<any>>(`all/${payload}`),
 };

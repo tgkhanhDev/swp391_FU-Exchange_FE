@@ -22,6 +22,9 @@ export const manageWishlistSlice = createSlice({
     builder.addCase(createWishlistThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
         toast.success(`Gửi yêu cầu Tặng thành công!`);
+        setTimeout(() => {
+          window.location.reload()
+        }, 1000);
       } else if (payload.status == 400) {
         toast.warning(`${payload.content}`)
       }
@@ -32,6 +35,9 @@ export const manageWishlistSlice = createSlice({
     builder.addCase(updateStatusWishlistThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
         toast.success(`Cập nhật thành công!`);
+        setTimeout(() => {
+          window.location.reload()
+        }, 1000);
       } else if (payload.status == 400) {
         toast.error(`Cập nhật thất bại!`)
       }

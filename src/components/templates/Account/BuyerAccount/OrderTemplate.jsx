@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Select, Popover } from "antd";
+import { Select, Popover, Button } from "antd";
 import { UserOutlined, ShrinkOutlined, EllipsisOutlined, SendOutlined, PhoneOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import './styles.css';
 import { CSSTransition } from "react-transition-group";
 import { useAppDispatch } from "../../../../store";
-import { getOrderThunk, getOrderDetailThunk } from "../../../../store/orderManager/thunk";
-import { getPostByIdThunk } from "../../../../store/postManagement/thunk";
-import { viewChatRoom, chatRoomStS, sendMessage, contactSeller } from "../../../../store/chatManager/thunk"
+import { getOrderThunk, updateStatusOrderThunk } from "../../../../store/orderManager/thunk";
+import { viewChatRoom, chatRoomStS, sendMessage, contactSeller, deleteChatRoom } from "../../../../store/chatManager/thunk"
 import { getAccountInfoThunk } from "../../../../store/userManagement/thunk"
 import { useOrder } from "../../../../hooks/useOrder";
 import { useAccount } from "../../../../hooks/useAccount";
@@ -19,17 +18,16 @@ export const OrderTemplate = () => {
   const { chatroom, chatDetail } = useChat();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [orderDetails, setOrderDetails] = useState({});
-  const [postDetails, setPostDetails] = useState({});
   const [orders, setOrders] = useState([]);
   const { studentInfo } = useAccount();
   const [showBoxChat, setShowBoxChat] = useState(false);
   const messageEndRef = useRef(null);
-  const [sortBy, setSortBy] = useState();
+  const [sortBy, setSortBy] = useState('1');
   const [user, setUser] = useState();
   const [userDetail, setUserDetail] = useState();
   const [sellerId, setSellerId] = useState();
   const [content, setContent] = useState();
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
   const formatDay = (dateTimeString) => {
     if (!dateTimeString) return '';
@@ -57,43 +55,33 @@ export const OrderTemplate = () => {
     }
 
     if (studentInfo.registeredStudentId) {
-      dispatch(getOrderThunk({
-        registeredStudent: studentInfo.registeredStudentId
-      }));
+      dispatch(getOrderThunk(
+        studentInfo.registeredStudentId
+      ));
       dispatch(viewChatRoom(studentInfo.registeredStudentId))
     }
   }, [dispatch]);
 
   useEffect(() => {
-    // Sắp xếp mảng order từ originalOrder và sortBy
+    if (!Array.isArray(order)) {
+      console.error('Order is not an array:', order);
+      return;
+    }
+
     let sortedOrders = [...order];
 
     if (sortBy === '2') {
-      sortedOrders = sortedOrders.sort((a, b) => {
-        return new Date(a.createDate) - new Date(b.createDate);
-      });
+      sortedOrders = sortedOrders.sort((a, b) => new Date(a.order.createDate) - new Date(b.order.createDate));
     } else {
-      sortedOrders = sortedOrders.sort((a, b) => {
-        return new Date(b.createDate) - new Date(a.createDate);
-      });
+      sortedOrders = sortedOrders.sort((a, b) => new Date(b.order.createDate) - new Date(a.order.createDate));
     }
 
     setOrders(sortedOrders);
   }, [order, sortBy]);
 
-  useEffect(() => {
-    // Sắp xếp mảng order theo createDate giảm dần
-    const sortedOrders = [...order].sort((a, b) => {
-      return new Date(b.createDate) - new Date(a.createDate);
-    });
-
-    // Cập nhật lại state order với mảng đã sắp xếp
-    setOrders(sortedOrders);
-  }, [order]);
-
   const options = [
-    { value: '1', label: 'Giảm dần theo ngày' },
-    { value: '2', label: 'Tăng dần theo ngày' },
+    { value: '1', label: 'Ngày gần nhất' },
+    { value: '2', label: 'Ngày xa nhất' },
   ];
 
   const formatDate = (dateString) => {
@@ -102,49 +90,23 @@ export const OrderTemplate = () => {
   };
 
   useEffect(() => {
-    order.forEach(async (item) => {
-      const response = await dispatch(getOrderDetailThunk({
-        registeredStudent: item.registeredStudent,
-        orderId: item.orderId,
-        orderStatus: { orderStatusId: item.orderStatus.orderStatusId }
-      }));
-
-      const orderDetail = response.payload;
-      // Lưu trữ chi tiết đơn hàng bằng setOrderDetails
-      setOrderDetails(prevDetails => ({
-        ...prevDetails,
-        [item.orderId]: orderDetail
-      }));
-
-      if (Array.isArray(orderDetail.postProductInOrder)) {
-        orderDetail.postProductInOrder.forEach(async (detail) => {
-          const postResponse = await dispatch(getPostByIdThunk(detail.postProduct.postProductId));
-          const postProductDetail = postResponse.payload.data;
-          // Lưu trữ postDetail vào postDetails theo postProductId
-          setPostDetails(prevPostDetails => ({
-            ...prevPostDetails,
-            [detail.postProduct.postProductId]: postProductDetail
-          }));
-        });
-      }
-    });
-  }, [dispatch, order]);
-
-  useEffect(() => {
     // Đảm bảo chatroom không rỗng và có ít nhất một phòng chat
     if (chatroom && chatroom.length > 0) {
-      // Lặp qua các phòng chat để lấy thông tin người dùng từ studentReceiveId
-      chatroom.forEach(room => {
-        const registeredId = room.chatMessage[0].studentReceiveId;
 
-        // Dispatch Thunk để lấy dữ liệu người dùng dựa trên registeredId
-        dispatch(getAccountInfoThunk({ registeredStudentId: registeredId }))
+      chatroom.forEach(room => {
+        // Kiểm tra xem room.chatMessage[0].studentSendId có bằng registeredId hay không
+        const studentIdToFetch = (room.chatMessage[0].studentSendId === registeredId)
+          ? room.chatMessage[0].studentReceiveId
+          : room.chatMessage[0].studentSendId;
+
+        // Dispatch Thunk để lấy dữ liệu người dùng dựa trên studentIdToFetch
+        dispatch(getAccountInfoThunk({ registeredStudentId: studentIdToFetch }))
           .then((action) => {
             const { payload } = action;
             const { data } = payload;
             setUser((prevUser) => ({
               ...prevUser,
-              [registeredId]: data  // Lưu trữ thông tin người dùng dựa trên registeredId
+              [studentIdToFetch]: data  // Lưu trữ thông tin người dùng dựa trên studentIdToFetch
             }));
           })
           .catch((error) => {
@@ -154,7 +116,7 @@ export const OrderTemplate = () => {
     }
   }, [chatroom, dispatch]);
 
-  const registeredId = studentInfo.registeredStudentId;
+  const registeredId = studentInfo?.registeredStudentId;
 
   const handleChat = (sellerId, content) => {
     setShowBoxChat(true); // Mở box chat khi nhấn vào nút
@@ -162,7 +124,7 @@ export const OrderTemplate = () => {
     setContent(content);
   }
 
-  const contentCreate = `Tôi muốn trao đổi về sản phẩm này: ${content}`;
+  const contentCreate = `Chào bạn, tôi vừa mua sản phẩm ${content} và muốn trao đổi thêm một số thông tin.`;
 
   useEffect(() => {
     if (sellerId && registeredId && showBoxChat) {
@@ -182,16 +144,32 @@ export const OrderTemplate = () => {
   }, [dispatch, sellerId, registeredId, showBoxChat, contentCreate]);
 
   const handleSelectChat = (studentSendId, studentReceiveId) => {
-    dispatch(chatRoomStS({ studentSendId: studentSendId, studentReceiveId: studentReceiveId }))
-    dispatch(getAccountInfoThunk({ registeredStudentId: studentReceiveId }))
-      .then((action) => {
-        const { payload } = action;
-        const { data } = payload;
-        setUserDetail(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching account information:", error);
-      });
+    dispatch(chatRoomStS({ studentSendId: studentSendId, studentReceiveId: studentReceiveId }));
+    if (studentReceiveId !== userInfo?.registeredStudentId) {
+      dispatch(getAccountInfoThunk({ registeredStudentId: studentReceiveId }))
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          setUserDetail(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
+    } else if (studentSendId !== userInfo?.registeredStudentId) {
+      dispatch(getAccountInfoThunk({ registeredStudentId: studentSendId }))
+        .then((action) => {
+          const { payload } = action;
+          const { data } = payload;
+          setUserDetail(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching account information:", error);
+        });
+    }
+  }
+
+  const handleDeleteChat = (chatRoomId) => {
+    dispatch(deleteChatRoom(chatRoomId));
   }
 
   const isEmptyChatDetail = !chatDetail || Object.keys(chatDetail).length === 0 ||
@@ -203,8 +181,14 @@ export const OrderTemplate = () => {
   const contentRef = useRef("")
   const [transitionKey, setTransitionKey] = useState(Date.now());
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && e.target.value.trim() !== "") {
+      reloadBoxChat();
+    }
+  };
+
   const reloadBoxChat = () => {
-    if (chatDetail && chatroom) {
+    if (chatDetail && chatroom && e.target.value.trim() !== "") {
       dispatch(
         sendMessage({
           studentSendId: studentSendIdRef, // Assuming studentSendIdRef is correctly defined elsewhere
@@ -219,6 +203,10 @@ export const OrderTemplate = () => {
     }
   };
 
+  const handleChangeStatus = (orderId, orderStatusId) => {
+    dispatch(updateStatusOrderThunk({ orderId: orderId, orderStatusId: orderStatusId }))
+  }
+
   return (
     <div>
       <main className='py-10 mx-6'>
@@ -228,86 +216,166 @@ export const OrderTemplate = () => {
             <div className="w-60">
               <Select
                 className="w-60"
-                defaultValue={'Giảm dần theo ngày'}
+                defaultValue={'1'}
                 options={options}
                 onChange={(value) => setSortBy(value)}
               />
             </div>
           </div>
 
-          {orders.length === 0 ? (
-            <div className="flex justify-center items-center text-red-500 text-2xl font-semibold">Chưa có đơn hàng</div>
-          ) : (orders.map(item =>
-            <div key={item.orderId} className='bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300'>
-              <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">
-                <div className="">
-                  <div className="text-lg font-bold">Ngày đặt đơn:</div>
-                  <div>{formatDate(item.createDate)}</div>
-                </div>
-
-                <div className="">
-                  <div className="text-lg font-bold">Tổng đơn: </div>
-                  <div>{item.totalPrice.toLocaleString('en-US')} VNĐ</div>
-                </div>
-
-                <div className="">
-                  <div className="text-lg font-bold">Trạng thái đơn hàng:</div>
-                  <div>{item.orderStatus.orderStatusName}</div>
-                </div>
-
-                <div className="">
-                  <div className="text-lg font-bold">Payment:</div>
-                  <div>{item.paymentId}</div>
-                </div>
-
-                <div className="">
-                  <div className="text-lg font-bold">Mã đơn: </div>
-                  <div className="text-center">{item.orderId}</div>
-                </div>
+          {orders ? (
+            orders.length === 0 ? (
+              <div className="flex justify-center items-center text-red-500 text-2xl font-semibold">
+                Chưa có đơn hàng
               </div>
-
-              {orderDetails[item.orderId] && Array.isArray(orderDetails[item.orderId].postProductInOrder) && orderDetails[item.orderId].postProductInOrder.map(detail =>
-                <div key={detail.postProduct.postProductId} className="py-5 px-5 flex flex-row gap-4">
-                  <div className='h-32 w-32'>
-                    {postDetails[detail.postProduct.postProductId]?.product?.image ? (
-                      <img src={postDetails[detail.postProduct.postProductId].product.image[0].imageUrl} alt={postDetails[detail.postProduct.postProductId].product.detail.productName} className="h-32 w-32" />
-                    ) : (
-                      <div>No Image</div>
-                    )}
+            ) : (
+              orders.map((item) => (
+                <div
+                  key={item.order.orderId}
+                  className="bg-white rounded-3xl w-full h-full py-3 mb-8 border-2 border-slate-300"
+                >
+                  <div className="flex flex-row justify-around w-full border-b-2 border-b-slate-300 pb-3 mb-2">
+                    <div>
+                      <div className="text-lg font-bold">Ngày đặt đơn:</div>
+                      <div>{formatDate(item.order.createDate)}</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold">Ngày cập nhật mới:</div>
+                      <div>{formatDate(item.order.completeDate)}</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold">Tổng đơn:</div>
+                      <div>
+                        {item.postProductInOrder
+                          .reduce(
+                            (total, product) => total + product.priceBought * product.quantity * 1000,
+                            0
+                          )
+                          .toLocaleString("en-EN")}{" "}
+                        VNĐ
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold">Trạng thái đơn hàng:</div>
+                      <div>{item.order.orderStatus.orderStatusName}</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold">Payment:</div>
+                      <div>{item.order.paymentId}</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold">Mã đơn:</div>
+                      <div className="text-center">{item.order.orderId}</div>
+                    </div>
                   </div>
-                  <div className="w-[40%]">
-                    <div className="pb-4">
-                      <div className="font-semibold text-lg">{detail.postProduct.product.detail.productName}</div>
-                      <div className="flex justify-between items-center">
-                        <div>{detail.firstVariation}</div>
-                        {detail.secondVariation && (
-                          <>
-                            <div>&#x2022;</div>
-                            <div>{detail.secondVariation}</div>
-                          </>
+
+                  {item.postProductInOrder.map((product) => (
+                    <div
+                      key={product.postProductId}
+                      className="py-5 px-5 flex flex-row gap-4"
+                    >
+                      <div className="h-32 w-32">
+                        {product.imageUrlProduct ? (
+                          product.postStatusDTO.postStatusId === 4 ? (
+                            <img
+                              src={product.imageUrlProduct}
+                              className="h-32 w-32"
+                              alt={product.productName}
+                            />
+                          ) : (
+                            <div className="flex justify-center items-center h-full">
+                              <div className="text-center">No Image</div>
+                            </div>
+                          )
+                        ) : (
+                          <div className="flex justify-center items-center h-full">
+                            <div className="text-center">No Image</div>
+                          </div>
                         )}
                       </div>
-                      <div className="mt-2">Số lượng: {detail.quantity}</div>
+                      <div className="w-[40%]">
+                        <div className="pb-4">
+                          <div className="font-semibold text-lg">{product.productName}</div>
+                          <div className="flex justify-between items-center">
+                            <div className="flex-1 truncate">
+                              {product.firstVariation}
+                            </div>
+                            {product.secondVariation && (
+                              <div className="flex items-center ml-2">
+                                <div className="flex-1 truncate">
+                                  {product.secondVariation}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <div className="mt-2">Số lượng: {product.quantity}</div>
+                        </div>
+                        <div className="flex justify-between">
+                          {product.postStatusDTO.postStatusId === 4 ? (
+                            <button
+                              className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold"
+                              onClick={() => {
+                                navigate(`/detail/${product.postProductId}`);
+                              }}
+                            >
+                              Mua lại
+                            </button>
+                          ) : (
+                            <button className="px-14 py-3 bg-gray-200 text-gray-500 font-bold mr-5">
+                              Bài đăng đã bị xóa hoặc vô hiệu hóa
+                            </button>
+                          )}
+                          <button
+                            className="px-8 py-3 border-2 border-current bg-white text-[var(--color-primary)] font-bold"
+                            onClick={() =>
+                              handleChat(product.sellerId, product.productName)
+                            }
+                          >
+                            Liên hệ người bán
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex flex-col justify-between items-end flex-grow text-lg font-medium">
+                        <NavLink
+                          to={`/review/${item.order.orderId}/${product.postProductId}`}
+                        >
+                          <div className="text-[var(--color-primary)] underline">
+                            Đánh giá ngay
+                          </div>
+                        </NavLink>
+                        <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: {(product.priceBought * product.quantity * 1000).toLocaleString("en-EN")} VNĐ</div>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <button className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold"
-                        onClick={() => {
-                          navigate(`/detail/${detail.postProduct.postProductId}`);
-                        }}
-                      >Mua lại</button>
-                      <button className="px-8 py-3 border-2 border-current bg-white text-[var(--color-primary)] font-bold" onClick={() => handleChat(postDetails[detail.postProduct.postProductId].product.seller.sellerId, detail.postProduct.product.detail.productName)}>Liên hệ người bán</button>
+                  ))}
+                  {item.order.orderStatus.orderStatusId === 1 && (
+                    <div className="flex justify-end mx-4">
+                      <button
+                        className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold mr-12"
+                        onClick={() => handleChangeStatus(item.order.orderId, 4)}
+                      >
+                        Hủy đơn
+                      </button>
                     </div>
-                  </div>
-                  <div className="flex flex-col justify-between items-end flex-grow text-lg font-medium">
-                    <NavLink to={`/review/${item.orderId}/${detail.postProduct.postProductId}`}>
-                      <div className="text-[var(--color-primary)] underline">Đánh giá ngay</div>
-                    </NavLink>
-                    <div className="text-[var(--color-tertiary)]">Tổng giá trị sản phẩm: {detail.postProduct.priceBought.toLocaleString('en-US')}VNĐ</div>
-                  </div>
+                  )}
+                  {item.order.orderStatus.orderStatusId === 3 && (
+                    <div className="flex justify-end mx-4">
+                      <button
+                        className="px-14 py-3 bg-[var(--color-primary)] text-white font-bold mr-12"
+                        onClick={() => handleChangeStatus(item.order.orderId, 5)}
+                      >
+                        Đã nhận hàng
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
+              ))
+            )
+          ) : (
+            <div className="text-2xl font-semibold text-orange-500 text-center">
+              Loading...
             </div>
-          ))}
+          )}
+
         </div>
       </main>
 
@@ -334,33 +402,40 @@ export const OrderTemplate = () => {
                     {chatroom.map(room => (
                       room?.active === true && (
                         <div onClick={() => handleSelectChat(room.chatMessage[0].studentSendId, room.chatMessage[0].studentReceiveId)}>
-                          <div key={room.chatRoomId} className="hover:bg-gray-100 cursor-pointer duration-200 w-full">
-                            <div className="flex items-center mb-4 px-2">
-                              <div className="rounded-full bg-white border border-slate-300 w-12 h-12 flex justify-center items-center">
-                                <UserOutlined className="text-3xl" />
-                              </div>
-                              {room.chatMessage && room.chatMessage.length > 0 && (
-                                <div key={room.chatMessage[0].messageId} className="flex flex-grow items-center justify-between ml-2">
-                                  <div>
-                                    <div className="text-base font-semibold">{truncateContent(`${user?.[room.chatMessage[0].studentReceiveId]?.student?.firstName} ${user?.[room.chatMessage[0].studentReceiveId]?.student?.lastName}`, 8)}</div>
-                                    <div>{truncateContent(room.chatMessage.slice(-1)[0].content, 14)}</div>
-                                  </div>
-                                  <div className="text-right text-sm">
-                                    <div>{formatDay(room.chatMessage[0].timeSend)}</div>
-                                    <Popover
-                                      placement="bottomRight"
-                                      content={(
-                                        <button className="rounded flex justify-center items-center">
-                                          <DeleteOutlined className="text-xl mr-2" />Delete
-                                        </button>
-                                      )}
-                                      trigger="click"
-                                    >
-                                      <button><EllipsisOutlined className="text-3xl" /></button>
-                                    </Popover>
-                                  </div>
+                          <div>
+                            <div key={room.chatRoomId} className="hover:bg-gray-100 cursor-pointer duration-200 w-full">
+                              <div className="flex items-center mb-4 px-2">
+                                <div className="rounded-full bg-white border border-slate-300 w-12 h-12 flex justify-center items-center">
+                                  <UserOutlined className="text-3xl" />
                                 </div>
-                              )}
+                                {room.chatMessage && room.chatMessage.length > 0 && (
+                                  <div key={room.chatMessage[0].messageId} className="flex flex-grow items-center justify-between ml-2">
+                                    <div>
+                                      <div className="text-base font-semibold">{truncateContent(
+                                        (room.chatMessage[0].studentSendId === registeredId)
+                                          ? `${user?.[room.chatMessage[0].studentReceiveId]?.student?.firstName || ''} ${user?.[room.chatMessage[0].studentReceiveId]?.student?.lastName || ''}`
+                                          : `${user?.[room.chatMessage[0].studentSendId]?.student?.firstName || ''} ${user?.[room.chatMessage[0].studentSendId]?.student?.lastName || ''}`,
+                                        8
+                                      )}</div>
+                                      <div>{truncateContent(room.chatMessage.slice(-1)[0].content, 14)}</div>
+                                    </div>
+                                    <div className="text-right text-sm">
+                                      <div>{formatDay(room.chatMessage[0].timeSend)}</div>
+                                      <Popover
+                                        placement="bottomRight"
+                                        content={(
+                                          <button className="rounded flex justify-center items-center" onClick={() => handleDeleteChat(room.chatRoomId)}>
+                                            <DeleteOutlined className="text-xl mr-2" />Delete
+                                          </button>
+                                        )}
+                                        trigger="click"
+                                      >
+                                        <button><EllipsisOutlined className="text-3xl" /></button>
+                                      </Popover>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -393,25 +468,50 @@ export const OrderTemplate = () => {
                         <div key={roomId}>
                           {chatDetail[roomId].length > 0 && (
                             chatDetail[roomId].map(message => (
-                              studentReceiveId = message.studentSendId,
-                              message.studentSendId !== registeredId ? (
-                                <div key={message.messageId} className="flex items-center my-4">
-                                  <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
-                                    <UserOutlined className="text-lg" />
+                              userInfo && userInfo.role === "Seller" ? (
+                                message.studentSendId !== registeredId ? (
+                                  studentReceiveId = message.studentSendId,
+                                  <div key={message.chatMessageId} className="flex items-center my-4">
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
+                                    <div className="bg-slate-200 max-w-[52%] ml-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
                                   </div>
-                                  <div className="bg-slate-200 max-w-[52%] ml-2 rounded-lg px-2 py-1">
-                                    {message.content}
+                                ) : (
+                                  studentReceiveId = message.studentReceiveId,
+                                  <div key={message.chatMessageId} className="flex justify-end items-center my-4">
+                                    <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
                                   </div>
-                                </div>
+                                )
                               ) : (
-                                <div key={message.messageId} className="flex justify-end items-center my-4">
-                                  <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
-                                    {message.content}
+                                message.studentSendId !== registeredId ? (
+                                  studentReceiveId = message.studentSendId,
+                                  <div key={message.chatMessageId} className="flex items-center my-4">
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
+                                    <div className="bg-slate-200 max-w-[52%] ml-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
                                   </div>
-                                  <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
-                                    <UserOutlined className="text-lg" />
+                                ) : (
+                                  studentReceiveId = message.studentReceiveId,
+                                  <div key={message.chatMessageId} className="flex justify-end items-center my-4">
+                                    <div className="bg-blue-300 max-w-[52%] mr-2 rounded-lg px-2 py-1">
+                                      {message.content}
+                                    </div>
+                                    <div className="rounded-full bg-white border border-slate-300 w-8 h-8 flex justify-center items-center">
+                                      <UserOutlined className="text-lg" />
+                                    </div>
                                   </div>
-                                </div>
+                                )
                               )
                             ))
                           )}
@@ -427,7 +527,8 @@ export const OrderTemplate = () => {
                 <div className="flex justify-between items-center border-t-2 border-t-slate-300 py-2 px-4">
                   <input type="text" placeholder="Gửi gì đó đi..." className="w-full focus:outline-none pr-3" onChange={(e) => {
                     contentRef.current = e.target.value;
-                  }} />
+                  }}
+                    onKeyPress={handleKeyPress} />
                   <button onClick={reloadBoxChat}><SendOutlined className="text-[var(--color-primary)]" /></button>
                 </div>
               )}

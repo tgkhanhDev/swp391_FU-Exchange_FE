@@ -11,6 +11,7 @@ import {
   UpdateBanking,
   LoginStaffType,
   Staff,
+  updateDelivery
 } from "../types/user";
 import { deleteSellerPostProductFilter, filterGetCustomerAccount } from "../types/account";
 import { utilsResponse } from "../types/utils";
@@ -76,14 +77,15 @@ export const manageUsers = {
   getStaffInfo: (payload: number) =>
     apiD.get<utilsResponse<any>>(`detail/${payload}`),
 
-  updateDeliveryAddress: (payload: RegisteredStudent) =>
+  updateDeliveryAddress: (payload: updateDelivery) =>
     apiC.put<utilsResponse<any>>(
-      `${payload.registeredStudentId}/update-registered-student?deliveryAddress=${payload.deliveryAddress}`,
-      payload
-    ),
+      `update-delivery-address`,payload),
 
   getAllRegisteredStudent: (payload: filterGetCustomerAccount) =>
     apiC.get<utilsResponse<any>>(
-      `registered-student/${payload.current}?name=${payload.name}`
+      `/filter?studentName=${payload.name}`
     ),
+
+  getAllSeller: (payload) =>
+    apiB.get<utilsResponse<any>>(`get-all`),
 };

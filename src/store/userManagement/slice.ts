@@ -17,6 +17,7 @@ import {
   getAccountInfoTypeThunk,
   getSellerInfoBySellerIdThunk,
   deleteSellerPostProductThunk,
+  getAllSellerThunk
 } from "./thunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -61,14 +62,14 @@ export const manageUsersSlice = createSlice({
         toast.success(`${payload.content}`);
         //!redirect here
         state.isAuthorize = true;
-        window.location.href = "/authorize";
+        window.location.href = "/";
 
         localStorage.setItem("userInfo", JSON.stringify(payload.data));
       } else {
         toast.error(`${payload.content}`);
       }
     }),
-      builder.addCase(getLoginThunk.rejected, (state, { payload }) => {}),
+      builder.addCase(getLoginThunk.rejected, (state, { payload }) => { }),
       builder.addCase(getLoginStaffThunk.fulfilled, (state, { payload }) => {
         if (payload.status === 200) {
           toast.success(`${payload.content}`);
@@ -87,11 +88,12 @@ export const manageUsersSlice = createSlice({
           }
 
           state.isAuthorize = true;
-        } else {
+        }
+        else {
           toast.error(`${payload.content}`);
         }
       });
-    builder.addCase(getLoginStaffThunk.rejected, (state, { payload }) => {}),
+    builder.addCase(getLoginStaffThunk.rejected, (state, { payload }) => { }),
       builder.addCase(isRegisteredThunk.fulfilled, (state, { payload }) => {
         if (payload.status == 200) {
           state.isAccountRegistered = true;
@@ -131,7 +133,9 @@ export const manageUsersSlice = createSlice({
     builder.addCase(registerSellerThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
         toast.success(`${payload.content}`);
-        window.location.href = "/login";
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
       } else {
         toast.info(`${payload.content}`);
       }
@@ -192,6 +196,11 @@ export const manageUsersSlice = createSlice({
       getAllRegisteredStudentThunk.fulfilled,
       (state, { payload }) => {
         state.users = payload.data;
+      }
+    );
+    builder.addCase(
+      getAllSellerThunk.fulfilled,
+      (state, { payload }) => {
       }
     );
   },

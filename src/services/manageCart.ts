@@ -1,5 +1,5 @@
 import { apiInstance } from "../constants/apiInstance";
-import { addCartItem, deleteItemCartType } from "../types/cart";
+import { addCartItem, deleteItemCartType, updateItemCartType } from "../types/cart";
 import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
@@ -9,10 +9,10 @@ const api = apiInstance({
 
 export const manageCart = {
   viewCart: (payload: string) => api.get(`/${payload}`),
-  addToCart: (payload: addCartItem) => api.post(``, payload),
-  updateQuantity: (payload) => api.put(`/cart-update`, payload),
-  // deleteItemCart: (payload: deleteItemCartType) =>
-  //   api.delete(`/cart-delete`, payload),
+  addToCart: (payload: addCartItem) => api.post(`/add-to-cart`, payload),
+  updateQuantity: (payload: updateItemCartType) =>
+    api.put(`/update-cart`, payload),
+  deleteItemCart: (payload: addCartItem) =>
+    api.delete(`/cart-delete`, { data: payload }),
   // pay_vnpay: (payload: string) => api.get(`/vn-pay?amount=${payload}`),
-
 };

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getAllStaffAccountThunk, setStatusStaffThunk, updateAProfileThunk, updateMProfileThunk, updatePasswordStaffThunk, setStatusAccountThunk } from "./thunk";
+import { getAllStaffAccountThunk, setStatusStaffThunk, updateAProfileThunk, updateMProfileThunk, updatePasswordStaffThunk, setStatusAccountThunk, setStatusSellerThunk } from "./thunk";
 import { Account } from "../../types/account"
 import { toast } from "react-toastify";
 
@@ -22,7 +22,13 @@ export const manageAccountSlice = createSlice({
       state.account = payload.data;
     });
 
-    builder.addCase(setStatusStaffThunk.fulfilled, (state, { payload }) => { });
+    builder.addCase(setStatusStaffThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`${payload.content}`);
+      } else {
+        toast.error(`${payload.content}`);
+      }
+    });
 
     builder.addCase(updateAProfileThunk.fulfilled, (state, { payload }) => {
       if (payload.status == 200) {
@@ -57,7 +63,20 @@ export const manageAccountSlice = createSlice({
     }
     );
 
-    builder.addCase(setStatusAccountThunk.fulfilled, (state, { payload }) => { });
+    builder.addCase(setStatusAccountThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`${payload.content}`);
+      } else {
+        toast.error(`${payload.content}`);
+      }
+    });
+    builder.addCase(setStatusSellerThunk.fulfilled, (state, { payload }) => {
+      if (payload.status == 200) {
+        toast.success(`${payload.content}`);
+      } else {
+        toast.error(`${payload.content}`);
+      }
+    });
   },
 });
 

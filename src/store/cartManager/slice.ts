@@ -1,32 +1,60 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addToCartThunk, viewCartThunk } from "./thunk";
+import { addToCartThunk, deleteItemCartThunk, updateItemCartThunk, viewCartThunk } from "./thunk";
 import { toast } from "react-toastify";
-import { cartItem } from "../../types/cart";
+import { cartItem, cartItemFilter } from "../../types/cart";
 
 interface initialType {
   cartList: cartItem[];
+  cartListFilter: cartItemFilter[];
 }
 
 const initialState: initialType = {
   cartList: [],
-}
+  cartListFilter: [],
+};
 
 export const manageCartSlice = createSlice({
   name: "manageCart",
   initialState,
-  reducers: {
-    
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(addToCartThunk.fulfilled, (state, { payload }) => {
       // state.createProductRes = payload.data;
-      toast.success(payload.data.content);
+      toast.success("Thêm sản phẩm vào giỏ hàng thành công");
     });
-    builder.addCase(viewCartThunk.fulfilled, (state, {payload} ) => {
-      console.log("SDADAD: ", payload);
-      
-      state.cartList = payload.data;
-    })
+    builder.addCase(viewCartThunk.fulfilled, (state, { payload }) => {
+      const cartList = payload.data;
+      const cartListFilter: cartItemFilter[] = [];
+
+      cartList.forEach((item: cartItem) => {
+        let existingItem: any = cartListFilter.find(
+          (filterItem: cartItemFilter) => item.sttPostInCart === filterItem.sttPostInCart
+        );
+
+        if (existingItem) {
+          existingItem.variationDetail.push(item.variationDetail);
+        } else {
+          const newItem = {
+            ...item,
+            variationDetail: [item.variationDetail],
+          };
+          cartListFilter.push(newItem);
+        }
+      });
+
+      return {
+        ...state,
+        cartList,
+        cartListFilter,
+      };
+
+    }),
+    builder.addCase(deleteItemCartThunk.fulfilled, (state, { payload }) => {
+      toast.success("Xóa sản phẩm thành công");
+    });
+    builder.addCase(updateItemCartThunk.rejected, (state, { payload }) => {
+      toast.error("Cập nhập sản phẩm thất bại!");
+    });
   },
 });
 
