@@ -35,6 +35,7 @@ export const ManageReportPost = () => {
 
 
   const handleOk = (reportPostProductId) => {
+    console.log(reportPostProductId)
     if (reportPostProductId) {
       dispatch(updateStatusReportPostThunk({ reportPostProductId: reportPostProductId, reportStatusId: 2 }));
     }
@@ -151,7 +152,7 @@ export const ManageReportPost = () => {
                   ) : (
                     <button
                       className="bg-blue-500 px-2 py-1 text-white rounded duration-150 hover:bg-blue-700"
-                      onClick={() => handleOk(report.postProductId)}
+                      onClick={() => handleOk(report.reportPostProductId)}
                       disabled={report.reportStatus.reportStatusId === 2}
                     >
                       Xác nhận

@@ -174,8 +174,8 @@ export const SellerAccountManager = () => {
           onChange={handleStatusChange}
           value={selectedStatus}
         >
-          <Option value={1}>Hoạt động</Option>
-          <Option value={0}>Không hoạt động</Option>
+          <Option value={1}>Chấp nhận</Option>
+          <Option value={0}>Không chấp nhận</Option>
         </Select>
         {error && (
           <div className="mt-2 text-red-500 font-medium">{error}</div>
