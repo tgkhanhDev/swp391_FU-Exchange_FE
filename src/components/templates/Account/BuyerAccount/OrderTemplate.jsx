@@ -182,13 +182,13 @@ export const OrderTemplate = () => {
   const [transitionKey, setTransitionKey] = useState(Date.now());
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && e.target.value.trim() !== "") {
       reloadBoxChat();
     }
   };
 
   const reloadBoxChat = () => {
-    if (chatDetail && chatroom) {
+    if (chatDetail && chatroom && e.target.value.trim() !== "") {
       dispatch(
         sendMessage({
           studentSendId: studentSendIdRef, // Assuming studentSendIdRef is correctly defined elsewhere
