@@ -221,11 +221,11 @@ export const PostList = () => {
             className="flex items-center justify-center m-auto text-[18px] my-10"
             style={{ width: "300px", height: "50px" }}
           >
-            Xem thêm sản phẩm -{" "}
-            <span className="italic text-xs">
+            Xem thêm sản phẩm
+            {/* <span className="italic text-xs">
               {" "}
               {posts?.meta?.current}/{posts?.meta?.total}
-            </span>
+            </span> */}
           </Button>
         </div>
       </div>
