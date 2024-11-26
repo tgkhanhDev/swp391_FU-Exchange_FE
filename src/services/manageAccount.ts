@@ -3,19 +3,19 @@ import { utilsResponse } from "../types/utils";
 import { filterGetStaffAccount, setStatus, UpdateProfile, UpdatePassword, Seller, setStatusAcc, setStatusSeller } from "../types/account"
 
 const api = apiInstance({
-  baseURL: "http://localhost:8080/staff",
+  baseURL: "http://trangiangkhanh.site:8090/staff",
 });
 
 const apiB = apiInstance({
-  baseURL: "http://localhost:8080/moderator",
+  baseURL: "http://trangiangkhanh.site:8090/moderator",
 });
 
 const apiC = apiInstance({
-  baseURL: "http://localhost:8080/student",
+  baseURL: "http://trangiangkhanh.site:8090/student",
 });
 
 const apiD = apiInstance({
-  baseURL: "http://localhost:8080/seller",
+  baseURL: "http://trangiangkhanh.site:8090/seller",
 });
 
 export const manageAccount = {

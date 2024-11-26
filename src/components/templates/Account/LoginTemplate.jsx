@@ -56,9 +56,16 @@ export const LoginTemplate = () => {
             </div>
             <form>
               <div className="mb-6 ">
-                <label className="text-[#9f9f9f] mb-2">
-                  MSSV (Mã số sinh viên)
-                </label>
+                <div className="flex justify-between items-end">
+                  <label className="text-[#9f9f9f] mb-2">
+                    MSSV (Mã số sinh viên)
+                  </label>
+                  <div className="text-[#9f9f9f] mb-2 text-xs">
+                    <div>Buyer: DE180000 - 123</div>
+                    <div>Seller: CE170003 - 123</div>
+                    <div>RegisterID: SE182983 - 123456789212</div>
+                  </div>
+                </div>
                 <input
                   className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
                   type="text"
@@ -89,7 +96,7 @@ export const LoginTemplate = () => {
                   <label className="text-[#9f9f9f] mb-2">Mật khẩu</label>
                   <Input.Password
                     className="w-full h-10 rounded-xl text-[#666666] border-slate-400 px-5 focus:outline-none border"
-                    
+
                     onChange={(e) => (pwdRef.current = e.target.value)}
                   ></Input.Password>
                 </div>

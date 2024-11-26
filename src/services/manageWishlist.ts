@@ -3,7 +3,7 @@ import { utilsResponse } from "../types/utils";
 import { createWishlist, updateStatusWishlist, updateQuantityWishlist } from "../types/wishlist"
 
 const api = apiInstance({
-  baseURL: "http://localhost:8080/wishlist",
+  baseURL: "http://trangiangkhanh.site:8090/wishlist",
 });
 
 export const manageWishlist = {

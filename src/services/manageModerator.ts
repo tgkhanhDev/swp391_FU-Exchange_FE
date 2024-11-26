@@ -3,7 +3,7 @@ import { utilsResponse } from "../types/utils";
 import { ModeratorGetPostFilter, ModeratorUpdateStatusPostProductFilter, Post } from "../types/post";
 
 const api = apiInstance({
-  baseURL: "http://localhost:8080/moderator",
+  baseURL: "http://trangiangkhanh.site:8090/moderator",
 });
 
 export const manageModerator = {

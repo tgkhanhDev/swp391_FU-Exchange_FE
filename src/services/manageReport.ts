@@ -3,15 +3,15 @@ import { utilsResponse } from "../types/utils";
 import { ReportPostType, SendReport, ReportSellerType, SendReportSeller, FilterSellerReport, UpdateStatusReportSeller, FilterPostReport, UpdateStatusReportPost } from "../types/report"
 
 const apiA = apiInstance({
-  baseURL: "http://localhost:8080/report-post-product",
+  baseURL: "http://trangiangkhanh.site:8090/report-post-product",
 });
 
 const apiB = apiInstance({
-  baseURL: "http://localhost:8080/report-seller",
+  baseURL: "http://trangiangkhanh.site:8090/report-seller",
 });
 
 const apiC = apiInstance({
-  baseURL: "http://localhost:8080/moderator",
+  baseURL: "http://trangiangkhanh.site:8090/moderator",
 });
 
 export const manageReport = {

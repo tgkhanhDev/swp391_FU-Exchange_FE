@@ -4,7 +4,7 @@ import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({
-  baseURL: "http://localhost:8080/cart",
+  baseURL: "http://trangiangkhanh.site:8090/cart",
 });
 
 export const manageCart = {

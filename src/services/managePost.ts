@@ -9,7 +9,7 @@ import {
 import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({
-  baseURL: "http://localhost:8080/post-product",
+  baseURL: "http://trangiangkhanh.site:8090/post-product",
 });
 
 export const managePost = {

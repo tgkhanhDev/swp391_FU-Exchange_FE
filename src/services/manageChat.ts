@@ -3,7 +3,7 @@ import { utilsResponse } from "../types/utils";
 import { StudentToStudentChat, SendMessage, ContactSeller, ContactStudent } from "../types/chat"
 
 const api = apiInstance({
-  baseURL: "http://localhost:8080/chat",
+  baseURL: "http://trangiangkhanh.site:8090/chat",
 });
 
 export const manageChat = {

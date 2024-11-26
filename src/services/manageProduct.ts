@@ -3,7 +3,7 @@ import { ProductPaymentType, createProductType, filterGetProductById } from "../
 import { utilsResponse } from "../types/utils";
 
 const api = apiInstance({
-  baseURL: "http://localhost:8080/product",
+  baseURL: "http://trangiangkhanh.site:8090/product",
 });
 
 export const manageProduct = {

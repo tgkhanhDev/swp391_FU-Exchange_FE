@@ -4,7 +4,7 @@ import { Campus, PostType, Category } from "../types/post";
 import { PostStatus } from "../types/order";
 
 const api = apiInstance({
-  baseURL: "http://localhost:8080",
+  baseURL: "http://trangiangkhanh.site:8090",
 });
 export const manageView = {
   getAllCampus: () => api.get<utilsResponse<Campus[]>>(`/campus`),

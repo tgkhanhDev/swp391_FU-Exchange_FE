@@ -4,15 +4,15 @@ import { Post, PostFilter_API, PostLoadMore } from "../types/post";
 import { utilsResponse } from "../types/utils";
 
 const apiPayment = apiInstance({
-  baseURL: "http://localhost:8080/order",
+  baseURL: "http://trangiangkhanh.site:8090/order",
 });
 
 const apiOrder = apiInstance({
-  baseURL: "http://localhost:8080/student",
+  baseURL: "http://trangiangkhanh.site:8090/student",
 });
 
 const apiC = apiInstance({
-  baseURL: "http://localhost:8080/seller",
+  baseURL: "http://trangiangkhanh.site:8090/seller",
 })
 
 export const manageOrder = {

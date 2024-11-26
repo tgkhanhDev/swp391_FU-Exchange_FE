@@ -3,7 +3,7 @@ import { utilsResponse } from "../types/utils";
 import { Review } from "../types/review"
 
 const api = apiInstance({
-  baseURL: "http://localhost:8080/review",
+  baseURL: "http://trangiangkhanh.site:8090/review",
 });
 
 export const manageReview = {
